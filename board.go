@@ -4,30 +4,6 @@ import (
 	"fmt"
 )
 
-// Row is a row of squares
-type Row []Square
-
-// Copy returns a deep copy of row
-func (r Row) Copy(board *Board) Row {
-	newRow := make(Row, len(r))
-	for i := range r {
-		newRow[i] = r[i].Copy(board)
-	}
-	return newRow
-}
-
-// Squares is a matrix of squares
-type Squares []Row
-
-// Copy returns a deep copy of squares
-func (s Squares) Copy(board *Board) Squares {
-	newSquares := make(Squares, len(s))
-	for i := range s {
-		newSquares[i] = s[i].Copy(board)
-	}
-	return newSquares
-}
-
 // Board is a game board
 type Board struct {
 	squares       Squares
@@ -87,6 +63,11 @@ func (b *Board) PlacePiece(x, y int, p Piece) {
 	p.SetCoords(x, y)
 	square := b.Square(x, y)
 	square.piece = p
+}
+
+// InCheck returns true if there is a check on the board, otherwise it returns false
+func (b Board) InCheck() bool {
+	return false // todo implement it
 }
 
 // Copy returns a pointer to a deep copy of a board
