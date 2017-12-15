@@ -7,7 +7,7 @@ import (
 // Row is a row of squares
 type Row []Square
 
-// Copy returns a copy of row
+// Copy returns a deep copy of row
 func (r Row) Copy(board *Board) Row {
 	newRow := make(Row, len(r))
 	for i := range r {
@@ -19,7 +19,7 @@ func (r Row) Copy(board *Board) Row {
 // Squares is a matrix of squares
 type Squares []Row
 
-// Copy returns a copy of squares
+// Copy returns a deep copy of squares
 func (s Squares) Copy(board *Board) Squares {
 	newSquares := make(Squares, len(s))
 	for i := range s {
@@ -89,6 +89,7 @@ func (b *Board) PlacePiece(x, y int, p Piece) {
 	square.piece = p
 }
 
+// Copy returns a pointer to a deep copy of a board
 func (b *Board) Copy() *Board {
 	newBoard := &Board{}
 	newBoard.squares = b.squares.Copy(newBoard)

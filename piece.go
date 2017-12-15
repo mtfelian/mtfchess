@@ -25,6 +25,6 @@ type Piece interface {
 	Colour() Colour
 	// SetCoords sets the figure coords
 	SetCoords(x, y int)
-	// Copy returns a copy of Piece
+	// Copy returns a deep copy of a piece
 	Copy(board *Board) Piece
 }
