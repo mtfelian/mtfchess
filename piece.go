@@ -2,14 +2,13 @@ package mtfchess
 
 import "fmt"
 
-// pair is a coordinates pair
-type pair struct {
-	x int
-	y int
+// Pair is a coordinate pair
+type Pair struct {
+	X, Y int
 }
 
-// offsets is a slice of pair offsets
-type offsets []pair
+// Offsets is a slice of pair offsets
+type Offsets []Pair
 
 // Piece
 type Piece interface {
@@ -18,8 +17,12 @@ type Piece interface {
 	Board() *Board
 	// Name returns piece name
 	Name() string
-	// Shift returns a slice of pairs with x, y offsets
-	Shift(xy pair) offsets
+	// Offsets returns a slice of offsets to possible moves
+	Offsets() Offsets
 	// CanJump should return true if piece don't know barriers like a chess knight
 	CanJump() bool
+	// Colour returns piece colour
+	Colour() Colour
+	// SetCoords sets the figure coords
+	SetCoords(x, y int)
 }
