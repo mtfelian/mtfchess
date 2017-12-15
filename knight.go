@@ -60,3 +60,12 @@ func (p *Knight) Offsets() Offsets {
 	}
 	return o
 }
+
+func (p *Knight) Copy(board *Board) Piece {
+	return &Knight{
+		board:  board,
+		colour: p.colour,
+		x:      p.x,
+		y:      p.y,
+	}
+}

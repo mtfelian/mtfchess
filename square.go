@@ -11,6 +11,20 @@ type Square struct {
 	piece Piece
 }
 
+// Copy returns a copy of a square
+func (s *Square) Copy(board *Board) Square {
+	newSquare := Square{
+		board: board,
+		num:   s.num,
+		x:     s.x,
+		y:     s.y,
+	}
+	if s.piece != nil {
+		newSquare.piece = s.piece.Copy(board)
+	}
+	return newSquare
+}
+
 // String makes Square implement Stringer
 func (s Square) String() string {
 	p := " "

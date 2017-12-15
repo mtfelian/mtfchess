@@ -1,10 +1,36 @@
 package mtfchess
 
-import "fmt"
+import (
+	"fmt"
+)
+
+// Row is a row of squares
+type Row []Square
+
+// Copy returns a copy of row
+func (r Row) Copy(board *Board) Row {
+	newRow := make(Row, len(r))
+	for i := range r {
+		newRow[i] = r[i].Copy(board)
+	}
+	return newRow
+}
+
+// Squares is a matrix of squares
+type Squares []Row
+
+// Copy returns a copy of squares
+func (s Squares) Copy(board *Board) Squares {
+	newSquares := make(Squares, len(s))
+	for i := range s {
+		newSquares[i] = s[i].Copy(board)
+	}
+	return newSquares
+}
 
 // Board is a game board
 type Board struct {
-	squares       [][]Square
+	squares       Squares
 	width, height int
 }
 
@@ -32,9 +58,9 @@ func (b Board) Height() int {
 
 // createSquares returns a slice of Square for the board
 func (b *Board) createSquares() {
-	b.squares = make([][]Square, b.height)
+	b.squares = make(Squares, b.height)
 	for y := range b.squares {
-		b.squares[y] = make([]Square, b.width)
+		b.squares[y] = make(Row, b.width)
 		for x := range b.squares[y] {
 			b.createSquare(x, y)
 		}
@@ -61,6 +87,13 @@ func (b *Board) PlacePiece(x, y int, p Piece) {
 	p.SetCoords(x, y)
 	square := b.Square(x, y)
 	square.piece = p
+}
+
+func (b *Board) Copy() *Board {
+	newBoard := &Board{}
+	newBoard.squares = b.squares.Copy(newBoard)
+	newBoard.width, newBoard.height = b.width, b.height
+	return newBoard
 }
 
 // todo b.MakeMove(...) and test, with legality check
