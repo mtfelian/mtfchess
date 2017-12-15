@@ -10,6 +10,16 @@ type Board struct {
 	width, height int
 }
 
+// X converts x1 to slice index
+func (b Board) X(x int) int {
+	return x - 1
+}
+
+// Y convers y1 to slice index
+func (b Board) Y(y int) int {
+	return b.height - y
+}
+
 // String makes Board to implement Stringer
 func (b Board) String() string {
 	var s string
@@ -51,22 +61,32 @@ func (b *Board) createSquare(x, y int) {
 		x:     x + 1,
 		y:     b.height - y,
 	}
+	b.squares[y][x].Empty()
 }
 
 // Square returns a pointer to square at coords (x, y)
 func (b *Board) Square(x, y int) *Square {
-	return &b.squares[b.height-y][x-1]
+	return &b.squares[b.Y(y)][b.X(x)]
+}
+
+// Piece returns a piece at coords (x,y)
+func (b *Board) Piece(x, y int) Piece {
+	return b.Square(x, y).piece
 }
 
 // PlacePiece places piece at coords (x, y)
 func (b *Board) PlacePiece(x, y int, p Piece) {
 	p.SetCoords(x, y)
-	square := b.Square(x, y)
-	square.piece = p
+	b.Square(x, y).piece = p
 }
 
-// InCheck returns true if there is a check on the board, otherwise it returns false
-func (b Board) InCheck() bool {
+// Empty removes piece at coords x, y
+func (b *Board) Empty(x, y int) {
+	b.Square(x, y).Empty()
+}
+
+// InCheck returns true if there is a check on the board for colour, otherwise it returns false
+func (b Board) InCheck(colour Colour) bool {
 	return false // todo implement it
 }
 
@@ -76,6 +96,21 @@ func (b *Board) Copy() *Board {
 	newBoard.squares = b.squares.Copy(newBoard)
 	newBoard.width, newBoard.height = b.width, b.height
 	return newBoard
+}
+
+// MakeMove makes move with piece to coords (x,y)
+// It returns true if move succesful (legal), otherwise it returns false.
+func (b *Board) MakeMove(x, y int, piece Piece) bool {
+	c, offsets := piece.Coords(), piece.Offsets(b)
+	for _, o := range offsets {
+		if c.X+o.X == x && c.Y+o.Y == y {
+			newBoard := piece.Project(x, y, b)
+			piece.SetCoords(x, y)
+			*b = *newBoard
+			return true
+		}
+	}
+	return false
 }
 
 // todo b.MakeMove(...) and test, with legality check

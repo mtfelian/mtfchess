@@ -5,21 +5,15 @@ import (
 )
 
 type Knight struct {
-	board  *Board
 	colour Colour
 	x, y   int
 }
 
-// NewKnight creates new knight on x, y coords of a board with colour
-func NewKnight(board *Board, colour Colour) Piece {
+// NewKnight creates new knight with colour
+func NewKnight(colour Colour) Piece {
 	return &Knight{
-		board:  board,
 		colour: colour,
 	}
-}
-
-func (p *Knight) Board() *Board {
-	return p.board
 }
 
 func (p *Knight) Name() string {
@@ -42,28 +36,45 @@ func (p *Knight) SetCoords(x, y int) {
 	p.x, p.y = x, y
 }
 
-func (p *Knight) Offsets() Offsets {
+func (p *Knight) Offsets(b *Board) Offsets {
 	o := []Pair{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
-	b := p.Board()
 	for i := 0; i < len(o); i++ {
-		if p.x+o[i].X < 1 || p.y+o[i].Y < 1 || p.x+o[i].X > b.width || p.y+o[i].Y > b.height {
+		remove := func() {
 			o = append(o[:i], o[i+1:]...)
 			i--
+		}
+		x1, y1 := p.x+o[i].X, p.y+o[i].Y
+		if x1 < 1 || y1 < 1 || x1 > b.width || y1 > b.height {
+			remove()
 			continue
 		}
 		// check thet destination square isn't contains a piece of same colour
-		if dstPiece, ok := b.Square(p.y+o[i].Y, p.x+o[i].X).piece.(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
-			o = append(o[:i], o[i+1:]...)
-			i--
+		if dstPiece, ok := b.Square(x1, y1).piece.(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
+			remove()
+			continue
+		}
+
+		if p.Project(x1, y1, b).InCheck(p.Colour()) {
+			remove()
 			continue
 		}
 	}
 	return o
 }
 
-func (p *Knight) Copy(board *Board) Piece {
+func (p *Knight) Project(x, y int, b *Board) *Board {
+	newBoard := b.Copy()
+	newBoard.Empty(p.x, p.y)
+	newBoard.PlacePiece(x, y, p.Copy())
+	return newBoard
+}
+
+func (p *Knight) Coords() Pair {
+	return Pair{X: p.x, Y: p.y}
+}
+
+func (p *Knight) Copy() Piece {
 	return &Knight{
-		board:  board,
 		colour: p.colour,
 		x:      p.x,
 		y:      p.y,

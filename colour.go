@@ -4,6 +4,7 @@ package mtfchess
 type Colour int
 
 const (
-	White Colour = iota
+	Transparent Colour = iota
+	White
 	Black
 )

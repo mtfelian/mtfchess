@@ -11,18 +11,20 @@ type Square struct {
 	piece Piece
 }
 
+// Empty makes square empty
+func (s *Square) Empty() {
+	s.piece = NewEmpty(s.x, s.y)
+}
+
 // Copy returns a copy of a square
 func (s *Square) Copy(board *Board) Square {
-	newSquare := Square{
+	return Square{
 		board: board,
 		num:   s.num,
 		x:     s.x,
 		y:     s.y,
+		piece: s.piece.Copy(),
 	}
-	if s.piece != nil {
-		newSquare.piece = s.piece.Copy(board)
-	}
-	return newSquare
 }
 
 // String makes Square implement Stringer
