@@ -64,6 +64,9 @@ func (b *Board) PlacePiece(x, y int, p Piece) {
 }
 
 // todo b.MakeMove(...) and test, with legality check
+// todo implement king
+// todo implement board.InCheck()
+// todo implement legal moves filtering if board.InCheck(), and test for check the next state after move
 // todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board
 
 // NewEmptyBoard creates new empty board with i cols and j rows
