@@ -36,9 +36,9 @@ func (b *Board) newCell(x, y, j int) {
 	fmt.Println(y, x)
 	b.cells[y][x] = Cell{
 		board: b,
-		num:   j*(y+1) - j + (x + 1),
+		num:   j*(j-y+1) - j + (x + 1),
 		x:     x + 1,
-		y:     y + 1,
+		y:     j - y + 1,
 	}
 }
 
