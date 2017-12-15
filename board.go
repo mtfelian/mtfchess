@@ -19,7 +19,7 @@ func (b Board) String() string {
 	return s
 }
 
-// newCells returns a slice of Cell sized i x j
+// newCells returns a slice of Cell sized i (cols) x j (rows)
 func (b *Board) newCells(i, j int) {
 	b.cells = make([][]Cell, j)
 	for y := range b.cells {
@@ -32,13 +32,13 @@ func (b *Board) newCells(i, j int) {
 }
 
 // newCell creates new cell at rectangle board b with coordinates x, y and row length i
-func (b *Board) newCell(x, y, j int) {
+func (b *Board) newCell(x, y, i int) {
 	fmt.Println(y, x)
 	b.cells[y][x] = Cell{
 		board: b,
-		num:   j*(j-y+1) - j + (x + 1),
+		num:   i*(i-y+1) - i + (x + 1),
 		x:     x + 1,
-		y:     j - y + 1,
+		y:     i - y + 1,
 	}
 }
 
