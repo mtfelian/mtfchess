@@ -10,7 +10,7 @@ type Cell struct {
 	y     int
 }
 
-// String makes Cell implement stringer
+// String makes Cell implement Stringer
 func (c Cell) String() string {
 	return fmt.Sprintf("%7d(%d,%d)", c.num, c.x, c.y)
 }

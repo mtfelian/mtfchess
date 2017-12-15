@@ -7,7 +7,7 @@ type Board struct {
 	cells [][]Cell
 }
 
-// String makes Board to implement stringer
+// String makes Board to implement Stringer
 func (b Board) String() string {
 	var s string
 	for _, row := range b.cells {
@@ -33,7 +33,6 @@ func (b *Board) newCells(i, j int) {
 
 // newCell creates new cell at rectangle board b with coordinates x, y and row length i
 func (b *Board) newCell(x, y, i int) {
-	fmt.Println(y, x)
 	b.cells[y][x] = Cell{
 		board: b,
 		num:   i*(i-y+1) - i + (x + 1),
