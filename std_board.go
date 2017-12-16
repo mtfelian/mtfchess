@@ -121,6 +121,8 @@ func (b *StdBoard) Copy() Board {
 
 // Set changes b to b1
 func (b *StdBoard) Set(b1 Board) {
+	b.SetWidth(b1.Width())
+	b.SetHeight(b1.Height())
 	b.SetSquares(b1.Squares())
 }
 
@@ -143,8 +145,8 @@ func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
 // todo implement board.InCheck()
 // todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board
 
-// NewEmptyBoard creates new empty board with i cols and j rows
-func NewEmptyBoard(i, j int) *StdBoard {
+// NewEmptyStdBoard creates new empty standard board with i cols and j rows
+func NewEmptyStdBoard(i, j int) *StdBoard {
 	b := &StdBoard{}
 	b.width, b.height = i, j
 	b.createSquares()

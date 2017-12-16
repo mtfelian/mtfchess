@@ -11,7 +11,7 @@ var _ = Describe("Board test", func() {
 	w, h := 6, 8
 	var b Board
 
-	BeforeEach(func() { b = NewEmptyBoard(w, h) })
+	BeforeEach(func() { b = NewEmptyStdBoard(w, h) })
 
 	It("checks board width and height", func() {
 		Expect(b.Width()).To(Equal(w))
