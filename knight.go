@@ -4,6 +4,7 @@ import (
 	. "github.com/mtfelian/mtfchess/board"
 )
 
+// Knight is a chess knight
 type Knight struct {
 	BasePiece
 }
@@ -15,6 +16,7 @@ func NewKnightPiece(colour Colour) Piece {
 	}
 }
 
+// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
 func (p *Knight) Offsets(b Board) Offsets {
 	o := []Pair{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
 	for i := 0; i < len(o); i++ {
@@ -41,6 +43,7 @@ func (p *Knight) Offsets(b Board) Offsets {
 	return o
 }
 
+// Project a copy of a piece to the specified coords on board, return a copy of a board
 func (p *Knight) Project(x, y int, b Board) Board {
 	newBoard := b.Copy()
 	newBoard.Empty(p.X(), p.Y())
@@ -48,6 +51,7 @@ func (p *Knight) Project(x, y int, b Board) Board {
 	return newBoard
 }
 
+// Copy a piece
 func (p *Knight) Copy() Piece {
 	return &Knight{
 		BasePiece: p.BasePiece.Copy(),
