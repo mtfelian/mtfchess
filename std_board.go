@@ -104,8 +104,15 @@ func (b *StdBoard) Empty(x, y int) {
 }
 
 // InCheck returns true if there is a check on the board for colour, otherwise it returns false
-func (b StdBoard) InCheck(colour Colour) bool {
-	return false // todo implement it
+func (b *StdBoard) InCheck(colour Colour) bool {
+	return len(b.FindPieces(PieceFilter{
+		Colours: []Colour{colour},
+		Names:   []string{NewKingPiece(Transparent).Name()},
+		Condition: func(p Piece) bool {
+			opponentPieces := PieceFilter{Colours: []Colour{colour.Invert()}}
+			return SliceContains(Pair{X: p.X(), Y: p.Y()}, b.FindAttackedCellsBy(opponentPieces))
+		},
+	})) > 0
 }
 
 // Copy returns a pointer to a deep copy of a board
