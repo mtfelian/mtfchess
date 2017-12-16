@@ -15,22 +15,6 @@ type Pair struct {
 // Offsets is a slice of pair offsets
 type Offsets []Pair
 
-type Board interface {
-	Width() int
-	Height() int
-	SetWidth(width int)
-	SetHeight(height int)
-	Square(x, y int) *Square
-	InCheck(colour Colour) bool
-	Squares() Squares
-	Copy() Board
-	Empty(x, y int)
-	PlacePiece(x, y int, p Piece)
-	Set(b1 Board)
-	MakeMove(x, y int, piece Piece) bool
-	Piece(x, y int) Piece
-}
-
 // Piece
 type Piece interface {
 	fmt.Stringer
