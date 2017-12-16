@@ -12,8 +12,8 @@ type Pair struct {
 // Offsets is a slice of pair offsets
 type Offsets []Pair
 
-// Pairs is a slice of pairs
-type Pairs []Pair
+// Pieces
+type Pieces []Piece
 
 // Piece
 type Piece interface {

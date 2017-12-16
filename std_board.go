@@ -139,9 +139,9 @@ func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
 	return false
 }
 
-// FindPieces finds pieces by filter and returns a slice of coords for it
-func (b *StdBoard) FindPieces(f PieceFilter) Pairs {
-	pairs := Pairs{}
+// FindPieces finds and returns pieces by filter
+func (b *StdBoard) FindPieces(f PieceFilter) Pieces {
+	pieces := Pieces{}
 	for _, row := range b.cells {
 		for _, cell := range row {
 			p := cell.Piece()
@@ -160,10 +160,10 @@ func (b *StdBoard) FindPieces(f PieceFilter) Pairs {
 			if f.Condition != nil && !f.Condition(p) {
 				continue
 			}
-			pairs = append(pairs, Pair{X: p.X(), Y: p.Y()})
+			pieces = append(pieces, p)
 		}
 	}
-	return pairs
+	return pieces
 }
 
 // todo implement king

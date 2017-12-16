@@ -20,5 +20,5 @@ type Board interface {
 	PlacePiece(x, y int, p Piece)
 	MakeMove(x, y int, piece Piece) bool
 
-	FindPieces(f PieceFilter) Pairs
+	FindPieces(f PieceFilter) Pieces
 }

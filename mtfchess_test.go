@@ -110,10 +110,11 @@ var _ = Describe("Board test", func() {
 	})
 
 	Describe("find pieces", func() {
+		var wn1, wn2, wn3, bn1, bn2, bn3, wk, bk Piece
 		BeforeEach(func() {
-			wn1, wn2, wn3 := NewKnightPiece(White), NewKnightPiece(White), NewKnightPiece(White)
-			bn1, bn2, bn3 := NewKnightPiece(Black), NewKnightPiece(Black), NewKnightPiece(Black)
-			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			wn1, wn2, wn3 = NewKnightPiece(White), NewKnightPiece(White), NewKnightPiece(White)
+			bn1, bn2, bn3 = NewKnightPiece(Black), NewKnightPiece(Black), NewKnightPiece(Black)
+			wk, bk = NewKingPiece(White), NewKingPiece(Black)
 			b.PlacePiece(1, 1, wn1)
 			b.PlacePiece(1, 2, wn2)
 			b.PlacePiece(3, 4, wn3)
@@ -130,7 +131,7 @@ var _ = Describe("Board test", func() {
 			}
 			coords := b.FindPieces(filter)
 			Expect(coords).To(HaveLen(3))
-			Expect(coords).To(Equal(Pairs{{3, 4}, {1, 2}, {1, 1}}))
+			Expect(coords).To(Equal(Pieces{wn3, wn2, wn1}))
 		})
 		It("is with piece / board condition", func() {
 			notOnEdge := func(p Piece) bool {
@@ -143,7 +144,7 @@ var _ = Describe("Board test", func() {
 
 			coords := b.FindPieces(filter)
 			Expect(coords).To(HaveLen(2))
-			Expect(coords).To(Equal(Pairs{{3, 4}, {4, 3}}))
+			Expect(coords).To(Equal(Pieces{wn3, bn3}))
 		})
 	})
 
