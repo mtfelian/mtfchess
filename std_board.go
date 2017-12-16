@@ -8,7 +8,7 @@ import (
 
 // StdBoard is a game standard board
 type StdBoard struct {
-	cells       Cells
+	cells         Cells
 	width, height int
 }
 
@@ -111,8 +111,8 @@ func (b StdBoard) InCheck(colour Colour) bool {
 func (b *StdBoard) Copy() Board {
 	newBoard := &StdBoard{}
 	newBoard.SetCells(b.Cells().Copy(newBoard))
-	newBoard.SetWidth(b.Width())
-	newBoard.SetHeight(b.Height())
+	newBoard.SetWidth(b.width)
+	newBoard.SetHeight(b.height)
 	return newBoard
 }
 
@@ -136,6 +136,38 @@ func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
 		}
 	}
 	return false
+}
+
+// FindPiecesFunc finds pieces by filter applying a condition to each piece and returns a slice of coords for it
+func (b *StdBoard) FindPiecesFunc(filter Piece, f func(Piece) bool) Pairs {
+	pairs := Pairs{}
+	for _, row := range b.cells {
+		for _, cell := range row {
+			p := cell.Piece()
+			if filter.Colour() != Transparent && filter.Colour() != p.Colour() {
+				continue
+			}
+			if filter.Name() != "" && filter.Name() != p.Name() {
+				continue
+			}
+			if filter.X() != 0 && filter.X() != p.X() {
+				continue
+			}
+			if filter.Y() != 0 && filter.Y() != p.Y() {
+				continue
+			}
+			if !f(p) {
+				continue
+			}
+			pairs = append(pairs, Pair{X: p.X(), Y: p.Y()})
+		}
+	}
+	return pairs
+}
+
+// FindPieces finds pieces by filter and returns a slice of coords for it
+func (b *StdBoard) FindPieces(filter Piece) Pairs {
+	return b.FindPiecesFunc(filter, func(Piece) { return true })
 }
 
 // todo implement king

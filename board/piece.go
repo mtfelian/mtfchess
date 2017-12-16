@@ -12,6 +12,9 @@ type Pair struct {
 // Offsets is a slice of pair offsets
 type Offsets []Pair
 
+// Pairs is a slice of pairs
+type Pairs []Pair
+
 // Piece
 type Piece interface {
 	fmt.Stringer

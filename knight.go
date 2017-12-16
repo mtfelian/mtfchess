@@ -18,7 +18,7 @@ func NewKnightPiece(colour Colour) Piece {
 
 // Offsets returns a slice of offsets relative to piece coords, making it's legal moves
 func (p *Knight) Offsets(b Board) Offsets {
-	o := []Pair{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
+	o := Offsets{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
 	for i := 0; i < len(o); i++ {
 		remove := func() {
 			o = append(o[:i], o[i+1:]...)

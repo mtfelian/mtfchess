@@ -18,7 +18,7 @@ func NewKingPiece(colour Colour) Piece {
 
 // Offsets returns a slice of offsets relative to piece coords, making it's legal moves
 func (p *King) Offsets(b Board) Offsets {
-	o := []Pair{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
+	o := Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
 	for i := 0; i < len(o); i++ {
 		remove := func() {
 			o = append(o[:i], o[i+1:]...)
