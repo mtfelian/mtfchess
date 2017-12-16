@@ -166,6 +166,20 @@ func (b *StdBoard) FindPieces(f PieceFilter) Pieces {
 	return pieces
 }
 
+// FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
+// For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
+func (b *StdBoard) FindAttackedCellsBy(f PieceFilter) Pairs {
+	pieces, pairs := b.FindPieces(f), Pairs{}
+	for _, piece := range pieces {
+		for _, pair := range piece.Offsets(b).Pairs(piece) {
+			if !SliceContains(pair, pairs) {
+				pairs = append(pairs, pair)
+			}
+		}
+	}
+	return pairs
+}
+
 // todo implement king
 // todo implement board.InCheck()
 // todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board

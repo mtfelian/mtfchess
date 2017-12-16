@@ -21,4 +21,5 @@ type Board interface {
 	MakeMove(x, y int, piece Piece) bool
 
 	FindPieces(f PieceFilter) Pieces
+	FindAttackedCellsBy(f PieceFilter) Pairs
 }

@@ -12,6 +12,22 @@ type Pair struct {
 // Offsets is a slice of pair offsets
 type Offsets []Pair
 
+// Pairs converts offsets of piece to paies
+func (offsets Offsets) Pairs(piece Piece) Pairs {
+	pairs := make(Pairs, len(offsets))
+	for i, o := range offsets {
+		pairs[i] = Pair{X: o.X + piece.X(), Y: o.Y + piece.Y()}
+	}
+	return pairs
+}
+
+// Pairs is a slice of pairs
+type Pairs []Pair
+
+func (p Pairs) Len() int           { return len(p) }
+func (p Pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p Pairs) Less(i, j int) bool { return p[i].Y < p[j].Y || (p[i].Y == p[j].Y && p[i].X < p[j].X) }
+
 // Pieces
 type Pieces []Piece
 

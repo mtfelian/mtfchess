@@ -5,6 +5,7 @@ import (
 	. "github.com/mtfelian/mtfchess/board"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"sort"
 )
 
 var _ = Describe("Board test", func() {
@@ -145,6 +146,29 @@ var _ = Describe("Board test", func() {
 			coords := b.FindPieces(filter)
 			Expect(coords).To(HaveLen(2))
 			Expect(coords).To(Equal(Pieces{wn3, bn3}))
+		})
+	})
+
+	Describe("find attacked cells", func() {
+		It("works", func() {
+			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
+			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			b.PlacePiece(1, 1, bk)
+			b.PlacePiece(2, 4, wn)
+			b.PlacePiece(5, 5, wk)
+			b.PlacePiece(4, 4, bn)
+
+			attackedByWhite := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{White}})
+			Expect(attackedByWhite).To(HaveLen(10))
+			sort.Sort(attackedByWhite)
+			Expect(attackedByWhite).To(Equal(Pairs{{1, 2}, {3, 2}, {4, 3}, {4, 4}, {5, 4},
+				{4, 5}, {1, 6}, {3, 6}, {4, 6}, {5, 6}}))
+
+			attackedByBlack := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{Black}})
+			Expect(attackedByBlack).To(HaveLen(9))
+			sort.Sort(attackedByBlack)
+			Expect(attackedByBlack).To(Equal(Pairs{{2, 1}, {1, 2}, {2, 2}, {3, 2}, {5, 2},
+				{2, 3}, {2, 5}, {3, 6}, {5, 6}}))
 		})
 	})
 
