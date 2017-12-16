@@ -2,6 +2,9 @@ package mtfchess
 
 import (
 	"fmt"
+
+	"github.com/mtfelian/cli"
+	"unicode/utf8"
 )
 
 // Pair is a coordinate pair
@@ -34,15 +37,34 @@ type Piece interface {
 
 // BasePiece
 type BasePiece struct {
-	colour Colour
-	x, y   int
+	colour         Colour
+	x, y           int
+	name, literals string
 }
 
 // NewBasePiece creates new base piece with colour
-func NewBasePiece(colour Colour) BasePiece {
-	return BasePiece{
-		colour: colour,
+func NewBasePiece(colour Colour, name, literals string) BasePiece {
+	if utf8.RuneCountInString(literals) != 3 {
+		cli.Println("{R|Invalid literals: %s{0|", literals)
+		literals = "?"
 	}
+	return BasePiece{
+		colour:   colour,
+		name:     name,
+		literals: literals,
+	}
+}
+
+func (p *BasePiece) Name() string {
+	return p.name
+}
+
+func (p *BasePiece) String() string {
+	return map[Colour]string{
+		Transparent: cli.Sprintf("{0|%s", string(p.literals[0])),
+		White:       cli.Sprintf("{W|%s{0|", string(p.literals[0])),
+		Black:       cli.Sprintf("{A|%s{0|", string(p.literals[0])),
+	}[p.Colour()]
 }
 
 func (p *BasePiece) Colour() Colour {

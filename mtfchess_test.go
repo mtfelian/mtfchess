@@ -20,9 +20,9 @@ var _ = Describe("Board test", func() {
 
 	Describe("knight", func() {
 		It("generates moves", func() {
-			wn1 := NewKnight(White)
-			wn2 := NewKnight(White)
-			bn := NewKnight(Black)
+			wn1 := NewKnightPiece(White)
+			wn2 := NewKnightPiece(White)
+			bn := NewKnightPiece(Black)
 			b.PlacePiece(2, 1, wn1)
 			b.PlacePiece(3, 3, wn2)
 			b.PlacePiece(4, 2, bn)
@@ -36,7 +36,7 @@ var _ = Describe("Board test", func() {
 			var wn, bn Piece
 			var boardCopy *Board
 			testReset := func() {
-				wn, bn = NewKnight(White), NewKnight(Black)
+				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
 				b.PlacePiece(2, 1, wn)
 				b.PlacePiece(4, 2, bn)
 				if boardCopy != nil {
@@ -68,7 +68,7 @@ var _ = Describe("Board test", func() {
 			var wn, bn Piece
 			var boardCopy *Board
 			testReset := func() {
-				wn, bn = NewKnight(White), NewKnight(Black)
+				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
 				b.PlacePiece(2, 1, wn)
 				b.PlacePiece(4, 2, bn)
 				if boardCopy != nil {
@@ -97,9 +97,9 @@ var _ = Describe("Board test", func() {
 
 	Describe("king", func() {
 		It("generates moves", func() {
-			wk := NewKing(White)
-			wn := NewKnight(White)
-			bn := NewKnight(Black)
+			wk := NewKingPiece(White)
+			wn := NewKnightPiece(White)
+			bn := NewKnightPiece(Black)
 			b.PlacePiece(2, 2, wk)
 			b.PlacePiece(2, 3, wn)
 			b.PlacePiece(1, 1, bn)

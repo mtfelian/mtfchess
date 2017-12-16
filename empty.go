@@ -7,18 +7,10 @@ type Empty struct {
 // NewEmpty creates new empty figure
 func NewEmpty(x, y int) Piece {
 	empty := &Empty{
-		BasePiece: NewBasePiece(Transparent),
+		BasePiece: NewBasePiece(Transparent, "", "   "),
 	}
 	empty.SetCoords(x, y)
 	return empty
-}
-
-func (p *Empty) Name() string {
-	return ""
-}
-
-func (p *Empty) String() string {
-	return " "
 }
 
 func (p *Empty) Offsets(b *Board) Offsets {

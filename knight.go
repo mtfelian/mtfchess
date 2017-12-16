@@ -1,26 +1,14 @@
 package mtfchess
 
-import (
-	"github.com/mtfelian/cli"
-)
-
 type Knight struct {
 	BasePiece
 }
 
-// NewKnight creates new knight with colour
-func NewKnight(colour Colour) Piece {
+// NewKnightPiece creates new knight with colour
+func NewKnightPiece(colour Colour) Piece {
 	return &Knight{
-		BasePiece: NewBasePiece(colour),
+		BasePiece: NewBasePiece(colour, "knight", "N♘♞"),
 	}
-}
-
-func (p *Knight) Name() string {
-	return "knight"
-}
-
-func (p *Knight) String() string { // ♘♞
-	return map[Colour]string{White: cli.Sprintf("{W|N{0|"), Black: cli.Sprintf("{A|N{0|")}[p.Colour()]
 }
 
 func (p *Knight) Offsets(b *Board) Offsets {
