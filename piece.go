@@ -2,9 +2,9 @@ package mtfchess
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/mtfelian/cli"
-	"unicode/utf8"
 )
 
 // Pair is a coordinate pair
@@ -81,8 +81,10 @@ func (p *BasePiece) Coords() Pair {
 
 func (p *BasePiece) Copy() BasePiece {
 	return BasePiece{
-		colour: p.colour,
-		x:      p.x,
-		y:      p.y,
+		colour:   p.colour,
+		x:        p.x,
+		y:        p.y,
+		literals: p.literals,
+		name:     p.name,
 	}
 }
