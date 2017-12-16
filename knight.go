@@ -5,14 +5,13 @@ import (
 )
 
 type Knight struct {
-	colour Colour
-	x, y   int
+	BasePiece
 }
 
 // NewKnight creates new knight with colour
 func NewKnight(colour Colour) Piece {
 	return &Knight{
-		colour: colour,
+		BasePiece: NewBasePiece(colour),
 	}
 }
 
@@ -20,16 +19,8 @@ func (p *Knight) Name() string {
 	return "knight"
 }
 
-func (p *Knight) Colour() Colour {
-	return p.colour
-}
-
 func (p *Knight) String() string { // ♘♞
 	return map[Colour]string{White: cli.Sprintf("{W|N{0|"), Black: cli.Sprintf("{A|N{0|")}[p.Colour()]
-}
-
-func (p *Knight) SetCoords(x, y int) {
-	p.x, p.y = x, y
 }
 
 func (p *Knight) Offsets(b *Board) Offsets {
@@ -65,14 +56,8 @@ func (p *Knight) Project(x, y int, b *Board) *Board {
 	return newBoard
 }
 
-func (p *Knight) Coords() Pair {
-	return Pair{X: p.x, Y: p.y}
-}
-
 func (p *Knight) Copy() Piece {
 	return &Knight{
-		colour: p.colour,
-		x:      p.x,
-		y:      p.y,
+		BasePiece: p.BasePiece.Copy(),
 	}
 }
