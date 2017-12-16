@@ -4,7 +4,7 @@ package mtfchess
 type Squares []Row
 
 // Copy returns a deep copy of squares
-func (s Squares) Copy(board *Board) Squares {
+func (s Squares) Copy(board *StdBoard) Squares {
 	newSquares := make(Squares, len(s))
 	for i := range s {
 		newSquares[i] = s[i].Copy(board)

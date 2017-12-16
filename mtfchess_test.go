@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("Board test", func() {
 	w, h := 6, 8
-	var b IBoard
+	var b Board
 
 	BeforeEach(func() { b = NewEmptyBoard(w, h) })
 
@@ -34,7 +34,7 @@ var _ = Describe("Board test", func() {
 
 		It("makes legal moves", func() {
 			var wn, bn Piece
-			var boardCopy IBoard
+			var boardCopy Board
 			testReset := func() {
 				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
 				b.PlacePiece(2, 1, wn)
@@ -66,7 +66,7 @@ var _ = Describe("Board test", func() {
 
 		It("makes illegal moves", func() {
 			var wn, bn Piece
-			var boardCopy IBoard
+			var boardCopy Board
 			testReset := func() {
 				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
 				b.PlacePiece(2, 1, wn)

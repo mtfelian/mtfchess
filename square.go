@@ -4,7 +4,7 @@ import "fmt"
 
 // Square is a square on a board
 type Square struct {
-	board *Board
+	board *StdBoard
 	num   int
 	x     int // [1;board.width]
 	y     int // [1;max board.height]
@@ -17,7 +17,7 @@ func (s *Square) Empty() {
 }
 
 // Copy returns a copy of a square
-func (s *Square) Copy(board *Board) Square {
+func (s *Square) Copy(board *StdBoard) Square {
 	return Square{
 		board: board,
 		num:   s.num,

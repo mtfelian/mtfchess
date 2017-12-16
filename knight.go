@@ -11,7 +11,7 @@ func NewKnightPiece(colour Colour) Piece {
 	}
 }
 
-func (p *Knight) Offsets(b IBoard) Offsets {
+func (p *Knight) Offsets(b Board) Offsets {
 	o := []Pair{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
 	for i := 0; i < len(o); i++ {
 		remove := func() {
@@ -37,7 +37,7 @@ func (p *Knight) Offsets(b IBoard) Offsets {
 	return o
 }
 
-func (p *Knight) Project(x, y int, b IBoard) IBoard {
+func (p *Knight) Project(x, y int, b Board) Board {
 	newBoard := b.Copy()
 	newBoard.Empty(p.x, p.y)
 	newBoard.PlacePiece(x, y, p.Copy())
