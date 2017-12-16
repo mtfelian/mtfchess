@@ -42,6 +42,16 @@ func (b Board) Height() int {
 	return b.height
 }
 
+// SetHeight sets board height
+func (b *Board) SetHeight(height int) {
+	b.height = height
+}
+
+// SetWidth sets board width
+func (b *Board) SetWidth(width int) {
+	b.width = width
+}
+
 // createSquares returns a slice of Square for the board
 func (b *Board) createSquares() {
 	b.squares = make(Squares, b.height)
@@ -69,6 +79,16 @@ func (b *Board) Square(x, y int) *Square {
 	return &b.squares[b.Y(y)][b.X(x)]
 }
 
+// Squares returns a squares slice
+func (b *Board) Squares() Squares {
+	return b.squares
+}
+
+// SetSquares sets squares to s
+func (b *Board) SetSquares(s Squares) {
+	b.squares = s
+}
+
 // Piece returns a piece at coords (x,y)
 func (b *Board) Piece(x, y int) Piece {
 	return b.Square(x, y).piece
@@ -91,11 +111,17 @@ func (b Board) InCheck(colour Colour) bool {
 }
 
 // Copy returns a pointer to a deep copy of a board
-func (b *Board) Copy() *Board {
+func (b *Board) Copy() IBoard {
 	newBoard := &Board{}
-	newBoard.squares = b.squares.Copy(newBoard)
-	newBoard.width, newBoard.height = b.width, b.height
+	newBoard.SetSquares(b.Squares().Copy(newBoard))
+	newBoard.SetWidth(b.Width())
+	newBoard.SetHeight(b.Height())
 	return newBoard
+}
+
+// Set changes b to b1
+func (b *Board) Set(b1 IBoard) {
+	b.SetSquares(b1.Squares())
 }
 
 // MakeMove makes move with piece to coords (x,y)
@@ -106,7 +132,7 @@ func (b *Board) MakeMove(x, y int, piece Piece) bool {
 		if c.X+o.X == x && c.Y+o.Y == y {
 			newBoard := piece.Project(x, y, b)
 			piece.SetCoords(x, y)
-			*b = *newBoard
+			b.Set(newBoard)
 			return true
 		}
 	}

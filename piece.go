@@ -15,13 +15,29 @@ type Pair struct {
 // Offsets is a slice of pair offsets
 type Offsets []Pair
 
+type IBoard interface {
+	Width() int
+	Height() int
+	SetWidth(width int)
+	SetHeight(height int)
+	Square(x, y int) *Square
+	InCheck(colour Colour) bool
+	Squares() Squares
+	Copy() IBoard
+	Empty(x, y int)
+	PlacePiece(x, y int, p Piece)
+	Set(b1 IBoard)
+	MakeMove(x, y int, piece Piece) bool
+	Piece(x, y int) Piece
+}
+
 // Piece
 type Piece interface {
 	fmt.Stringer
 	// Name returns piece name
 	Name() string
 	// Offsets returns a slice of offsets to possible moves
-	Offsets(b *Board) Offsets
+	Offsets(b IBoard) Offsets
 	// Colour returns piece colour
 	Colour() Colour
 	// SetCoords sets the figure coords to (x,y)
@@ -32,7 +48,7 @@ type Piece interface {
 	Copy() Piece
 	// Project a piece to coords (x,y), returns a pointer to a new copy of a board, don't check legality
 	// this don't change coords of a piece
-	Project(x, y int, b *Board) *Board
+	Project(x, y int, b IBoard) IBoard
 }
 
 // BasePiece

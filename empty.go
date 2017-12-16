@@ -13,11 +13,11 @@ func NewEmpty(x, y int) Piece {
 	return empty
 }
 
-func (p *Empty) Offsets(b *Board) Offsets {
+func (p *Empty) Offsets(b IBoard) Offsets {
 	return Offsets{}
 }
 
-func (p *Empty) Project(x, y int, b *Board) *Board {
+func (p *Empty) Project(x, y int, b IBoard) IBoard {
 	newBoard := b.Copy()
 	newBoard.Empty(x, y)
 	return newBoard

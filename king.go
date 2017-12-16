@@ -11,7 +11,7 @@ func NewKingPiece(colour Colour) Piece {
 	}
 }
 
-func (p *King) Offsets(b *Board) Offsets {
+func (p *King) Offsets(b IBoard) Offsets {
 	o := []Pair{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
 	for i := 0; i < len(o); i++ {
 		remove := func() {
@@ -19,7 +19,7 @@ func (p *King) Offsets(b *Board) Offsets {
 			i--
 		}
 		x1, y1 := p.x+o[i].X, p.y+o[i].Y
-		if x1 < 1 || y1 < 1 || x1 > b.width || y1 > b.height {
+		if x1 < 1 || y1 < 1 || x1 > b.Width() || y1 > b.Height() {
 			remove()
 			continue
 		}
@@ -37,7 +37,7 @@ func (p *King) Offsets(b *Board) Offsets {
 	return o
 }
 
-func (p *King) Project(x, y int, b *Board) *Board {
+func (p *King) Project(x, y int, b IBoard) IBoard {
 	newBoard := b.Copy()
 	newBoard.Empty(p.x, p.y)
 	newBoard.PlacePiece(x, y, p.Copy())
