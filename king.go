@@ -16,8 +16,9 @@ func NewKingPiece(colour Colour) Piece {
 	}
 }
 
-// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
-func (p *King) Offsets(b Board) Offsets {
+// offsets returns a slice of offsets relative to piece coords, making it's legal moves
+// if excludeCheckExpose is false then offsets leading to check-exposing moves also included
+func (p *King) offsets(b Board, excludeCheckExpose bool) Offsets {
 	o := Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
 	for i := 0; i < len(o); i++ {
 		remove := func() {
@@ -35,12 +36,23 @@ func (p *King) Offsets(b Board) Offsets {
 			continue
 		}
 
-		if p.Project(x1, y1, b).InCheck(p.Colour()) {
+		if excludeCheckExpose && p.Project(x1, y1, b).InCheck(p.Colour()) {
 			remove()
 			continue
 		}
 	}
 	return o
+}
+
+// Attacks returns a slice of coords pairs of cells attacked by a piece
+func (p *King) Attacks(b Board) Pairs {
+	o := p.offsets(b, false)
+	return o.Pairs(p)
+}
+
+// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
+func (p *King) Offsets(b Board) Offsets {
+	return p.offsets(b, true)
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board

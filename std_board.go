@@ -178,7 +178,7 @@ func (b *StdBoard) FindPieces(f PieceFilter) Pieces {
 func (b *StdBoard) FindAttackedCellsBy(f PieceFilter) Pairs {
 	pieces, pairs := b.FindPieces(f), Pairs{}
 	for _, piece := range pieces {
-		for _, pair := range piece.Offsets(b).Pairs(piece) {
+		for _, pair := range piece.Attacks(b) {
 			if !SliceContains(pair, pairs) {
 				pairs = append(pairs, pair)
 			}
@@ -187,8 +187,7 @@ func (b *StdBoard) FindAttackedCellsBy(f PieceFilter) Pairs {
 	return pairs
 }
 
-// todo implement king
-// todo implement board.InCheck()
+// todo better testing that Piece.Offsets() don't permit check-exposing moves in situations like (BN's move): WR|BN|BK
 // todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board
 
 // NewEmptyStdBoard creates new empty standard board with i cols and j rows

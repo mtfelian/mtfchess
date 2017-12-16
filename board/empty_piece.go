@@ -14,7 +14,12 @@ func NewEmpty(x, y int) Piece {
 	return empty
 }
 
-// Offsets return an empty slice for an empty piece
+// Attacks returns a slice of coords pairs of cells attacked by a piece
+func (p *EmptyPiece) Attacks(b Board) Pairs {
+	return Pairs{}
+}
+
+// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
 func (p *EmptyPiece) Offsets(b Board) Offsets {
 	return Offsets{}
 }

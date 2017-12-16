@@ -36,6 +36,8 @@ type Piece interface {
 	fmt.Stringer
 	// Name returns piece name
 	Name() string
+	// Attacks returns a slice of cells coords attacked by piece
+	Attacks(b Board) Pairs
 	// Offsets returns a slice of offsets to possible moves
 	Offsets(b Board) Offsets
 	// Colour returns piece colour

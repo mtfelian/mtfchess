@@ -1,11 +1,12 @@
 package mtfchess_test
 
 import (
+	"sort"
+
 	. "github.com/mtfelian/mtfchess"
 	. "github.com/mtfelian/mtfchess/board"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"sort"
 )
 
 var _ = Describe("Board test", func() {
@@ -105,8 +106,8 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(2, 3, wn)
 			b.PlacePiece(1, 1, bn)
 			o := wk.Offsets(b)
-			Expect(o).To(HaveLen(7))
-			Expect(o).To(Equal(Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}}))
+			Expect(o).To(HaveLen(6))
+			Expect(o).To(Equal(Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 1}}))
 		})
 	})
 
@@ -134,6 +135,7 @@ var _ = Describe("Board test", func() {
 			Expect(coords).To(HaveLen(3))
 			Expect(coords).To(Equal(Pieces{wn3, wn2, wn1}))
 		})
+
 		It("is with piece / board condition", func() {
 			notOnEdge := func(p Piece) bool {
 				return p.X() > 1 && p.Y() > 1 && p.X() < b.Width() && p.Y() < b.Height()
@@ -172,4 +174,29 @@ var _ = Describe("Board test", func() {
 		})
 	})
 
+	Describe("check detection", func() {
+		It("is white in check", func() {
+			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
+			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			b.PlacePiece(1, 1, wk)
+			b.PlacePiece(3, 2, bn)
+			b.PlacePiece(5, 4, bk)
+			b.PlacePiece(4, 4, wn)
+
+			Expect(b.InCheck(White)).To(BeTrue())
+			Expect(b.InCheck(Black)).To(BeFalse())
+		})
+
+		It("is black in check", func() {
+			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
+			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			b.PlacePiece(1, 1, bk)
+			b.PlacePiece(3, 2, wn)
+			b.PlacePiece(5, 4, wk)
+			b.PlacePiece(4, 4, bn)
+
+			Expect(b.InCheck(White)).To(BeFalse())
+			Expect(b.InCheck(Black)).To(BeTrue())
+		})
+	})
 })
