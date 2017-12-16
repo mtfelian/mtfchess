@@ -34,3 +34,12 @@ type Piece interface {
 	// this don't change coords of a piece
 	Project(x, y int, b Board) Board
 }
+
+// PieceFilter
+type PieceFilter struct {
+	Names     []string
+	X         []int
+	Y         []int
+	Colours   []Colour
+	Condition func(Piece) bool
+}

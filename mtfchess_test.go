@@ -1,8 +1,6 @@
 package mtfchess_test
 
 import (
-	"fmt"
-
 	. "github.com/mtfelian/mtfchess"
 	. "github.com/mtfelian/mtfchess/board"
 	. "github.com/onsi/ginkgo"
@@ -10,7 +8,7 @@ import (
 )
 
 var _ = Describe("Board test", func() {
-	w, h := 6, 8
+	w, h := 5, 6
 	var b Board
 
 	BeforeEach(func() { b = NewEmptyStdBoard(w, h) })
@@ -105,10 +103,47 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(2, 2, wk)
 			b.PlacePiece(2, 3, wn)
 			b.PlacePiece(1, 1, bn)
-			fmt.Println(b)
 			o := wk.Offsets(b)
 			Expect(o).To(HaveLen(7))
 			Expect(o).To(Equal(Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}}))
+		})
+	})
+
+	Describe("find pieces", func() {
+		BeforeEach(func() {
+			wn1, wn2, wn3 := NewKnightPiece(White), NewKnightPiece(White), NewKnightPiece(White)
+			bn1, bn2, bn3 := NewKnightPiece(Black), NewKnightPiece(Black), NewKnightPiece(Black)
+			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			b.PlacePiece(1, 1, wn1)
+			b.PlacePiece(1, 2, wn2)
+			b.PlacePiece(3, 4, wn3)
+			b.PlacePiece(5, 5, bn1)
+			b.PlacePiece(5, 6, bn2)
+			b.PlacePiece(4, 3, bn3)
+			b.PlacePiece(2, 1, wk)
+			b.PlacePiece(5, 4, bk)
+		})
+		It("normally", func() {
+			filter := PieceFilter{ // find all white knights
+				Colours: []Colour{White},
+				Names:   []string{NewKnightPiece(Transparent).Name()},
+			}
+			coords := b.FindPieces(filter)
+			Expect(coords).To(HaveLen(3))
+			Expect(coords).To(Equal(Pairs{{3, 4}, {1, 2}, {1, 1}}))
+		})
+		It("is with piece / board condition", func() {
+			notOnEdge := func(p Piece) bool {
+				return p.X() > 1 && p.Y() > 1 && p.X() < b.Width() && p.Y() < b.Height()
+			}
+			filter := PieceFilter{ // find all knights
+				Names:     []string{NewKnightPiece(Transparent).Name()},
+				Condition: notOnEdge,
+			}
+
+			coords := b.FindPieces(filter)
+			Expect(coords).To(HaveLen(2))
+			Expect(coords).To(Equal(Pairs{{3, 4}, {4, 3}}))
 		})
 	})
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	. "github.com/mtfelian/mtfchess/board"
+	. "github.com/mtfelian/utils"
 )
 
 // StdBoard is a game standard board
@@ -138,36 +139,31 @@ func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
 	return false
 }
 
-// FindPiecesFunc finds pieces by filter applying a condition to each piece and returns a slice of coords for it
-func (b *StdBoard) FindPiecesFunc(filter Piece, f func(Piece) bool) Pairs {
+// FindPieces finds pieces by filter and returns a slice of coords for it
+func (b *StdBoard) FindPieces(f PieceFilter) Pairs {
 	pairs := Pairs{}
 	for _, row := range b.cells {
 		for _, cell := range row {
 			p := cell.Piece()
-			if filter.Colour() != Transparent && filter.Colour() != p.Colour() {
+			if len(f.Colours) > 0 && !SliceContains(p.Colour(), f.Colours) {
 				continue
 			}
-			if filter.Name() != "" && filter.Name() != p.Name() {
+			if len(f.Names) > 0 && !SliceContains(p.Name(), f.Names) {
 				continue
 			}
-			if filter.X() != 0 && filter.X() != p.X() {
+			if len(f.X) > 0 && !SliceContains(p.X(), f.X) {
 				continue
 			}
-			if filter.Y() != 0 && filter.Y() != p.Y() {
+			if len(f.Y) > 0 && !SliceContains(p.Y(), f.Y) {
 				continue
 			}
-			if !f(p) {
+			if f.Condition != nil && !f.Condition(p) {
 				continue
 			}
 			pairs = append(pairs, Pair{X: p.X(), Y: p.Y()})
 		}
 	}
 	return pairs
-}
-
-// FindPieces finds pieces by filter and returns a slice of coords for it
-func (b *StdBoard) FindPieces(filter Piece) Pairs {
-	return b.FindPiecesFunc(filter, func(Piece) { return true })
 }
 
 // todo implement king
