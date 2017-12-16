@@ -17,8 +17,6 @@ type Piece interface {
 	Name() string
 	// Offsets returns a slice of offsets to possible moves
 	Offsets(b *Board) Offsets
-	// CanJump should return true if piece don't know barriers like a chess knight
-	CanJump() bool
 	// Colour returns piece colour
 	Colour() Colour
 	// SetCoords sets the figure coords to (x,y)

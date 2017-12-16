@@ -20,10 +20,6 @@ func (p *Knight) Name() string {
 	return "knight"
 }
 
-func (p *Knight) CanJump() bool {
-	return true
-}
-
 func (p *Knight) Colour() Colour {
 	return p.colour
 }

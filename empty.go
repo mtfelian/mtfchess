@@ -15,10 +15,6 @@ func (p *Empty) Name() string {
 	return ""
 }
 
-func (p *Empty) CanJump() bool {
-	return true
-}
-
 func (p *Empty) Colour() Colour {
 	return Transparent
 }
