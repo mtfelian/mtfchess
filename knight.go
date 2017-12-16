@@ -1,5 +1,9 @@
 package mtfchess
 
+import (
+	. "github.com/mtfelian/mtfchess/board"
+)
+
 type Knight struct {
 	BasePiece
 }
@@ -18,13 +22,13 @@ func (p *Knight) Offsets(b Board) Offsets {
 			o = append(o[:i], o[i+1:]...)
 			i--
 		}
-		x1, y1 := p.x+o[i].X, p.y+o[i].Y
+		x1, y1 := p.X()+o[i].X, p.Y()+o[i].Y
 		if x1 < 1 || y1 < 1 || x1 > b.Width() || y1 > b.Height() {
 			remove()
 			continue
 		}
 		// check thet destination square isn't contains a piece of same colour
-		if dstPiece, ok := b.Square(x1, y1).piece.(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
+		if dstPiece, ok := b.Square(x1, y1).Piece().(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			remove()
 			continue
 		}
@@ -39,7 +43,7 @@ func (p *Knight) Offsets(b Board) Offsets {
 
 func (p *Knight) Project(x, y int, b Board) Board {
 	newBoard := b.Copy()
-	newBoard.Empty(p.x, p.y)
+	newBoard.Empty(p.X(), p.Y())
 	newBoard.PlacePiece(x, y, p.Copy())
 	return newBoard
 }

@@ -1,4 +1,4 @@
-package mtfchess
+package board
 
 import (
 	"unicode/utf8"
@@ -46,8 +46,14 @@ func (p *BasePiece) SetCoords(x, y int) {
 	p.x, p.y = x, y
 }
 
-func (p *BasePiece) Coords() Pair {
-	return Pair{X: p.x, Y: p.y}
+// X returns x coord of a piece
+func (p *BasePiece) X() int {
+	return p.x
+}
+
+// Y returns y coord of a piece
+func (p *BasePiece) Y() int {
+	return p.y
 }
 
 func (p *BasePiece) Copy() BasePiece {

@@ -1,4 +1,4 @@
-package mtfchess
+package board
 
 // Row is a row of squares
 type Row []Square

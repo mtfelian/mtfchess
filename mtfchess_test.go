@@ -2,7 +2,9 @@ package mtfchess_test
 
 import (
 	"fmt"
+
 	. "github.com/mtfelian/mtfchess"
+	. "github.com/mtfelian/mtfchess/board"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -45,19 +47,19 @@ var _ = Describe("Board test", func() {
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets, c := wn.Offsets(b), wn.Coords()
+			offsets := wn.Offsets(b)
 
 			for i, o := range offsets {
-				x1, y1 := c.X+o.X, c.Y+o.Y
+				x, y := wn.X(), wn.Y()
+				x1, y1 := x+o.X, y+o.Y
 				Expect(b.MakeMove(x1, y1, wn)).To(BeTrue(), "failed at offset %d", i)
 				// check source square to be empty
-				Expect(b.Piece(c.X, c.Y)).To(Equal(NewEmpty(c.X, c.Y)))
+				Expect(b.Piece(x, y)).To(Equal(NewEmpty(x, y)))
 				// check destination square to contain new piece
 				Expect(b.Piece(x1, y1)).To(Equal(wn))
-				bnX, bnY := bn.Coords().X, bn.Coords().Y
-				if bnX != x1 || bnY != y1 { // if not capture
+				if bn.X() != x1 || bn.Y() != y1 { // if not capture
 					// then there should be another piece
-					Expect(b.Piece(bnX, bnY)).To(Equal(bn))
+					Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
 				}
 
 				testReset()
@@ -77,18 +79,18 @@ var _ = Describe("Board test", func() {
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets, c := Offsets{{3, 1}, {-1, 3}}, wn.Coords()
+			offsets := Offsets{{3, 1}, {-1, 3}}
 
 			for i, o := range offsets {
-				x1, y1 := c.X+o.X, c.Y+o.Y
+				x, y := wn.X(), wn.Y()
+				x1, y1 := wn.X()+o.X, wn.Y()+o.Y
 				Expect(b.MakeMove(x1, y1, wn)).To(BeFalse(), "failed at offset %d", i)
 				// check source square to contain unmoved piece
-				Expect(b.Piece(c.X, c.Y)).To(Equal(wn))
+				Expect(b.Piece(x, y)).To(Equal(wn))
 				// check destination square to be empty
 				Expect(b.Piece(x1, y1)).To(Equal(NewEmpty(x1, y1)))
-				bnX, bnY := bn.Coords().X, bn.Coords().Y
-				// chck another square to contain another piece
-				Expect(b.Piece(bnX, bnY)).To(Equal(bn))
+				// check another square to contain another piece
+				Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
 
 				testReset()
 			}

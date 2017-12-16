@@ -1,4 +1,4 @@
-package mtfchess
+package board
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ type Piece interface {
 	Colour() Colour
 	// SetCoords sets the figure coords to (x,y)
 	SetCoords(x, y int)
-	// Cords returns a pair of coords
-	Coords() Pair
+	X() int
+	Y() int
 	// Copy returns a deep copy of a piece
 	Copy() Piece
 	// Project a piece to coords (x,y), returns a pointer to a new copy of a board, don't check legality

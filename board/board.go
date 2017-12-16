@@ -1,4 +1,4 @@
-package mtfchess
+package board
 
 // Board
 type Board interface {

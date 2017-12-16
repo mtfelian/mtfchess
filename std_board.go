@@ -2,6 +2,8 @@ package mtfchess
 
 import (
 	"fmt"
+
+	. "github.com/mtfelian/mtfchess/board"
 )
 
 // StdBoard is a game standard board
@@ -65,12 +67,7 @@ func (b *StdBoard) createSquares() {
 
 // createSquare creates new square at rectangular board b with coordinates x, y and row length i
 func (b *StdBoard) createSquare(x, y int) {
-	b.squares[y][x] = Square{
-		board: b,
-		num:   b.width*(b.height-y) - b.width + (x + 1),
-		x:     x + 1,
-		y:     b.height - y,
-	}
+	b.squares[y][x] = NewSquare(b, b.width*(b.height-y)-b.width+(x+1), x+1, b.height-y)
 	b.squares[y][x].Empty()
 }
 
@@ -91,13 +88,13 @@ func (b *StdBoard) SetSquares(s Squares) {
 
 // Piece returns a piece at coords (x,y)
 func (b *StdBoard) Piece(x, y int) Piece {
-	return b.Square(x, y).piece
+	return b.Square(x, y).Piece()
 }
 
 // PlacePiece places piece at coords (x, y)
 func (b *StdBoard) PlacePiece(x, y int, p Piece) {
 	p.SetCoords(x, y)
-	b.Square(x, y).piece = p
+	b.Square(x, y).SetPiece(p)
 }
 
 // Empty removes piece at coords x, y
@@ -129,9 +126,9 @@ func (b *StdBoard) Set(b1 Board) {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
-	c, offsets := piece.Coords(), piece.Offsets(b)
+	offsets := piece.Offsets(b)
 	for _, o := range offsets {
-		if c.X+o.X == x && c.Y+o.Y == y {
+		if piece.X()+o.X == x && piece.Y()+o.Y == y {
 			newBoard := piece.Project(x, y, b)
 			piece.SetCoords(x, y)
 			b.Set(newBoard)

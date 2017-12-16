@@ -1,4 +1,4 @@
-package mtfchess
+package board
 
 // Squares is a matrix of squares
 type Squares []Row
