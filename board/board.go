@@ -7,8 +7,8 @@ type Board interface {
 	SetWidth(width int)
 	SetHeight(height int)
 
-	Square(x, y int) *Square
-	Squares() Squares
+	Cell(x, y int) *Cell
+	Cells() Cells
 
 	InCheck(colour Colour) bool
 

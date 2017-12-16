@@ -8,7 +8,7 @@ import (
 
 // StdBoard is a game standard board
 type StdBoard struct {
-	squares       Squares
+	cells       Cells
 	width, height int
 }
 
@@ -25,9 +25,9 @@ func (b StdBoard) Y(y int) int {
 // String makes Board to implement Stringer
 func (b StdBoard) String() string {
 	var s string
-	for _, row := range b.squares {
-		for _, square := range row {
-			s += fmt.Sprintf("%s", square)
+	for _, row := range b.cells {
+		for _, cell := range row {
+			s += fmt.Sprintf("%s", cell)
 		}
 		s += "\n"
 	}
@@ -54,52 +54,52 @@ func (b *StdBoard) SetWidth(width int) {
 	b.width = width
 }
 
-// createSquares returns a slice of Square for the board
-func (b *StdBoard) createSquares() {
-	b.squares = make(Squares, b.height)
-	for y := range b.squares {
-		b.squares[y] = make(Row, b.width)
-		for x := range b.squares[y] {
-			b.createSquare(x, y)
+// createCells returns a slice of Cell for the board
+func (b *StdBoard) createCells() {
+	b.cells = make(Cells, b.height)
+	for y := range b.cells {
+		b.cells[y] = make(Row, b.width)
+		for x := range b.cells[y] {
+			b.createCell(x, y)
 		}
 	}
 }
 
-// createSquare creates new square at rectangular board b with coordinates x, y and row length i
-func (b *StdBoard) createSquare(x, y int) {
-	b.squares[y][x] = NewSquare(b, b.width*(b.height-y)-b.width+(x+1), x+1, b.height-y)
-	b.squares[y][x].Empty()
+// createCell creates new cell at rectangular board b with coordinates x, y and row length i
+func (b *StdBoard) createCell(x, y int) {
+	b.cells[y][x] = NewCell(b, b.width*(b.height-y)-b.width+(x+1), x+1, b.height-y)
+	b.cells[y][x].Empty()
 }
 
-// Square returns a pointer to square at coords (x, y)
-func (b *StdBoard) Square(x, y int) *Square {
-	return &b.squares[b.Y(y)][b.X(x)]
+// Cell returns a pointer to cell at coords (x, y)
+func (b *StdBoard) Cell(x, y int) *Cell {
+	return &b.cells[b.Y(y)][b.X(x)]
 }
 
-// Squares returns a squares slice
-func (b *StdBoard) Squares() Squares {
-	return b.squares
+// Cells returns a cells slice
+func (b *StdBoard) Cells() Cells {
+	return b.cells
 }
 
-// SetSquares sets squares to s
-func (b *StdBoard) SetSquares(s Squares) {
-	b.squares = s
+// SetCells sets cells to s
+func (b *StdBoard) SetCells(s Cells) {
+	b.cells = s
 }
 
 // Piece returns a piece at coords (x,y)
 func (b *StdBoard) Piece(x, y int) Piece {
-	return b.Square(x, y).Piece()
+	return b.Cell(x, y).Piece()
 }
 
 // PlacePiece places piece at coords (x, y)
 func (b *StdBoard) PlacePiece(x, y int, p Piece) {
 	p.SetCoords(x, y)
-	b.Square(x, y).SetPiece(p)
+	b.Cell(x, y).SetPiece(p)
 }
 
 // Empty removes piece at coords x, y
 func (b *StdBoard) Empty(x, y int) {
-	b.Square(x, y).Empty()
+	b.Cell(x, y).Empty()
 }
 
 // InCheck returns true if there is a check on the board for colour, otherwise it returns false
@@ -110,7 +110,7 @@ func (b StdBoard) InCheck(colour Colour) bool {
 // Copy returns a pointer to a deep copy of a board
 func (b *StdBoard) Copy() Board {
 	newBoard := &StdBoard{}
-	newBoard.SetSquares(b.Squares().Copy(newBoard))
+	newBoard.SetCells(b.Cells().Copy(newBoard))
 	newBoard.SetWidth(b.Width())
 	newBoard.SetHeight(b.Height())
 	return newBoard
@@ -120,7 +120,7 @@ func (b *StdBoard) Copy() Board {
 func (b *StdBoard) Set(b1 Board) {
 	b.SetWidth(b1.Width())
 	b.SetHeight(b1.Height())
-	b.SetSquares(b1.Squares())
+	b.SetCells(b1.Cells())
 }
 
 // MakeMove makes move with piece to coords (x,y)
@@ -146,6 +146,6 @@ func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
 func NewEmptyStdBoard(i, j int) *StdBoard {
 	b := &StdBoard{}
 	b.width, b.height = i, j
-	b.createSquares()
+	b.createCells()
 	return b
 }

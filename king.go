@@ -29,8 +29,8 @@ func (p *King) Offsets(b Board) Offsets {
 			remove()
 			continue
 		}
-		// check thet destination square isn't contains a piece of same colour
-		if dstPiece, ok := b.Square(x1, y1).Piece().(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
+		// check thet destination cell isn't contains a piece of same colour
+		if dstPiece, ok := b.Cell(x1, y1).Piece().(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			remove()
 			continue
 		}

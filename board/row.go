@@ -1,7 +1,7 @@
 package board
 
-// Row is a row of squares
-type Row []Square
+// Row is a row of cells
+type Row []Cell
 
 // Copy returns a deep copy of row
 func (r Row) Copy(board Board) Row {

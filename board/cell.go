@@ -2,8 +2,8 @@ package board
 
 import "fmt"
 
-// Square is a square on a board
-type Square struct {
+// Cell is a cell on a board
+type Cell struct {
 	board Board // reverse link to a board
 	num   int   // sequential number on the board
 	x     int   // [1;board.width]
@@ -11,9 +11,9 @@ type Square struct {
 	piece Piece // contains piece
 }
 
-// NewSquare returns a new square
-func NewSquare(board Board, num, x, y int) Square {
-	return Square{
+// NewCell returns a new cell
+func NewCell(board Board, num, x, y int) Cell {
+	return Cell{
 		board: board,
 		num:   num,
 		x:     x,
@@ -21,24 +21,24 @@ func NewSquare(board Board, num, x, y int) Square {
 	}
 }
 
-// Piece returns a piece on a square
-func (s *Square) Piece() Piece {
+// Piece returns a piece on a cell
+func (s *Cell) Piece() Piece {
 	return s.piece
 }
 
 // SetPiece to p
-func (s *Square) SetPiece(p Piece) {
+func (s *Cell) SetPiece(p Piece) {
 	s.piece = p
 }
 
-// Empty makes square empty
-func (s *Square) Empty() {
+// Empty makes cell empty
+func (s *Cell) Empty() {
 	s.piece = NewEmpty(s.x, s.y)
 }
 
-// Copy returns a copy of a square
-func (s *Square) Copy(board Board) Square {
-	return Square{
+// Copy returns a copy of a cell
+func (s *Cell) Copy(board Board) Cell {
+	return Cell{
 		board: board,
 		num:   s.num,
 		x:     s.x,
@@ -47,8 +47,8 @@ func (s *Square) Copy(board Board) Square {
 	}
 }
 
-// String makes Square implement Stringer
-func (s Square) String() string {
+// String makes Cell implement Stringer
+func (s Cell) String() string {
 	p := " "
 	if s.piece != nil {
 		p = fmt.Sprintf("%s", s.piece)

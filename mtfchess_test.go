@@ -53,9 +53,9 @@ var _ = Describe("Board test", func() {
 				x, y := wn.X(), wn.Y()
 				x1, y1 := x+o.X, y+o.Y
 				Expect(b.MakeMove(x1, y1, wn)).To(BeTrue(), "failed at offset %d", i)
-				// check source square to be empty
+				// check source cell to be empty
 				Expect(b.Piece(x, y)).To(Equal(NewEmpty(x, y)))
-				// check destination square to contain new piece
+				// check destination cell to contain new piece
 				Expect(b.Piece(x1, y1)).To(Equal(wn))
 				if bn.X() != x1 || bn.Y() != y1 { // if not capture
 					// then there should be another piece
@@ -85,11 +85,11 @@ var _ = Describe("Board test", func() {
 				x, y := wn.X(), wn.Y()
 				x1, y1 := wn.X()+o.X, wn.Y()+o.Y
 				Expect(b.MakeMove(x1, y1, wn)).To(BeFalse(), "failed at offset %d", i)
-				// check source square to contain unmoved piece
+				// check source cell to contain unmoved piece
 				Expect(b.Piece(x, y)).To(Equal(wn))
-				// check destination square to be empty
+				// check destination cell to be empty
 				Expect(b.Piece(x1, y1)).To(Equal(NewEmpty(x1, y1)))
-				// check another square to contain another piece
+				// check another cell to contain another piece
 				Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
 
 				testReset()
