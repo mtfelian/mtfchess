@@ -1,6 +1,7 @@
 package mtfchess_test
 
 import (
+	"fmt"
 	. "github.com/mtfelian/mtfchess"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -91,6 +92,21 @@ var _ = Describe("Board test", func() {
 
 				testReset()
 			}
+		})
+	})
+
+	Describe("king", func() {
+		It("generates moves", func() {
+			wk := NewKing(White)
+			wn := NewKnight(White)
+			bn := NewKnight(Black)
+			b.PlacePiece(2, 2, wk)
+			b.PlacePiece(2, 3, wn)
+			b.PlacePiece(1, 1, bn)
+			fmt.Println(b)
+			o := wk.Offsets(b)
+			Expect(o).To(HaveLen(7))
+			Expect(o).To(Equal(Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}}))
 		})
 	})
 
