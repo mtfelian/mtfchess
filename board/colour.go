@@ -8,3 +8,14 @@ const (
 	White
 	Black
 )
+
+// Invert returns an inverted colour
+func (c Colour) Invert() Colour {
+	switch c {
+	case White:
+		return Black
+	case Black:
+		return White
+	}
+	return Transparent
+}
