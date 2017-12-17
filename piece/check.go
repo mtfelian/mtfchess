@@ -12,15 +12,15 @@ func InCheck(board base.IBoard, colour Colour) bool {
 		Colours: []Colour{colour},
 		Names:   []string{NewKingPiece(Transparent).Name()},
 		Condition: func(p base.IPiece) bool {
-			opponentPieces := RectPieceFilter{
+			opponentPieces := PieceFilter{
 				PieceFilter: base.PieceFilter{Colours: []Colour{colour.Invert()}},
 			}
 			return board.FindAttackedCellsBy(opponentPieces).Contains(p.Coord())
 		},
 	}
 	switch board.(type) {
-	case *RectBoard:
-		return len(board.FindPieces(RectPieceFilter{PieceFilter: baseFilter})) > 0
+	case *Board:
+		return len(board.FindPieces(PieceFilter{PieceFilter: baseFilter})) > 0
 	default:
 		panic("invalid board type")
 	}

@@ -3,7 +3,7 @@ package piece
 import (
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	. "github.com/mtfelian/mtfchess/rect"
+	"github.com/mtfelian/mtfchess/rect"
 )
 
 // Knight is a chess knight
@@ -24,10 +24,10 @@ func (p *Knight) dst(b base.IBoard, excludeCheckExpose bool) base.ICoords {
 	o, d := []base.Coord{}, []base.Coord{}
 
 	switch b.Dim().(type) {
-	case RectCoord:
+	case rect.Coord:
 		o = []base.Coord{
-			RectCoord{-2, -1}, RectCoord{-2, 1}, RectCoord{-1, -2}, RectCoord{-1, 2},
-			RectCoord{1, -2}, RectCoord{1, 2}, RectCoord{2, -1}, RectCoord{2, 1},
+			rect.Coord{-2, -1}, rect.Coord{-2, 1}, rect.Coord{-1, -2}, rect.Coord{-1, 2},
+			rect.Coord{1, -2}, rect.Coord{1, 2}, rect.Coord{2, -1}, rect.Coord{2, 1},
 		}
 	default:
 		panic("invalid coord type")
@@ -49,7 +49,7 @@ func (p *Knight) dst(b base.IBoard, excludeCheckExpose bool) base.ICoords {
 		d = append(d, c1)
 	}
 
-	return NewRectCoords(d)
+	return rect.NewCoords(d)
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece

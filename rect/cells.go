@@ -5,11 +5,11 @@ import (
 )
 
 // Row is a row of cells
-type RectRow []base.Cell
+type Row []base.Cell
 
 // Copy returns a deep copy of row
-func (r RectRow) Copy(board base.IBoard) RectRow {
-	newRow := make(RectRow, len(r))
+func (r Row) Copy(board base.IBoard) Row {
+	newRow := make(Row, len(r))
 	for i := range r {
 		newRow[i] = r[i].Copy(board)
 	}
@@ -17,11 +17,11 @@ func (r RectRow) Copy(board base.IBoard) RectRow {
 }
 
 // Cells is a matrix of cells
-type RectCells []RectRow
+type Cells []Row
 
 // Copy returns a deep copy of cells
-func (s RectCells) Copy(board base.IBoard) base.ICells {
-	newCells := make(RectCells, len(s))
+func (s Cells) Copy(board base.IBoard) base.ICells {
+	newCells := make(Cells, len(s))
 	for i := range s {
 		newCells[i] = s[i].Copy(board)
 	}

@@ -4,8 +4,8 @@ import (
 	"github.com/mtfelian/mtfchess/base"
 )
 
-// RectPieceFilter is a piece filter for rectangular board
-type RectPieceFilter struct {
+// PieceFilter is a piece filter for rectangular board
+type PieceFilter struct {
 	base.PieceFilter
 	X []int
 	Y []int
