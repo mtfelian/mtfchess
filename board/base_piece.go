@@ -26,10 +26,12 @@ func NewBasePiece(colour Colour, name, literals string) BasePiece {
 	}
 }
 
+// Name returns the name of a piece
 func (p *BasePiece) Name() string {
 	return p.name
 }
 
+// String makes BasePiece to implement fmt.Stringer
 func (p *BasePiece) String() string {
 	return map[Colour]string{
 		Transparent: cli.Sprintf("{0|%s", string(p.literals[0])),
@@ -38,10 +40,12 @@ func (p *BasePiece) String() string {
 	}[p.Colour()]
 }
 
+// Colour returns a colour of a piece
 func (p *BasePiece) Colour() Colour {
 	return p.colour
 }
 
+// SetCoords sets piece's coords to
 func (p *BasePiece) SetCoords(to Coord) {
 	p.coord = to
 }
@@ -51,6 +55,7 @@ func (p *BasePiece) Coord() Coord {
 	return p.coord
 }
 
+// Copy returns a copy of a BasePiece
 func (p *BasePiece) Copy() BasePiece {
 	return BasePiece{
 		colour:   p.colour,
