@@ -1,4 +1,4 @@
 package base
 
-// PieceFilter
-type PieceFilter interface{}
+// IPieceFilter
+type IPieceFilter interface{}

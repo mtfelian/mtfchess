@@ -1,30 +1,30 @@
 package piece
 
 import (
-	. "github.com/mtfelian/mtfchess/base"
+	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/rect"
 )
 
 // Knight is a chess knight
 type Knight struct {
-	BasePiece
+	base.Piece
 }
 
 // NewKnightPiece creates new knight with colour
-func NewKnightPiece(colour Colour) Piece {
+func NewKnightPiece(colour base.Colour) base.IPiece {
 	return &Knight{
-		BasePiece: NewBasePiece(colour, "knight", "N♘♞"),
+		Piece: base.NewPiece(colour, "knight", "N♘♞"),
 	}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
-func (p *Knight) dst(b Board, excludeCheckExpose bool) Coords {
-	o, d := []Coord{}, []Coord{}
+func (p *Knight) dst(b base.IBoard, excludeCheckExpose bool) base.ICoords {
+	o, d := []base.Coord{}, []base.Coord{}
 
 	switch b.Dim().(type) {
 	case RectCoord:
-		o = []Coord{
+		o = []base.Coord{
 			RectCoord{-2, -1}, RectCoord{-2, 1}, RectCoord{-1, -2}, RectCoord{-1, 2},
 			RectCoord{1, -2}, RectCoord{1, 2}, RectCoord{2, -1}, RectCoord{2, 1},
 		}
@@ -52,17 +52,17 @@ func (p *Knight) dst(b Board, excludeCheckExpose bool) Coords {
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
-func (p *Knight) Attacks(b Board) Coords {
+func (p *Knight) Attacks(b base.IBoard) base.ICoords {
 	return p.dst(b, false)
 }
 
 // Destinations returns a slice of cells coords, making it's legal moves
-func (p *Knight) Destinations(b Board) Coords {
+func (p *Knight) Destinations(b base.IBoard) base.ICoords {
 	return p.dst(b, true)
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
-func (p *Knight) Project(to Coord, b Board) Board {
+func (p *Knight) Project(to base.Coord, b base.IBoard) base.IBoard {
 	newBoard := b.Copy()
 	newBoard.Empty(p.Coord())
 	newBoard.PlacePiece(to, p.Copy())
@@ -70,8 +70,8 @@ func (p *Knight) Project(to Coord, b Board) Board {
 }
 
 // Copy a piece
-func (p *Knight) Copy() Piece {
+func (p *Knight) Copy() base.IPiece {
 	return &Knight{
-		BasePiece: p.BasePiece.Copy(),
+		Piece: p.Piece.Copy(),
 	}
 }

@@ -1,37 +1,37 @@
 package base
 
-// BaseCoords is a base coords
-type BaseCoords struct {
+// Coords is a base coords
+type Coords struct {
 	slice []Coord
 	i     int
 }
 
-// NewBaseCoords returns new base coordinates
-func NewBaseCoords(s []Coord) *BaseCoords {
-	return &BaseCoords{slice: s, i: 0}
+// NewCoords returns new base coordinates
+func NewCoords(s []Coord) *Coords {
+	return &Coords{slice: s, i: 0}
 }
 
-func (s *BaseCoords) Get(i int) Coord { return s.slice[i] }
+func (s *Coords) Get(i int) Coord { return s.slice[i] }
 
 // Next returns next coordinates element
-func (s *BaseCoords) Next() interface{} {
+func (s *Coords) Next() interface{} {
 	s.i++
 	return s.slice[s.i-1]
 }
 
 // HasNext returns true if an underlying slice has next element
-func (s *BaseCoords) HasNext() bool { return s.i < len(s.slice) }
+func (s *Coords) HasNext() bool { return s.i < len(s.slice) }
 
 // I returns a current iteration index
-func (s *BaseCoords) I() int        { return s.i - 1 }
-func (s *BaseCoords) Len() int      { return len(s.slice) }
-func (s *BaseCoords) Swap(i, j int) { s.slice[i], s.slice[j] = s.slice[j], s.slice[i] }
+func (s *Coords) I() int        { return s.i - 1 }
+func (s *Coords) Len() int      { return len(s.slice) }
+func (s *Coords) Swap(i, j int) { s.slice[i], s.slice[j] = s.slice[j], s.slice[i] }
 
 // Add adds an element to an underlying slice
-func (s *BaseCoords) Add(c interface{}) { s.slice = append(s.slice, c.(Coord)) }
+func (s *Coords) Add(c interface{}) { s.slice = append(s.slice, c.(Coord)) }
 
 // Contains returns true if c contains in s
-func (s *BaseCoords) Contains(c Coord) bool {
+func (s *Coords) Contains(c Coord) bool {
 	for i := range s.slice {
 		if s.Get(i).Equals(c) {
 			return true
@@ -41,7 +41,7 @@ func (s *BaseCoords) Contains(c Coord) bool {
 }
 
 // Equals returns true if c equals to
-func (c *BaseCoords) Equals(to Coords) bool {
+func (c *Coords) Equals(to ICoords) bool {
 	if c.Len() != to.Len() {
 		return false
 	}

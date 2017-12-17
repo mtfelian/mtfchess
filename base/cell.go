@@ -4,14 +4,14 @@ import "fmt"
 
 // Cell is a cell on a board
 type Cell struct {
-	board Board // reverse link to a board
-	num   int   // sequential number on the board
-	coord Coord // cell coords
-	piece Piece // contains piece
+	board IBoard // reverse link to a board
+	num   int    // sequential number on the board
+	coord Coord  // cell coords
+	piece IPiece // contains piece
 }
 
 // NewCell returns a new cell
-func NewCell(board Board, num int, coord Coord) Cell {
+func NewCell(board IBoard, num int, coord Coord) Cell {
 	return Cell{
 		board: board,
 		num:   num,
@@ -20,12 +20,12 @@ func NewCell(board Board, num int, coord Coord) Cell {
 }
 
 // Piece returns a piece on a cell
-func (s *Cell) Piece() Piece {
+func (s *Cell) Piece() IPiece {
 	return s.piece
 }
 
 // SetPiece to p
-func (s *Cell) SetPiece(p Piece) {
+func (s *Cell) SetPiece(p IPiece) {
 	s.piece = p
 }
 
@@ -35,7 +35,7 @@ func (s *Cell) Empty() {
 }
 
 // Copy returns a copy of a cell
-func (s *Cell) Copy(board Board) Cell {
+func (s *Cell) Copy(board IBoard) Cell {
 	newCell := Cell{
 		board: board,
 		num:   s.num,

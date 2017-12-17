@@ -6,20 +6,20 @@ import (
 	"github.com/mtfelian/cli"
 )
 
-// BasePiece
-type BasePiece struct {
+// Piece is a base piece
+type Piece struct {
 	colour         Colour
 	coord          Coord
 	name, literals string
 }
 
-// NewBasePiece creates new base piece with colour
-func NewBasePiece(colour Colour, name, literals string) BasePiece {
+// NewPiece creates new base piece with colour
+func NewPiece(colour Colour, name, literals string) Piece {
 	if utf8.RuneCountInString(literals) != 3 {
 		cli.Println("{R|Invalid literals: %s{0|", literals)
 		literals = "?"
 	}
-	return BasePiece{
+	return Piece{
 		colour:   colour,
 		name:     name,
 		literals: literals,
@@ -27,12 +27,12 @@ func NewBasePiece(colour Colour, name, literals string) BasePiece {
 }
 
 // Name returns the name of a piece
-func (p *BasePiece) Name() string {
+func (p *Piece) Name() string {
 	return p.name
 }
 
 // String makes BasePiece to implement fmt.Stringer
-func (p *BasePiece) String() string {
+func (p *Piece) String() string {
 	return map[Colour]string{
 		Transparent: cli.Sprintf("{0|%s", string(p.literals[0])),
 		White:       cli.Sprintf("{W|%s{0|", string(p.literals[0])),
@@ -41,23 +41,23 @@ func (p *BasePiece) String() string {
 }
 
 // Colour returns a colour of a piece
-func (p *BasePiece) Colour() Colour {
+func (p *Piece) Colour() Colour {
 	return p.colour
 }
 
 // SetCoords sets piece's coords to
-func (p *BasePiece) SetCoords(to Coord) {
+func (p *Piece) SetCoords(to Coord) {
 	p.coord = to
 }
 
 // Coord return piece coords
-func (p *BasePiece) Coord() Coord {
+func (p *Piece) Coord() Coord {
 	return p.coord
 }
 
 // Copy returns a copy of a BasePiece
-func (p *BasePiece) Copy() BasePiece {
-	return BasePiece{
+func (p *Piece) Copy() Piece {
+	return Piece{
 		colour:   p.colour,
 		coord:    p.coord.Copy(),
 		literals: p.literals,

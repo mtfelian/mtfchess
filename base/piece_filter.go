@@ -1,8 +1,8 @@
 package base
 
-// BasePieceFilter
-type BasePieceFilter struct {
+// PieceFilter is a base piece filter
+type PieceFilter struct {
 	Names     []string
 	Colours   []Colour
-	Condition func(Piece) bool
+	Condition func(IPiece) bool
 }

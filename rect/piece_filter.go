@@ -1,12 +1,12 @@
 package rect
 
 import (
-	. "github.com/mtfelian/mtfchess/base"
+	"github.com/mtfelian/mtfchess/base"
 )
 
 // RectPieceFilter is a piece filter for rectangular board
 type RectPieceFilter struct {
-	BasePieceFilter
+	base.PieceFilter
 	X []int
 	Y []int
 }

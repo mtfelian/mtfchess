@@ -1,6 +1,6 @@
 package base
 
-// Cells is a board cells
-type Cells interface {
-	Copy(board Board) Cells
+// ICells is a board cells
+type ICells interface {
+	Copy(board IBoard) ICells
 }

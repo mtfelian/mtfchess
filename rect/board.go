@@ -3,7 +3,7 @@ package rect
 import (
 	"fmt"
 
-	. "github.com/mtfelian/mtfchess/base"
+	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/utils"
 )
 
@@ -36,12 +36,12 @@ func (b RectBoard) String() string {
 }
 
 // Dim returns a board dimensions
-func (b RectBoard) Dim() Coord {
+func (b RectBoard) Dim() base.Coord {
 	return RectCoord{X: b.width, Y: b.height}
 }
 
 // SetDim sets board dimensions to dim
-func (b *RectBoard) SetDim(dim Coord) {
+func (b *RectBoard) SetDim(dim base.Coord) {
 	b.width, b.height = dim.(RectCoord).X, dim.(RectCoord).Y
 }
 
@@ -58,44 +58,44 @@ func (b *RectBoard) createCells() {
 
 // createCell creates new cell at rectangular board b with coordinates x, y and row length i
 func (b *RectBoard) createCell(x, y int) {
-	b.cells[y][x] = NewCell(b, b.width*(b.height-y)-b.width+(x+1), RectCoord{X: x + 1, Y: b.height - y})
+	b.cells[y][x] = base.NewCell(b, b.width*(b.height-y)-b.width+(x+1), RectCoord{X: x + 1, Y: b.height - y})
 	b.cells[y][x].Empty()
 }
 
 // Cell returns a pointer to cell at coords
-func (b *RectBoard) Cell(at Coord) *Cell {
+func (b *RectBoard) Cell(at base.Coord) *base.Cell {
 	c := at.(RectCoord)
 	return &b.cells[b.Y(c.Y)][b.X(c.X)]
 }
 
 // Cells returns a cells slice
-func (b *RectBoard) Cells() Cells {
+func (b *RectBoard) Cells() base.ICells {
 	return b.cells
 }
 
 // SetCells sets cells to s
-func (b *RectBoard) SetCells(s Cells) {
+func (b *RectBoard) SetCells(s base.ICells) {
 	b.cells = s.(RectCells)
 }
 
 // Piece returns a piece at coords
-func (b *RectBoard) Piece(at Coord) Piece {
+func (b *RectBoard) Piece(at base.Coord) base.IPiece {
 	return b.Cell(at).Piece()
 }
 
 // PlacePiece places piece at coords (x, y)
-func (b *RectBoard) PlacePiece(to Coord, p Piece) {
+func (b *RectBoard) PlacePiece(to base.Coord, p base.IPiece) {
 	p.SetCoords(to)
 	b.Cell(to).SetPiece(p)
 }
 
 // Empty removes piece at coords x, y
-func (b *RectBoard) Empty(at Coord) {
+func (b *RectBoard) Empty(at base.Coord) {
 	b.Cell(at).Empty()
 }
 
 // Copy returns a pointer to a deep copy of a board
-func (b *RectBoard) Copy() Board {
+func (b *RectBoard) Copy() base.IBoard {
 	newBoard := &RectBoard{}
 	newBoard.SetCells(b.Cells().Copy(newBoard))
 	newBoard.SetDim(RectCoord{X: b.width, Y: b.height})
@@ -103,17 +103,17 @@ func (b *RectBoard) Copy() Board {
 }
 
 // Set changes b to b1
-func (b *RectBoard) Set(b1 Board) {
+func (b *RectBoard) Set(b1 base.IBoard) {
 	b.SetDim(b1.Dim())
 	b.SetCells(b1.Cells())
 }
 
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
-func (b *RectBoard) MakeMove(to Coord, piece Piece) bool {
+func (b *RectBoard) MakeMove(to base.Coord, piece base.IPiece) bool {
 	destinations := piece.Destinations(b)
 	for destinations.HasNext() {
-		d := destinations.Next().(Coord)
+		d := destinations.Next().(base.Coord)
 		if to.Equals(d) {
 			newBoard := piece.Project(to, b)
 			piece.SetCoords(to)
@@ -125,8 +125,8 @@ func (b *RectBoard) MakeMove(to Coord, piece Piece) bool {
 }
 
 // FindPieces finds and returns pieces by filter
-func (b *RectBoard) FindPieces(pf PieceFilter) Pieces {
-	pieces := Pieces{}
+func (b *RectBoard) FindPieces(pf base.IPieceFilter) base.Pieces {
+	pieces := base.Pieces{}
 	f := pf.(RectPieceFilter)
 	for _, row := range b.cells {
 		for _, cell := range row {
@@ -157,12 +157,12 @@ func (b *RectBoard) FindPieces(pf PieceFilter) Pieces {
 
 // FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
-func (b *RectBoard) FindAttackedCellsBy(f PieceFilter) Coords {
-	pieces, pairs := b.FindPieces(f.(RectPieceFilter)), NewRectCoords([]Coord{})
+func (b *RectBoard) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
+	pieces, pairs := b.FindPieces(f.(RectPieceFilter)), NewRectCoords([]base.Coord{})
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {
-			pair := attackedCoords.Next().(Coord)
+			pair := attackedCoords.Next().(base.Coord)
 			if !pairs.Contains(pair) {
 				pairs.Add(pair)
 			}

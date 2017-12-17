@@ -1,14 +1,14 @@
 package rect
 
 import (
-	. "github.com/mtfelian/mtfchess/base"
+	"github.com/mtfelian/mtfchess/base"
 )
 
 // Row is a row of cells
-type RectRow []Cell
+type RectRow []base.Cell
 
 // Copy returns a deep copy of row
-func (r RectRow) Copy(board Board) RectRow {
+func (r RectRow) Copy(board base.IBoard) RectRow {
 	newRow := make(RectRow, len(r))
 	for i := range r {
 		newRow[i] = r[i].Copy(board)
@@ -20,7 +20,7 @@ func (r RectRow) Copy(board Board) RectRow {
 type RectCells []RectRow
 
 // Copy returns a deep copy of cells
-func (s RectCells) Copy(board Board) Cells {
+func (s RectCells) Copy(board base.IBoard) base.ICells {
 	newCells := make(RectCells, len(s))
 	for i := range s {
 		newCells[i] = s[i].Copy(board)
