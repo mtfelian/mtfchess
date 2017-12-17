@@ -1,4 +1,4 @@
-package mtfchess_test
+package rect_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestMtfchess(t *testing.T) {
+func TestRect(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "MTFchess Suite")
+	RunSpecs(t, "Rectangular Board Suite")
 }
