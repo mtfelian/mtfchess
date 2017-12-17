@@ -9,7 +9,7 @@ import (
 
 // RectBoard is a game rectangular board
 type RectBoard struct {
-	cells         Cells
+	cells         RectCells
 	width, height int
 }
 
@@ -47,9 +47,9 @@ func (b *RectBoard) SetDim(dim Coord) {
 
 // createCells returns a slice of Cell for the board
 func (b *RectBoard) createCells() {
-	b.cells = make(Cells, b.height)
+	b.cells = make(RectCells, b.height)
 	for y := range b.cells {
-		b.cells[y] = make(Row, b.width)
+		b.cells[y] = make(RectRow, b.width)
 		for x := range b.cells[y] {
 			b.createCell(x, y)
 		}
@@ -75,7 +75,7 @@ func (b *RectBoard) Cells() Cells {
 
 // SetCells sets cells to s
 func (b *RectBoard) SetCells(s Cells) {
-	b.cells = s
+	b.cells = s.(RectCells)
 }
 
 // Piece returns a piece at coords
