@@ -1,4 +1,8 @@
 package base
 
-// PieceFilter
-type PieceFilter interface{}
+// BasePieceFilter
+type BasePieceFilter struct {
+	Names     []string
+	Colours   []Colour
+	Condition func(Piece) bool
+}
