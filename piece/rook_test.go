@@ -17,9 +17,7 @@ var _ = Describe("Rook test", func() {
 	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
 
 	It("generates moves", func() {
-		wr := piece.NewRook(White)
-		wn := piece.NewKnight(White)
-		br := piece.NewRook(Black)
+		wr, wn, br := piece.NewRook(White), piece.NewKnight(White), piece.NewRook(Black)
 		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wr)
 		b.PlacePiece(rect.Coord{X: 4, Y: 4}, wn)
 		b.PlacePiece(rect.Coord{X: 4, Y: 1}, br)
@@ -49,8 +47,7 @@ var _ = Describe("Rook test", func() {
 		destinations := wr.Destinations(b)
 
 		for destinations.HasNext() {
-			d := destinations.Next().(base.ICoord)
-			c := wr.Coord()
+			d, c := destinations.Next().(base.ICoord), wr.Coord()
 			Expect(b.MakeMove(d, wr)).To(BeTrue(), "failed at destination %d", destinations.I())
 			// check source cell to be empty
 			Expect(b.Piece(c)).To(BeNil())
@@ -81,8 +78,7 @@ var _ = Describe("Rook test", func() {
 		boardCopy = b.Copy()
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{3, 2}, rect.Coord{5, 1}})
 		for destinations.HasNext() {
-			d := destinations.Next().(rect.Coord)
-			c := wr.Coord()
+			d, c := destinations.Next().(rect.Coord), wr.Coord()
 			Expect(b.MakeMove(d, wr)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
 			Expect(b.Piece(c)).To(Equal(wr))

@@ -15,9 +15,7 @@ var _ = Describe("King test", func() {
 	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
 
 	It("generates moves", func() {
-		wk := piece.NewKing(White)
-		wn := piece.NewKnight(White)
-		bn := piece.NewKnight(Black)
+		wk, wn, bn := piece.NewKing(White), piece.NewKnight(White), piece.NewKnight(Black)
 		b.PlacePiece(rect.Coord{X: 2, Y: 2}, wk)
 		b.PlacePiece(rect.Coord{X: 2, Y: 3}, wn)
 		b.PlacePiece(rect.Coord{X: 1, Y: 1}, bn)

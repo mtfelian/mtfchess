@@ -37,4 +37,19 @@ var _ = Describe("Check test", func() {
 		Expect(piece.InCheck(b, White)).To(BeFalse())
 		Expect(piece.InCheck(b, Black)).To(BeTrue())
 	})
+
+	It("can't expose check", func() {
+		wr, br, wk := piece.NewRook(White), piece.NewRook(Black), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{X: 3, Y: 2}, br)
+		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wr)
+		b.PlacePiece(rect.Coord{X: 5, Y: 2}, wk)
+
+		d, c := rect.Coord{4, 3}, wr.Coord()
+		Expect(b.MakeMove(d, wr)).To(BeFalse(), "check exposed!")
+		Expect(b.Piece(c)).To(Equal(wr))
+		Expect(b.Piece(d)).To(BeNil())
+		Expect(b.Piece(br.Coord())).To(Equal(br))
+	})
+
+
 })

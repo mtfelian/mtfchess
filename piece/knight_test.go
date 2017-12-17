@@ -15,9 +15,7 @@ var _ = Describe("Knight test", func() {
 	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
 
 	It("generates moves", func() {
-		wn1 := piece.NewKnight(White)
-		wn2 := piece.NewKnight(White)
-		bn := piece.NewKnight(Black)
+		wn1, wn2, bn := piece.NewKnight(White), piece.NewKnight(White), piece.NewKnight(Black)
 		b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn1)
 		b.PlacePiece(rect.Coord{X: 3, Y: 3}, wn2)
 		b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
@@ -43,8 +41,7 @@ var _ = Describe("Knight test", func() {
 		destinations := wn.Destinations(b)
 
 		for destinations.HasNext() {
-			d := destinations.Next().(base.ICoord)
-			c := wn.Coord()
+			d, c := destinations.Next().(base.ICoord), wn.Coord()
 			Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
 			// check source cell to be empty
 			Expect(b.Piece(c)).To(BeNil())
@@ -75,8 +72,7 @@ var _ = Describe("Knight test", func() {
 		boardCopy = b.Copy()
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{5, 2}, rect.Coord{1, 4}})
 		for destinations.HasNext() {
-			d := destinations.Next().(rect.Coord)
-			c := wn.Coord()
+			d, c := destinations.Next().(rect.Coord), wn.Coord()
 			Expect(b.MakeMove(d, wn)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
 			Expect(b.Piece(c)).To(Equal(wn))
