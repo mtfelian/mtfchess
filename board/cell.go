@@ -6,18 +6,16 @@ import "fmt"
 type Cell struct {
 	board Board // reverse link to a board
 	num   int   // sequential number on the board
-	x     int   // [1;board.width]
-	y     int   // [1;board.height]
+	coord Coord // cell coords
 	piece Piece // contains piece
 }
 
 // NewCell returns a new cell
-func NewCell(board Board, num, x, y int) Cell {
+func NewCell(board Board, num int, coord Coord) Cell {
 	return Cell{
 		board: board,
 		num:   num,
-		x:     x,
-		y:     y,
+		coord: coord,
 	}
 }
 
@@ -41,8 +39,7 @@ func (s *Cell) Copy(board Board) Cell {
 	newCell := Cell{
 		board: board,
 		num:   s.num,
-		x:     s.x,
-		y:     s.y,
+		coord: s.coord.Copy(),
 	}
 	if s.piece != nil {
 		newCell.piece = s.piece.Copy()
@@ -56,5 +53,5 @@ func (s Cell) String() string {
 	if s.piece != nil {
 		p = fmt.Sprintf("%s", s.piece)
 	}
-	return fmt.Sprintf("%4d[%s](%d,%d)", s.num, p, s.x, s.y)
+	return fmt.Sprintf("%4d[%s](%s)", s.num, p, s.coord)
 }

@@ -13,11 +13,11 @@ var _ = Describe("Board test", func() {
 	w, h := 5, 6
 	var b Board
 
-	BeforeEach(func() { b = NewEmptyStdBoard(w, h) })
+	BeforeEach(func() { b = NewEmptyRectBoard(w, h) })
 
 	It("checks board width and height", func() {
-		Expect(b.Width()).To(Equal(w))
-		Expect(b.Height()).To(Equal(h))
+		Expect(b.Dim().(RectCoord).X).To(Equal(w))
+		Expect(b.Dim().(RectCoord).Y).To(Equal(h))
 	})
 
 	Describe("knight", func() {
@@ -25,13 +25,13 @@ var _ = Describe("Board test", func() {
 			wn1 := NewKnightPiece(White)
 			wn2 := NewKnightPiece(White)
 			bn := NewKnightPiece(Black)
-			b.PlacePiece(2, 1, wn1)
-			b.PlacePiece(3, 3, wn2)
-			b.PlacePiece(4, 2, bn)
+			b.PlacePiece(RectCoord{X: 2, Y: 1}, wn1)
+			b.PlacePiece(RectCoord{X: 3, Y: 3}, wn2)
+			b.PlacePiece(RectCoord{X: 4, Y: 2}, bn)
 
 			d := wn1.Destinations(b)
-			Expect(d).To(HaveLen(2))
-			Expect(d).To(Equal(Pairs{{1, 3}, {4, 2}}))
+			Expect(d.Len()).To(Equal(2))
+			Expect(d.Equals(NewRectCoords([]RectCoord{{1, 3}, {4, 2}}))).To(BeTrue())
 		})
 
 		It("makes legal moves", func() {
@@ -39,8 +39,8 @@ var _ = Describe("Board test", func() {
 			var boardCopy Board
 			testReset := func() {
 				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
-				b.PlacePiece(2, 1, wn)
-				b.PlacePiece(4, 2, bn)
+				b.PlacePiece(RectCoord{X: 2, Y: 1}, wn)
+				b.PlacePiece(RectCoord{X: 4, Y: 2}, bn)
 				if boardCopy != nil {
 					b.Set(boardCopy)
 				}
@@ -49,16 +49,17 @@ var _ = Describe("Board test", func() {
 			boardCopy = b.Copy()
 			destinations := wn.Destinations(b)
 
-			for i, d := range destinations {
-				x, y := wn.X(), wn.Y()
-				Expect(b.MakeMove(d.X, d.Y, wn)).To(BeTrue(), "failed at destination %d", i)
+			for destinations.HasNext() {
+				d := destinations.Next()
+				c := wn.Coord()
+				Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
 				// check source cell to be empty
-				Expect(b.Piece(x, y)).To(BeNil())
+				Expect(b.Piece(c)).To(BeNil())
 				// check destination cell to contain new piece
-				Expect(b.Piece(d.X, d.Y)).To(Equal(wn))
-				if bn.X() != d.X || bn.Y() != d.Y { // if not capture
+				Expect(b.Piece(d)).To(Equal(wn))
+				if !bn.Coord().Equals(d) { // if not capture
 					// then there should be another piece
-					Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
+					Expect(b.Piece(bn.Coord())).To(Equal(bn))
 				}
 
 				testReset()
@@ -70,26 +71,27 @@ var _ = Describe("Board test", func() {
 			var boardCopy Board
 			testReset := func() {
 				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
-				b.PlacePiece(2, 1, wn)
-				b.PlacePiece(4, 2, bn)
+				b.PlacePiece(RectCoord{X: 2, Y: 1}, wn)
+				b.PlacePiece(RectCoord{X: 4, Y: 2}, bn)
 				if boardCopy != nil {
 					b.Set(boardCopy)
 				}
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets := Pairs{{3, 1}, {-1, 3}}
+			offsets := NewRectCoords([]RectCoord{{3, 1}, {-1, 3}})
 
-			for i, o := range offsets {
-				x, y := wn.X(), wn.Y()
-				x1, y1 := wn.X()+o.X, wn.Y()+o.Y
-				Expect(b.MakeMove(x1, y1, wn)).To(BeFalse(), "failed at offset %d", i)
+			for offsets.HasNext() {
+				o := offsets.Next()
+				c := wn.Coord()
+				c1 := c.Add(o)
+				Expect(b.MakeMove(c1, wn)).To(BeFalse(), "failed at offset %d", offsets.I())
 				// check source cell to contain unmoved piece
-				Expect(b.Piece(x, y)).To(Equal(wn))
+				Expect(b.Piece(c)).To(Equal(wn))
 				// check destination cell to be empty
-				Expect(b.Piece(x1, y1)).To(BeNil())
+				Expect(b.Piece(c1)).To(BeNil())
 				// check another cell to contain another piece
-				Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
+				Expect(b.Piece(bn.Coord())).To(Equal(bn))
 
 				testReset()
 			}
@@ -101,12 +103,12 @@ var _ = Describe("Board test", func() {
 			wk := NewKingPiece(White)
 			wn := NewKnightPiece(White)
 			bn := NewKnightPiece(Black)
-			b.PlacePiece(2, 2, wk)
-			b.PlacePiece(2, 3, wn)
-			b.PlacePiece(1, 1, bn)
+			b.PlacePiece(RectCoord{X: 2, Y: 2}, wk)
+			b.PlacePiece(RectCoord{X: 2, Y: 3}, wn)
+			b.PlacePiece(RectCoord{X: 1, Y: 1}, bn)
 			d := wk.Destinations(b)
-			Expect(d).To(HaveLen(6))
-			Expect(d).To(Equal(Pairs{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {3, 1}, {3, 3}}))
+			Expect(d.Len()).To(Equal(6))
+			Expect(d.Equals(NewRectCoords([]RectCoord{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {3, 1}, {3, 3}}))).To(BeTrue())
 		})
 	})
 
@@ -116,14 +118,14 @@ var _ = Describe("Board test", func() {
 			wn1, wn2, wn3 = NewKnightPiece(White), NewKnightPiece(White), NewKnightPiece(White)
 			bn1, bn2, bn3 = NewKnightPiece(Black), NewKnightPiece(Black), NewKnightPiece(Black)
 			wk, bk = NewKingPiece(White), NewKingPiece(Black)
-			b.PlacePiece(1, 1, wn1)
-			b.PlacePiece(1, 2, wn2)
-			b.PlacePiece(3, 4, wn3)
-			b.PlacePiece(5, 5, bn1)
-			b.PlacePiece(5, 6, bn2)
-			b.PlacePiece(4, 3, bn3)
-			b.PlacePiece(2, 1, wk)
-			b.PlacePiece(5, 4, bk)
+			b.PlacePiece(RectCoord{X: 1, Y: 1}, wn1)
+			b.PlacePiece(RectCoord{X: 1, Y: 2}, wn2)
+			b.PlacePiece(RectCoord{X: 3, Y: 4}, wn3)
+			b.PlacePiece(RectCoord{X: 5, Y: 5}, bn1)
+			b.PlacePiece(RectCoord{X: 5, Y: 6}, bn2)
+			b.PlacePiece(RectCoord{X: 4, Y: 3}, bn3)
+			b.PlacePiece(RectCoord{X: 2, Y: 1}, wk)
+			b.PlacePiece(RectCoord{X: 5, Y: 4}, bk)
 		})
 		It("normally", func() {
 			filter := PieceFilter{ // find all white knights
@@ -137,16 +139,18 @@ var _ = Describe("Board test", func() {
 
 		It("is with piece / board condition", func() {
 			notOnEdge := func(p Piece) bool {
-				return p.X() > 1 && p.Y() > 1 && p.X() < b.Width() && p.Y() < b.Height()
+				x, y := p.Coord().(RectCoord).X, p.Coord().(RectCoord).Y
+				w, h := b.Dim().(RectCoord).X, b.Dim().(RectCoord).Y
+				return x > 1 && y > 1 && x < w && y < h
 			}
 			filter := PieceFilter{ // find all knights
 				Names:     []string{NewKnightPiece(Transparent).Name()},
 				Condition: notOnEdge,
 			}
 
-			coords := b.FindPieces(filter)
-			Expect(coords).To(HaveLen(2))
-			Expect(coords).To(Equal(Pieces{wn3, bn3}))
+			pieces := b.FindPieces(filter)
+			Expect(pieces).To(HaveLen(2))
+			Expect(pieces).To(Equal(Pieces{wn3, bn3}))
 		})
 	})
 
@@ -154,22 +158,22 @@ var _ = Describe("Board test", func() {
 		It("works", func() {
 			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
 			wk, bk := NewKingPiece(White), NewKingPiece(Black)
-			b.PlacePiece(1, 1, bk)
-			b.PlacePiece(2, 4, wn)
-			b.PlacePiece(5, 5, wk)
-			b.PlacePiece(4, 4, bn)
+			b.PlacePiece(RectCoord{X: 1, Y: 1}, bk)
+			b.PlacePiece(RectCoord{X: 2, Y: 4}, wn)
+			b.PlacePiece(RectCoord{X: 5, Y: 5}, wk)
+			b.PlacePiece(RectCoord{X: 4, Y: 4}, bn)
 
 			attackedByWhite := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{White}})
-			Expect(attackedByWhite).To(HaveLen(10))
+			Expect(attackedByWhite.Len()).To(Equal(10))
 			sort.Sort(attackedByWhite)
-			Expect(attackedByWhite).To(Equal(Pairs{{1, 2}, {3, 2}, {4, 3}, {4, 4}, {5, 4},
-				{4, 5}, {1, 6}, {3, 6}, {4, 6}, {5, 6}}))
+			Expect(attackedByWhite.Equals(NewRectCoords([]RectCoord{{1, 2}, {3, 2}, {4, 3}, {4, 4}, {5, 4},
+				{4, 5}, {1, 6}, {3, 6}, {4, 6}, {5, 6}}))).To(BeTrue())
 
 			attackedByBlack := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{Black}})
-			Expect(attackedByBlack).To(HaveLen(9))
+			Expect(attackedByBlack.Len()).To(Equal(9))
 			sort.Sort(attackedByBlack)
-			Expect(attackedByBlack).To(Equal(Pairs{{2, 1}, {1, 2}, {2, 2}, {3, 2}, {5, 2},
-				{2, 3}, {2, 5}, {3, 6}, {5, 6}}))
+			Expect(attackedByBlack.Equals(NewRectCoords([]RectCoord{{2, 1}, {1, 2}, {2, 2}, {3, 2}, {5, 2},
+				{2, 3}, {2, 5}, {3, 6}, {5, 6}}))).To(BeTrue())
 		})
 	})
 
@@ -177,10 +181,10 @@ var _ = Describe("Board test", func() {
 		It("is white in check", func() {
 			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
 			wk, bk := NewKingPiece(White), NewKingPiece(Black)
-			b.PlacePiece(1, 1, wk)
-			b.PlacePiece(3, 2, bn)
-			b.PlacePiece(5, 4, bk)
-			b.PlacePiece(4, 4, wn)
+			b.PlacePiece(RectCoord{X: 1, Y: 1}, wk)
+			b.PlacePiece(RectCoord{X: 3, Y: 2}, bn)
+			b.PlacePiece(RectCoord{X: 5, Y: 4}, bk)
+			b.PlacePiece(RectCoord{X: 4, Y: 4}, wn)
 
 			Expect(b.InCheck(White)).To(BeTrue())
 			Expect(b.InCheck(Black)).To(BeFalse())
@@ -189,10 +193,10 @@ var _ = Describe("Board test", func() {
 		It("is black in check", func() {
 			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
 			wk, bk := NewKingPiece(White), NewKingPiece(Black)
-			b.PlacePiece(1, 1, bk)
-			b.PlacePiece(3, 2, wn)
-			b.PlacePiece(5, 4, wk)
-			b.PlacePiece(4, 4, bn)
+			b.PlacePiece(RectCoord{X: 1, Y: 1}, bk)
+			b.PlacePiece(RectCoord{X: 3, Y: 2}, wn)
+			b.PlacePiece(RectCoord{X: 5, Y: 4}, wk)
+			b.PlacePiece(RectCoord{X: 4, Y: 4}, bn)
 
 			Expect(b.InCheck(White)).To(BeFalse())
 			Expect(b.InCheck(Black)).To(BeTrue())

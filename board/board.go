@@ -2,24 +2,22 @@ package board
 
 // Board
 type Board interface {
-	Width() int
-	Height() int
-	SetWidth(width int)
-	SetHeight(height int)
+	Dim() Coord
+	SetDim(dim Coord)
 
-	Cell(x, y int) *Cell
+	Cell(c Coord) *Cell
 	Cells() Cells
 
 	InCheck(colour Colour) bool
 
-	Empty(x, y int)
+	Empty(at Coord)
 	Copy() Board
 	Set(b1 Board)
 
-	Piece(x, y int) Piece
-	PlacePiece(x, y int, p Piece)
-	MakeMove(x, y int, piece Piece) bool
+	Piece(at Coord) Piece
+	PlacePiece(to Coord, p Piece)
+	MakeMove(to Coord, piece Piece) bool
 
 	FindPieces(f PieceFilter) Pieces
-	FindAttackedCellsBy(f PieceFilter) Pairs
+	FindAttackedCellsBy(f PieceFilter) Coords
 }

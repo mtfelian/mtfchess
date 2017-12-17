@@ -9,7 +9,7 @@ import (
 // BasePiece
 type BasePiece struct {
 	colour         Colour
-	x, y           int
+	coord          Coord
 	name, literals string
 }
 
@@ -42,25 +42,19 @@ func (p *BasePiece) Colour() Colour {
 	return p.colour
 }
 
-func (p *BasePiece) SetCoords(x, y int) {
-	p.x, p.y = x, y
+func (p *BasePiece) SetCoords(to Coord) {
+	p.coord = to
 }
 
-// X returns x coord of a piece
-func (p *BasePiece) X() int {
-	return p.x
-}
-
-// Y returns y coord of a piece
-func (p *BasePiece) Y() int {
-	return p.y
+// Coord return piece coords
+func (p *BasePiece) Coord() Coord {
+	return p.coord
 }
 
 func (p *BasePiece) Copy() BasePiece {
 	return BasePiece{
 		colour:   p.colour,
-		x:        p.x,
-		y:        p.y,
+		coord:    p.coord.Copy(),
 		literals: p.literals,
 		name:     p.name,
 	}
