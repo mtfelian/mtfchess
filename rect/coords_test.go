@@ -9,15 +9,15 @@ import (
 
 var _ = Describe("Coords test", func() {
 	It("checks iterations over coords", func() {
-		c := []base.Coord{rect.Coord{5, 5}, rect.Coord{4, 5}, rect.Coord{7, 8}}
-		func(over rect.Coords) {
+		data := []base.Coord{rect.Coord{5, 5}, rect.Coord{4, 5}, rect.Coord{7, 8}}
+		func(coords rect.Coords) {
 			i := 0
-			for over.HasNext() {
-				nextElement := over.Next().(rect.Coord)
-				Expect(over.I()).To(Equal(i))
-				Expect(nextElement.Equals(c[over.I()])).To(BeTrue(), "not equals on iter %d", i)
+			for coords.HasNext() {
+				nextCoord := coords.Next().(rect.Coord)
+				Expect(coords.I()).To(Equal(i))
+				Expect(nextCoord.Equals(data[coords.I()])).To(BeTrue(), "not equals on iter %d", i)
 				i++
 			}
-		}(rect.NewCoords(c))
+		}(rect.NewCoords(data))
 	})
 })
