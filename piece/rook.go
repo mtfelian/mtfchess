@@ -25,12 +25,10 @@ func (p *Rook) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 
 	treat := func(to base.ICoord) bool {
 		if dstPiece := board.Cell(to).Piece(); dstPiece != nil {
-			if dstPiece.Colour() == p.Colour() {
-				return false
-			} else {
+			if dstPiece.Colour() != p.Colour() {
 				d = append(d, to)
-				return false
 			}
+			return false
 		}
 		d = append(d, to)
 		return true
