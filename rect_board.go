@@ -163,7 +163,7 @@ func (b *RectBoard) FindPieces(f PieceFilter) Pieces {
 // FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
 func (b *RectBoard) FindAttackedCellsBy(f PieceFilter) Coords {
-	pieces, pairs := b.FindPieces(f), NewRectCoords([]RectCoord{})
+	pieces, pairs := b.FindPieces(f), NewRectCoords([]Coord{})
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {

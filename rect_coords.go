@@ -37,12 +37,8 @@ func (c RectCoord) Copy() Coord {
 }
 
 // NewRectCoords returns new rectangular coordinates
-func NewRectCoords(c []RectCoord) RectCoords {
-	s := make([]Coord, len(c))
-	for i := range c {
-		s[i] = c[i]
-	}
-	return RectCoords{BaseCoords: NewBaseCoords(s)}
+func NewRectCoords(c []Coord) RectCoords {
+	return RectCoords{BaseCoords: NewBaseCoords(c)}
 }
 
 // RectCoords is a slice of rectangular coordinates

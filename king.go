@@ -19,29 +19,35 @@ func NewKingPiece(colour Colour) Piece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
 func (p *King) dst(b Board, excludeCheckExpose bool) Coords {
+	o, d := []Coord{}, []Coord{}
+
 	switch b.Dim().(type) {
 	case RectCoord:
-		o := []RectCoord{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
-		d := []RectCoord{}
-		for i := 0; i < len(o); i++ {
-			c1 := p.Coord().Add(o[i])
-			if c1.Out(b) {
-				continue
-			}
-			// check thet destination cell isn't contains a piece of same colour
-			if dstPiece := b.Cell(c1).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
-				continue
-			}
-
-			if excludeCheckExpose && p.Project(c1, b).InCheck(p.Colour()) {
-				continue
-			}
-			d = append(d, c1.(RectCoord))
+		o = []Coord{
+			RectCoord{-1, -1}, RectCoord{-1, 0}, RectCoord{-1, 1}, RectCoord{0, -1},
+			RectCoord{0, 1}, RectCoord{1, -1}, RectCoord{1, 0}, RectCoord{1, 1},
 		}
-		return NewRectCoords(d)
 	default:
 		panic("invalid coord type")
 	}
+
+	for i := 0; i < len(o); i++ {
+		c1 := p.Coord().Add(o[i])
+		if c1.Out(b) {
+			continue
+		}
+		// check thet destination cell isn't contains a piece of same colour
+		if dstPiece := b.Cell(c1).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
+			continue
+		}
+
+		if excludeCheckExpose && p.Project(c1, b).InCheck(p.Colour()) {
+			continue
+		}
+		d = append(d, c1)
+	}
+
+	return NewRectCoords(d)
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece

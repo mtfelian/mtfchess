@@ -31,7 +31,7 @@ var _ = Describe("Board test", func() {
 
 			d := wn1.Destinations(b)
 			Expect(d.Len()).To(Equal(2))
-			Expect(d.Equals(NewRectCoords([]RectCoord{{1, 3}, {4, 2}}))).To(BeTrue())
+			Expect(d.Equals(NewRectCoords([]Coord{RectCoord{1, 3}, RectCoord{4, 2}}))).To(BeTrue())
 		})
 
 		It("makes legal moves", func() {
@@ -79,7 +79,7 @@ var _ = Describe("Board test", func() {
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets := NewRectCoords([]RectCoord{{3, 1}, {-1, 3}})
+			offsets := NewRectCoords([]Coord{RectCoord{3, 1}, RectCoord{-1, 3}})
 
 			for offsets.HasNext() {
 				o := offsets.Next().(Coord)
@@ -108,7 +108,10 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(RectCoord{X: 1, Y: 1}, bn)
 			d := wk.Destinations(b)
 			Expect(d.Len()).To(Equal(6))
-			Expect(d.Equals(NewRectCoords([]RectCoord{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {3, 1}, {3, 3}}))).To(BeTrue())
+			Expect(d.Equals(NewRectCoords([]Coord{
+				RectCoord{1, 1}, RectCoord{1, 2}, RectCoord{1, 3},
+				RectCoord{2, 1}, RectCoord{3, 1}, RectCoord{3, 3},
+			}))).To(BeTrue())
 		})
 	})
 
@@ -166,14 +169,20 @@ var _ = Describe("Board test", func() {
 			attackedByWhite := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{White}})
 			Expect(attackedByWhite.Len()).To(Equal(10))
 			sort.Sort(attackedByWhite)
-			Expect(attackedByWhite.Equals(NewRectCoords([]RectCoord{{1, 2}, {3, 2}, {4, 3}, {4, 4}, {5, 4},
-				{4, 5}, {1, 6}, {3, 6}, {4, 6}, {5, 6}}))).To(BeTrue())
+			Expect(attackedByWhite.Equals(NewRectCoords([]Coord{
+				RectCoord{1, 2}, RectCoord{3, 2}, RectCoord{4, 3},
+				RectCoord{4, 4}, RectCoord{5, 4}, RectCoord{4, 5},
+				RectCoord{1, 6}, RectCoord{3, 6}, RectCoord{4, 6}, RectCoord{5, 6},
+			}))).To(BeTrue())
 
 			attackedByBlack := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{Black}})
 			Expect(attackedByBlack.Len()).To(Equal(9))
 			sort.Sort(attackedByBlack)
-			Expect(attackedByBlack.Equals(NewRectCoords([]RectCoord{{2, 1}, {1, 2}, {2, 2}, {3, 2}, {5, 2},
-				{2, 3}, {2, 5}, {3, 6}, {5, 6}}))).To(BeTrue())
+			Expect(attackedByBlack.Equals(NewRectCoords([]Coord{
+				RectCoord{2, 1}, RectCoord{1, 2}, RectCoord{2, 2},
+				RectCoord{3, 2}, RectCoord{5, 2}, RectCoord{2, 3},
+				RectCoord{2, 5}, RectCoord{3, 6}, RectCoord{5, 6},
+			}))).To(BeTrue())
 		})
 	})
 
