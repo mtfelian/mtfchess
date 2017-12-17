@@ -20,10 +20,10 @@ func NewKing(colour Colour) base.IPiece {
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
-func (p *King) dst(b base.IBoard, excludeCheckExpose bool) base.ICoords {
+func (p *King) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 	o, d := []base.Coord{}, []base.Coord{}
 
-	switch b.Dim().(type) {
+	switch board.Dim().(type) {
 	case rect.Coord:
 		o = []base.Coord{
 			rect.Coord{-1, -1}, rect.Coord{-1, 0}, rect.Coord{-1, 1}, rect.Coord{0, -1},
@@ -34,19 +34,19 @@ func (p *King) dst(b base.IBoard, excludeCheckExpose bool) base.ICoords {
 	}
 
 	for i := 0; i < len(o); i++ {
-		c1 := p.Coord().Add(o[i])
-		if c1.Out(b) {
+		to := p.Coord().Add(o[i])
+		if to.Out(board) {
 			continue
 		}
 		// check thet destination cell isn't contains a piece of same colour
-		if dstPiece := b.Cell(c1).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
+		if dstPiece := board.Cell(to).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			continue
 		}
 
-		if excludeCheckExpose && InCheck(p.Project(c1, b), p.Colour()) {
+		if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
 			continue
 		}
-		d = append(d, c1)
+		d = append(d, to)
 	}
 
 	return rect.NewCoords(d)
