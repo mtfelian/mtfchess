@@ -33,18 +33,21 @@ func (s *Cell) SetPiece(p Piece) {
 
 // Empty makes cell empty
 func (s *Cell) Empty() {
-	s.piece = NewEmpty(s.x, s.y)
+	s.piece = nil
 }
 
 // Copy returns a copy of a cell
 func (s *Cell) Copy(board Board) Cell {
-	return Cell{
+	newCell := Cell{
 		board: board,
 		num:   s.num,
 		x:     s.x,
 		y:     s.y,
-		piece: s.piece.Copy(),
 	}
+	if s.piece != nil {
+		newCell.piece = s.piece.Copy()
+	}
+	return newCell
 }
 
 // String makes Cell implement Stringer

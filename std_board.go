@@ -152,6 +152,9 @@ func (b *StdBoard) FindPieces(f PieceFilter) Pieces {
 	for _, row := range b.cells {
 		for _, cell := range row {
 			p := cell.Piece()
+			if p == nil {
+				continue
+			}
 			if len(f.Colours) > 0 && !SliceContains(p.Colour(), f.Colours) {
 				continue
 			}

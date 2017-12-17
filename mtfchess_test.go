@@ -53,7 +53,7 @@ var _ = Describe("Board test", func() {
 				x, y := wn.X(), wn.Y()
 				Expect(b.MakeMove(d.X, d.Y, wn)).To(BeTrue(), "failed at destination %d", i)
 				// check source cell to be empty
-				Expect(b.Piece(x, y)).To(Equal(NewEmpty(x, y)))
+				Expect(b.Piece(x, y)).To(BeNil())
 				// check destination cell to contain new piece
 				Expect(b.Piece(d.X, d.Y)).To(Equal(wn))
 				if bn.X() != d.X || bn.Y() != d.Y { // if not capture
@@ -87,7 +87,7 @@ var _ = Describe("Board test", func() {
 				// check source cell to contain unmoved piece
 				Expect(b.Piece(x, y)).To(Equal(wn))
 				// check destination cell to be empty
-				Expect(b.Piece(x1, y1)).To(Equal(NewEmpty(x1, y1)))
+				Expect(b.Piece(x1, y1)).To(BeNil())
 				// check another cell to contain another piece
 				Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
 
