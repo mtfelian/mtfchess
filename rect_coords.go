@@ -42,12 +42,7 @@ func NewRectCoords(c []RectCoord) RectCoords {
 	for i := range c {
 		s[i] = c[i]
 	}
-	return RectCoords{
-		BaseCoords: &BaseCoords{
-			Slice: s,
-			Index: 0,
-		},
-	}
+	return RectCoords{BaseCoords: NewBaseCoords(s)}
 }
 
 // RectCoords is a slice of rectangular coordinates
@@ -55,32 +50,8 @@ type RectCoords struct {
 	*BaseCoords
 }
 
-func (s RectCoords) Get(i int) Coord { return s.Slice[i].(RectCoord) }
-func (s RectCoords) Len() int        { return len(s.Slice) }
-func (s RectCoords) Swap(i, j int)   { s.Slice[i], s.Slice[j] = s.Slice[j], s.Slice[i] }
 func (s RectCoords) Less(i, j int) bool {
 	siX, siY := s.Get(i).(RectCoord).X, s.Get(i).(RectCoord).Y
 	sjX, sjY := s.Get(j).(RectCoord).X, s.Get(j).(RectCoord).Y
 	return siY < sjY || (siY == sjY && siX < sjX)
-}
-func (s RectCoords) Contains(c Coord) bool {
-	for i := range s.Slice {
-		if s.Get(i).(RectCoord).Equals(c.(RectCoord)) {
-			return true
-		}
-	}
-	return false
-}
-
-// Equals returns true if c equals c1
-func (c RectCoords) Equals(to Coords) bool {
-	if c.Len() != to.Len() {
-		return false
-	}
-	for i := range c.Slice {
-		if !c.Get(i).(RectCoord).Equals(to.Get(i).(RectCoord)) {
-			return false
-		}
-	}
-	return true
 }
