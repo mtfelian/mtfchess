@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	. "github.com/mtfelian/iterator"
+	"github.com/mtfelian/iterator"
 )
 
 // Coord
@@ -75,8 +75,8 @@ func (c *BaseCoords) Equals(to Coords) bool {
 
 // Coords is an interface to implement like slice of coordinates
 type Coords interface {
-	sort.Interface // should implement it
-	Iterator
+	sort.Interface
+	iterator.Interface
 	// Get should return i-th element
 	Get(i int) Coord
 	// Contains should return true if coordinates bulk contains the given element c
