@@ -12,7 +12,7 @@ type King struct {
 }
 
 // NewKingPiece creates new king with colour
-func NewKingPiece(colour Colour) base.IPiece {
+func NewKing(colour Colour) base.IPiece {
 	return &King{
 		Piece: base.NewPiece(colour, "king", "K♔♚"),
 	}

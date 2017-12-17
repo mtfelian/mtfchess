@@ -5,7 +5,7 @@ import (
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	. "github.com/mtfelian/mtfchess/piece"
+	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -24,9 +24,9 @@ var _ = Describe("Board test", func() {
 
 	Describe("knight", func() {
 		It("generates moves", func() {
-			wn1 := NewKnightPiece(White)
-			wn2 := NewKnightPiece(White)
-			bn := NewKnightPiece(Black)
+			wn1 := piece.NewKnight(White)
+			wn2 := piece.NewKnight(White)
+			bn := piece.NewKnight(Black)
 			b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn1)
 			b.PlacePiece(rect.Coord{X: 3, Y: 3}, wn2)
 			b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
@@ -40,7 +40,7 @@ var _ = Describe("Board test", func() {
 			var wn, bn base.IPiece
 			var boardCopy base.IBoard
 			testReset := func() {
-				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
+				wn, bn = piece.NewKnight(White), piece.NewKnight(Black)
 				b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn)
 				b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
 				if boardCopy != nil {
@@ -72,7 +72,7 @@ var _ = Describe("Board test", func() {
 			var wn, bn base.IPiece
 			var boardCopy base.IBoard
 			testReset := func() {
-				wn, bn = NewKnightPiece(White), NewKnightPiece(Black)
+				wn, bn = piece.NewKnight(White), piece.NewKnight(Black)
 				b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn)
 				b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
 				if boardCopy != nil {
@@ -102,9 +102,9 @@ var _ = Describe("Board test", func() {
 
 	Describe("king", func() {
 		It("generates moves", func() {
-			wk := NewKingPiece(White)
-			wn := NewKnightPiece(White)
-			bn := NewKnightPiece(Black)
+			wk := piece.NewKing(White)
+			wn := piece.NewKnight(White)
+			bn := piece.NewKnight(Black)
 			b.PlacePiece(rect.Coord{X: 2, Y: 2}, wk)
 			b.PlacePiece(rect.Coord{X: 2, Y: 3}, wn)
 			b.PlacePiece(rect.Coord{X: 1, Y: 1}, bn)
@@ -120,9 +120,9 @@ var _ = Describe("Board test", func() {
 	Describe("find pieces", func() {
 		var wn1, wn2, wn3, bn1, bn2, bn3, wk, bk base.IPiece
 		BeforeEach(func() {
-			wn1, wn2, wn3 = NewKnightPiece(White), NewKnightPiece(White), NewKnightPiece(White)
-			bn1, bn2, bn3 = NewKnightPiece(Black), NewKnightPiece(Black), NewKnightPiece(Black)
-			wk, bk = NewKingPiece(White), NewKingPiece(Black)
+			wn1, wn2, wn3 = piece.NewKnight(White), piece.NewKnight(White), piece.NewKnight(White)
+			bn1, bn2, bn3 = piece.NewKnight(Black), piece.NewKnight(Black), piece.NewKnight(Black)
+			wk, bk = piece.NewKing(White), piece.NewKing(Black)
 			b.PlacePiece(rect.Coord{X: 1, Y: 1}, wn1)
 			b.PlacePiece(rect.Coord{X: 1, Y: 2}, wn2)
 			b.PlacePiece(rect.Coord{X: 3, Y: 4}, wn3)
@@ -136,7 +136,7 @@ var _ = Describe("Board test", func() {
 			filter := rect.PieceFilter{ // find all white knights
 				PieceFilter: base.PieceFilter{
 					Colours: []Colour{White},
-					Names:   []string{NewKnightPiece(Transparent).Name()},
+					Names:   []string{piece.NewKnight(Transparent).Name()},
 				},
 			}
 			coords := b.FindPieces(filter)
@@ -152,7 +152,7 @@ var _ = Describe("Board test", func() {
 			}
 			filter := rect.PieceFilter{ // find all knights
 				PieceFilter: base.PieceFilter{
-					Names:     []string{NewKnightPiece(Transparent).Name()},
+					Names:     []string{piece.NewKnight(Transparent).Name()},
 					Condition: notOnEdge,
 				},
 			}
@@ -165,8 +165,8 @@ var _ = Describe("Board test", func() {
 
 	Describe("find attacked cells", func() {
 		It("works", func() {
-			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
-			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
+			wk, bk := piece.NewKing(White), piece.NewKing(Black)
 			b.PlacePiece(rect.Coord{X: 1, Y: 1}, bk)
 			b.PlacePiece(rect.Coord{X: 2, Y: 4}, wn)
 			b.PlacePiece(rect.Coord{X: 5, Y: 5}, wk)
@@ -198,27 +198,27 @@ var _ = Describe("Board test", func() {
 
 	Describe("check detection", func() {
 		It("is white in check", func() {
-			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
-			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
+			wk, bk := piece.NewKing(White), piece.NewKing(Black)
 			b.PlacePiece(rect.Coord{X: 1, Y: 1}, wk)
 			b.PlacePiece(rect.Coord{X: 3, Y: 2}, bn)
 			b.PlacePiece(rect.Coord{X: 5, Y: 4}, bk)
 			b.PlacePiece(rect.Coord{X: 4, Y: 4}, wn)
 
-			Expect(InCheck(b, White)).To(BeTrue())
-			Expect(InCheck(b, Black)).To(BeFalse())
+			Expect(piece.InCheck(b, White)).To(BeTrue())
+			Expect(piece.InCheck(b, Black)).To(BeFalse())
 		})
 
 		It("is black in check", func() {
-			wn, bn := NewKnightPiece(White), NewKnightPiece(Black)
-			wk, bk := NewKingPiece(White), NewKingPiece(Black)
+			wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
+			wk, bk := piece.NewKing(White), piece.NewKing(Black)
 			b.PlacePiece(rect.Coord{X: 1, Y: 1}, bk)
 			b.PlacePiece(rect.Coord{X: 3, Y: 2}, wn)
 			b.PlacePiece(rect.Coord{X: 5, Y: 4}, wk)
 			b.PlacePiece(rect.Coord{X: 4, Y: 4}, bn)
 
-			Expect(InCheck(b, White)).To(BeFalse())
-			Expect(InCheck(b, Black)).To(BeTrue())
+			Expect(piece.InCheck(b, White)).To(BeFalse())
+			Expect(piece.InCheck(b, Black)).To(BeTrue())
 		})
 	})
 })

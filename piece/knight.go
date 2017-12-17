@@ -12,7 +12,7 @@ type Knight struct {
 }
 
 // NewKnightPiece creates new knight with colour
-func NewKnightPiece(colour Colour) base.IPiece {
+func NewKnight(colour Colour) base.IPiece {
 	return &Knight{
 		Piece: base.NewPiece(colour, "knight", "N♘♞"),
 	}

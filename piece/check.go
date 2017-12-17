@@ -10,7 +10,7 @@ import (
 func InCheck(board base.IBoard, colour Colour) bool {
 	baseFilter := base.PieceFilter{
 		Colours: []Colour{colour},
-		Names:   []string{NewKingPiece(Transparent).Name()},
+		Names:   []string{NewKing(Transparent).Name()},
 		Condition: func(p base.IPiece) bool {
 			opponentPieces := PieceFilter{
 				PieceFilter: base.PieceFilter{Colours: []Colour{colour.Invert()}},
