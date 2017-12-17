@@ -131,9 +131,11 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(RectCoord{X: 5, Y: 4}, bk)
 		})
 		It("normally", func() {
-			filter := PieceFilter{ // find all white knights
-				Colours: []Colour{White},
-				Names:   []string{NewKnightPiece(Transparent).Name()},
+			filter := RectPieceFilter{ // find all white knights
+				BasePieceFilter: BasePieceFilter{
+					Colours: []Colour{White},
+					Names:   []string{NewKnightPiece(Transparent).Name()},
+				},
 			}
 			coords := b.FindPieces(filter)
 			Expect(coords).To(HaveLen(3))
@@ -146,9 +148,11 @@ var _ = Describe("Board test", func() {
 				w, h := b.Dim().(RectCoord).X, b.Dim().(RectCoord).Y
 				return x > 1 && y > 1 && x < w && y < h
 			}
-			filter := PieceFilter{ // find all knights
-				Names:     []string{NewKnightPiece(Transparent).Name()},
-				Condition: notOnEdge,
+			filter := RectPieceFilter{ // find all knights
+				BasePieceFilter: BasePieceFilter{
+					Names:     []string{NewKnightPiece(Transparent).Name()},
+					Condition: notOnEdge,
+				},
 			}
 
 			pieces := b.FindPieces(filter)
@@ -166,7 +170,9 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(RectCoord{X: 5, Y: 5}, wk)
 			b.PlacePiece(RectCoord{X: 4, Y: 4}, bn)
 
-			attackedByWhite := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{White}})
+			attackedByWhite := b.FindAttackedCellsBy(RectPieceFilter{
+				BasePieceFilter: BasePieceFilter{Colours: []Colour{White}},
+			})
 			Expect(attackedByWhite.Len()).To(Equal(10))
 			sort.Sort(attackedByWhite)
 			Expect(attackedByWhite.Equals(NewRectCoords([]Coord{
@@ -175,7 +181,9 @@ var _ = Describe("Board test", func() {
 				RectCoord{1, 6}, RectCoord{3, 6}, RectCoord{4, 6}, RectCoord{5, 6},
 			}))).To(BeTrue())
 
-			attackedByBlack := b.FindAttackedCellsBy(PieceFilter{Colours: []Colour{Black}})
+			attackedByBlack := b.FindAttackedCellsBy(RectPieceFilter{
+				BasePieceFilter: BasePieceFilter{Colours: []Colour{Black}},
+			})
 			Expect(attackedByBlack.Len()).To(Equal(9))
 			sort.Sort(attackedByBlack)
 			Expect(attackedByBlack.Equals(NewRectCoords([]Coord{

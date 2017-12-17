@@ -1,8 +1,6 @@
 package board
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Pieces
 type Pieces []Piece
@@ -27,11 +25,4 @@ type Piece interface {
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
 	// this don't change coords of a piece
 	Project(to Coord, b Board) Board
-}
-
-// PieceFilter
-type PieceFilter struct {
-	Names     []string
-	Colours   []Colour
-	Condition func(Piece) bool
 }

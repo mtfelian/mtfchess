@@ -96,12 +96,16 @@ func (b *RectBoard) Empty(at Coord) {
 
 // InCheck returns true if there is a check on the board for colour, otherwise it returns false
 func (b *RectBoard) InCheck(colour Colour) bool {
-	return len(b.FindPieces(PieceFilter{
-		Colours: []Colour{colour},
-		Names:   []string{NewKingPiece(Transparent).Name()},
-		Condition: func(p Piece) bool {
-			opponentPieces := PieceFilter{Colours: []Colour{colour.Invert()}}
-			return b.FindAttackedCellsBy(opponentPieces).Contains(p.Coord())
+	return len(b.FindPieces(RectPieceFilter{
+		BasePieceFilter: BasePieceFilter{
+			Colours: []Colour{colour},
+			Names:   []string{NewKingPiece(Transparent).Name()},
+			Condition: func(p Piece) bool {
+				opponentPieces := RectPieceFilter{
+					BasePieceFilter: BasePieceFilter{Colours: []Colour{colour.Invert()}},
+				}
+				return b.FindAttackedCellsBy(opponentPieces).Contains(p.Coord())
+			},
 		},
 	})) > 0
 }
@@ -137,8 +141,9 @@ func (b *RectBoard) MakeMove(to Coord, piece Piece) bool {
 }
 
 // FindPieces finds and returns pieces by filter
-func (b *RectBoard) FindPieces(f PieceFilter) Pieces {
+func (b *RectBoard) FindPieces(pf PieceFilter) Pieces {
 	pieces := Pieces{}
+	f := pf.(RectPieceFilter)
 	for _, row := range b.cells {
 		for _, cell := range row {
 			p := cell.Piece()
@@ -149,6 +154,12 @@ func (b *RectBoard) FindPieces(f PieceFilter) Pieces {
 				continue
 			}
 			if len(f.Names) > 0 && !SliceContains(p.Name(), f.Names) {
+				continue
+			}
+			if len(f.X) > 0 && !SliceContains(p.Coord().(RectCoord).X, f.X) {
+				continue
+			}
+			if len(f.Y) > 0 && !SliceContains(p.Coord().(RectCoord).Y, f.Y) {
 				continue
 			}
 			if f.Condition != nil && !f.Condition(p) {
@@ -163,7 +174,7 @@ func (b *RectBoard) FindPieces(f PieceFilter) Pieces {
 // FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
 func (b *RectBoard) FindAttackedCellsBy(f PieceFilter) Coords {
-	pieces, pairs := b.FindPieces(f), NewRectCoords([]Coord{})
+	pieces, pairs := b.FindPieces(f.(RectPieceFilter)), NewRectCoords([]Coord{})
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {
