@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Board test", func() {
+var _ = Describe("Knight test", func() {
 	w, h := 5, 6
 	var b base.IBoard
 	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })

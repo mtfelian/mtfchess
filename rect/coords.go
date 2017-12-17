@@ -37,16 +37,16 @@ func (c Coord) Copy() base.Coord {
 }
 
 // NewCoords returns new rectangular coordinates
-func NewCoords(c []base.Coord) RectCoords {
-	return RectCoords{Coords: base.NewCoords(c)}
+func NewCoords(c []base.Coord) Coords {
+	return Coords{Coords: base.NewCoords(c)}
 }
 
-// RectCoords is a slice of rectangular coordinates
-type RectCoords struct {
+// Coords is a slice of rectangular coordinates
+type Coords struct {
 	*base.Coords
 }
 
-func (s RectCoords) Less(i, j int) bool {
+func (s Coords) Less(i, j int) bool {
 	siX, siY := s.Get(i).(Coord).X, s.Get(i).(Coord).Y
 	sjX, sjY := s.Get(j).(Coord).X, s.Get(j).(Coord).Y
 	return siY < sjY || (siY == sjY && siX < sjX)
