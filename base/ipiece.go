@@ -1,6 +1,10 @@
 package base
 
-import "fmt"
+import (
+	"fmt"
+
+	. "github.com/mtfelian/mtfchess/colour"
+)
 
 // Pieces
 type Pieces []IPiece

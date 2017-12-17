@@ -4,6 +4,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/mtfelian/cli"
+	. "github.com/mtfelian/mtfchess/colour"
 )
 
 // Piece is a base piece

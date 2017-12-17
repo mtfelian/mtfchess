@@ -2,6 +2,7 @@ package piece
 
 import (
 	"github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/colour"
 	. "github.com/mtfelian/mtfchess/rect"
 )
 
@@ -11,7 +12,7 @@ type Knight struct {
 }
 
 // NewKnightPiece creates new knight with colour
-func NewKnightPiece(colour base.Colour) base.IPiece {
+func NewKnightPiece(colour Colour) base.IPiece {
 	return &Knight{
 		Piece: base.NewPiece(colour, "knight", "N♘♞"),
 	}
