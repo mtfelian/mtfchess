@@ -1,4 +1,4 @@
-package board
+package base
 
 // Cells is a board cells
 type Cells interface {

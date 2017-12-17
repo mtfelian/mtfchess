@@ -1,4 +1,4 @@
-package board
+package base
 
 // Board
 type Board interface {

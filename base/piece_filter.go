@@ -1,4 +1,4 @@
-package board
+package base
 
 // PieceFilter
 type PieceFilter interface{}

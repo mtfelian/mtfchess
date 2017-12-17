@@ -4,7 +4,7 @@ import (
 	"sort"
 
 	. "github.com/mtfelian/mtfchess"
-	. "github.com/mtfelian/mtfchess/board"
+	. "github.com/mtfelian/mtfchess/base"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

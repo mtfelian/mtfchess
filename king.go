@@ -1,7 +1,7 @@
 package mtfchess
 
 import (
-	. "github.com/mtfelian/mtfchess/board"
+	. "github.com/mtfelian/mtfchess/base"
 )
 
 // King is a chess king

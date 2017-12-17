@@ -1,7 +1,7 @@
 package mtfchess
 
 import (
-	. "github.com/mtfelian/mtfchess/board"
+	. "github.com/mtfelian/mtfchess/base"
 )
 
 // RectPieceFilter is a piece filter for rectangular board

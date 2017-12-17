@@ -1,4 +1,4 @@
-package board
+package base
 
 // BaseCoords is a base coords
 type BaseCoords struct {

@@ -1,4 +1,4 @@
-package board
+package base
 
 import (
 	"unicode/utf8"

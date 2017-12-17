@@ -3,7 +3,7 @@ package mtfchess
 import (
 	"fmt"
 
-	. "github.com/mtfelian/mtfchess/board"
+	. "github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/utils"
 )
 

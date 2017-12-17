@@ -1,4 +1,4 @@
-package board
+package base
 
 // BasePieceFilter
 type BasePieceFilter struct {

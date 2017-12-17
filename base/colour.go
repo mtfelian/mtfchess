@@ -1,4 +1,4 @@
-package board
+package base
 
 // Colour is a side colour
 type Colour int
