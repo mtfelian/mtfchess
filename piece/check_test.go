@@ -39,17 +39,34 @@ var _ = Describe("Check test", func() {
 	})
 
 	It("can't expose check", func() {
-		wr, br, wk := piece.NewRook(White), piece.NewRook(Black), piece.NewKing(White)
+		wn, br, wk := piece.NewKnight(White), piece.NewRook(Black), piece.NewKing(White)
 		b.PlacePiece(rect.Coord{X: 3, Y: 2}, br)
+		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wn)
+		b.PlacePiece(rect.Coord{X: 5, Y: 2}, wk)
+
+		d, c := rect.Coord{2, 1}, wn.Coord()
+		Expect(b.MakeMove(d, wn)).To(BeFalse(), "check exposed!")
+		Expect(b.Piece(c)).To(Equal(wn))
+		Expect(b.Piece(d)).To(BeNil())
+		Expect(b.Piece(br.Coord())).To(Equal(br))
+
+		// white knight should have no possible moves
+		Expect(wn.Destinations(b).Len()).To(Equal(0))
+	})
+
+	It("can capture at pin", func() {
+		wr, bn, wk := piece.NewRook(White), piece.NewKnight(Black), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{X: 3, Y: 2}, bn)
 		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wr)
 		b.PlacePiece(rect.Coord{X: 5, Y: 2}, wk)
 
-		d, c := rect.Coord{4, 3}, wr.Coord()
-		Expect(b.MakeMove(d, wr)).To(BeFalse(), "check exposed!")
-		Expect(b.Piece(c)).To(Equal(wr))
-		Expect(b.Piece(d)).To(BeNil())
-		Expect(b.Piece(br.Coord())).To(Equal(br))
-	})
+		d, c := rect.Coord{3, 2}, wr.Coord()
+		Expect(b.MakeMove(d, wr)).To(BeTrue(), "can't capture at pin!")
+		Expect(b.Piece(c)).To(BeNil())
+		Expect(b.Piece(d)).To(Equal(wr))
 
+		// coords of captured piece should became nil
+		Expect(bn.Coord()).To(BeNil())
+	})
 
 })

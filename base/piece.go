@@ -58,10 +58,14 @@ func (p *Piece) Coord() ICoord {
 
 // Copy returns a copy of a BasePiece
 func (p *Piece) Copy() Piece {
-	return Piece{
+	newPiece := Piece{
 		colour:   p.colour,
-		coord:    p.coord.Copy(),
 		literals: p.literals,
 		name:     p.name,
 	}
+	if p.coord != nil {
+		newPiece.coord = p.coord.Copy()
+
+	}
+	return newPiece
 }

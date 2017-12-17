@@ -115,6 +115,10 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	for destinations.HasNext() {
 		d := destinations.Next().(base.ICoord)
 		if to.Equals(d) {
+			wasPiece := b.Cell(to).Piece()
+			if wasPiece != nil {
+				wasPiece.SetCoords(nil)
+			}
 			newBoard := piece.Project(to, b)
 			piece.SetCoords(to)
 			b.Set(newBoard)
@@ -171,7 +175,6 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 	return pairs
 }
 
-// todo better testing that Piece.Offsets() don't permit check-exposing moves in situations like (BN's move): WR|BN|BK
 // todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board
 
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
