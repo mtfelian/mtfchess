@@ -3,6 +3,8 @@ package board
 import (
 	"fmt"
 	"sort"
+
+	. "github.com/mtfelian/mtfchess/iterator"
 )
 
 // Coord
@@ -18,20 +20,8 @@ type Coord interface {
 	Copy() Coord
 }
 
-// Iterator is an interface for iterator
-type Iterator interface {
-	// Next should return the next element
-	Next() Coord
-	// HasNext should return true if we have next element
-	HasNext() bool
-	// I should return an iteration index
-	I() int
-	// Add should add c to an underlying storage
-	Add(c Coord)
-}
-
-// CoordsIterator is a coordinates iterator
-type CoordsIterator struct {
+// BaseCoords is a base coords
+type BaseCoords struct {
 	// Slice is an underlying slice
 	Slice []Coord
 	// Index for iterations
@@ -39,19 +29,19 @@ type CoordsIterator struct {
 }
 
 // Next returns next coordinates element
-func (i *CoordsIterator) Next() Coord {
+func (i *BaseCoords) Next() interface{} {
 	i.Index++
 	return i.Slice[i.Index-1]
 }
 
 // HasNext returns true if an underlying slice has next element
-func (i *CoordsIterator) HasNext() bool { return i.Index < len(i.Slice) }
+func (i *BaseCoords) HasNext() bool { return i.Index < len(i.Slice) }
 
 // I returns a current iteration index
-func (i *CoordsIterator) I() int { return i.Index }
+func (i *BaseCoords) I() int { return i.Index }
 
 // Add adds an element to an underlying slice
-func (i *CoordsIterator) Add(c Coord) { i.Slice = append(i.Slice, c) }
+func (i *BaseCoords) Add(c interface{}) { i.Slice = append(i.Slice, c.(Coord)) }
 
 // Coords is an interface to implement like slice of coordinates
 type Coords interface {

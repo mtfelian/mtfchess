@@ -125,7 +125,7 @@ func (b *RectBoard) Set(b1 Board) {
 func (b *RectBoard) MakeMove(to Coord, piece Piece) bool {
 	destinations := piece.Destinations(b)
 	for destinations.HasNext() {
-		d := destinations.Next()
+		d := destinations.Next().(Coord)
 		if to.Equals(d) {
 			newBoard := piece.Project(to, b)
 			piece.SetCoords(to)
@@ -167,7 +167,7 @@ func (b *RectBoard) FindAttackedCellsBy(f PieceFilter) Coords {
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {
-			pair := attackedCoords.Next()
+			pair := attackedCoords.Next().(Coord)
 			if !pairs.Contains(pair) {
 				pairs.Add(pair)
 			}

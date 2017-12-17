@@ -50,7 +50,7 @@ var _ = Describe("Board test", func() {
 			destinations := wn.Destinations(b)
 
 			for destinations.HasNext() {
-				d := destinations.Next()
+				d := destinations.Next().(Coord)
 				c := wn.Coord()
 				Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
 				// check source cell to be empty
@@ -82,7 +82,7 @@ var _ = Describe("Board test", func() {
 			offsets := NewRectCoords([]RectCoord{{3, 1}, {-1, 3}})
 
 			for offsets.HasNext() {
-				o := offsets.Next()
+				o := offsets.Next().(Coord)
 				c := wn.Coord()
 				c1 := c.Add(o)
 				Expect(b.MakeMove(c1, wn)).To(BeFalse(), "failed at offset %d", offsets.I())

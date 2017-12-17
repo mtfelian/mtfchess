@@ -43,7 +43,7 @@ func NewRectCoords(c []RectCoord) RectCoords {
 		s[i] = c[i]
 	}
 	return RectCoords{
-		CoordsIterator: &CoordsIterator{
+		BaseCoords: &BaseCoords{
 			Slice: s,
 			Index: 0,
 		},
@@ -52,7 +52,7 @@ func NewRectCoords(c []RectCoord) RectCoords {
 
 // RectCoords is a slice of rectangular coordinates
 type RectCoords struct {
-	*CoordsIterator
+	*BaseCoords
 }
 
 func (s RectCoords) Get(i int) Coord { return s.Slice[i].(RectCoord) }
