@@ -19,9 +19,9 @@ func (p *EmptyPiece) Attacks(b Board) Pairs {
 	return Pairs{}
 }
 
-// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
-func (p *EmptyPiece) Offsets(b Board) Offsets {
-	return Offsets{}
+// Destinations returns a slice of cells coords, making it's legal moves
+func (p *EmptyPiece) Destinations(b Board) Pairs {
+	return Pairs{}
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board

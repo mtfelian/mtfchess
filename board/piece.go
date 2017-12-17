@@ -38,8 +38,8 @@ type Piece interface {
 	Name() string
 	// Attacks returns a slice of cells coords attacked by piece
 	Attacks(b Board) Pairs
-	// Offsets returns a slice of offsets to possible moves
-	Offsets(b Board) Offsets
+	// Destinations returns a slice of cells coords to destination cells of possible moves
+	Destinations(b Board) Pairs
 	// Colour returns piece colour
 	Colour() Colour
 	// SetCoords sets the figure coords to (x,y)

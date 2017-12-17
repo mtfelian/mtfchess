@@ -29,9 +29,9 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(3, 3, wn2)
 			b.PlacePiece(4, 2, bn)
 
-			o := wn1.Offsets(b)
-			Expect(o).To(HaveLen(2))
-			Expect(o).To(Equal(Offsets{{-1, 2}, {2, 1}}))
+			d := wn1.Destinations(b)
+			Expect(d).To(HaveLen(2))
+			Expect(d).To(Equal(Pairs{{1, 3}, {4, 2}}))
 		})
 
 		It("makes legal moves", func() {
@@ -47,17 +47,16 @@ var _ = Describe("Board test", func() {
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets := wn.Offsets(b)
+			destinations := wn.Destinations(b)
 
-			for i, o := range offsets {
+			for i, d := range destinations {
 				x, y := wn.X(), wn.Y()
-				x1, y1 := x+o.X, y+o.Y
-				Expect(b.MakeMove(x1, y1, wn)).To(BeTrue(), "failed at offset %d", i)
+				Expect(b.MakeMove(d.X, d.Y, wn)).To(BeTrue(), "failed at destination %d", i)
 				// check source cell to be empty
 				Expect(b.Piece(x, y)).To(Equal(NewEmpty(x, y)))
 				// check destination cell to contain new piece
-				Expect(b.Piece(x1, y1)).To(Equal(wn))
-				if bn.X() != x1 || bn.Y() != y1 { // if not capture
+				Expect(b.Piece(d.X, d.Y)).To(Equal(wn))
+				if bn.X() != d.X || bn.Y() != d.Y { // if not capture
 					// then there should be another piece
 					Expect(b.Piece(bn.X(), bn.Y())).To(Equal(bn))
 				}
@@ -105,9 +104,9 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(2, 2, wk)
 			b.PlacePiece(2, 3, wn)
 			b.PlacePiece(1, 1, bn)
-			o := wk.Offsets(b)
-			Expect(o).To(HaveLen(6))
-			Expect(o).To(Equal(Offsets{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 1}}))
+			d := wk.Destinations(b)
+			Expect(d).To(HaveLen(6))
+			Expect(d).To(Equal(Pairs{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {3, 1}, {3, 3}}))
 		})
 	})
 

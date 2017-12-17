@@ -46,13 +46,12 @@ func (p *Knight) offsets(b Board, excludeCheckExpose bool) Offsets {
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
 func (p *Knight) Attacks(b Board) Pairs {
-	o := p.offsets(b, false)
-	return o.Pairs(p)
+	return p.offsets(b, false).Pairs(p)
 }
 
-// Offsets returns a slice of offsets relative to piece coords, making it's legal moves
-func (p *Knight) Offsets(b Board) Offsets {
-	return p.offsets(b, true)
+// Destinations returns a slice of cells coords, making it's legal moves
+func (p *Knight) Destinations(b Board) Pairs {
+	return p.offsets(b, true).Pairs(p)
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board

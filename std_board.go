@@ -134,9 +134,9 @@ func (b *StdBoard) Set(b1 Board) {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *StdBoard) MakeMove(x, y int, piece Piece) bool {
-	offsets := piece.Offsets(b)
-	for _, o := range offsets {
-		if piece.X()+o.X == x && piece.Y()+o.Y == y {
+	destinations := piece.Destinations(b)
+	for _, d := range destinations {
+		if d.X == x && d.Y == y {
 			newBoard := piece.Project(x, y, b)
 			piece.SetCoords(x, y)
 			b.Set(newBoard)
