@@ -78,7 +78,7 @@ var _ = Describe("Board test", func() {
 			}
 			testReset()
 			boardCopy = b.Copy()
-			offsets := Offsets{{3, 1}, {-1, 3}}
+			offsets := Pairs{{3, 1}, {-1, 3}}
 
 			for i, o := range offsets {
 				x, y := wn.X(), wn.Y()

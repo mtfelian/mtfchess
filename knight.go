@@ -16,42 +16,37 @@ func NewKnightPiece(colour Colour) Piece {
 	}
 }
 
-// offsets returns a slice of offsets relative to piece coords, making it's legal moves
-// if excludeCheckExpose is false then offsets leading to check-exposing moves also included
-func (p *Knight) offsets(b Board, excludeCheckExpose bool) Offsets {
-	o := Offsets{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
+// dst returns a slice of destination cells coords, making it's legal moves
+// if excludeCheckExpose is false then pairs leading to check-exposing moves also included
+func (p *Knight) dst(b Board, excludeCheckExpose bool) Pairs {
+	o := Pairs{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}
+	d := Pairs{}
 	for i := 0; i < len(o); i++ {
-		remove := func() {
-			o = append(o[:i], o[i+1:]...)
-			i--
-		}
 		x1, y1 := p.X()+o[i].X, p.Y()+o[i].Y
 		if x1 < 1 || y1 < 1 || x1 > b.Width() || y1 > b.Height() {
-			remove()
 			continue
 		}
-		// check thet destination cell isn't contains a piece of same colour
+		// check that destination cell isn't contains a piece of same colour
 		if dstPiece, ok := b.Cell(x1, y1).Piece().(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
-			remove()
 			continue
 		}
 
 		if excludeCheckExpose && p.Project(x1, y1, b).InCheck(p.Colour()) {
-			remove()
 			continue
 		}
+		d = append(d, Pair{X: x1, Y: y1})
 	}
-	return o
+	return d
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
 func (p *Knight) Attacks(b Board) Pairs {
-	return p.offsets(b, false).Pairs(p)
+	return p.dst(b, false)
 }
 
 // Destinations returns a slice of cells coords, making it's legal moves
 func (p *Knight) Destinations(b Board) Pairs {
-	return p.offsets(b, true).Pairs(p)
+	return p.dst(b, true)
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
