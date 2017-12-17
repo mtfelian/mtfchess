@@ -82,7 +82,7 @@ var _ = Describe("Board test", func() {
 			})
 			Expect(attackedByWhite.Len()).To(Equal(10))
 			sort.Sort(attackedByWhite)
-			Expect(attackedByWhite.Equals(rect.NewCoords([]base.Coord{
+			Expect(attackedByWhite.Equals(rect.NewCoords([]base.ICoord{
 				rect.Coord{1, 2}, rect.Coord{3, 2}, rect.Coord{4, 3},
 				rect.Coord{4, 4}, rect.Coord{5, 4}, rect.Coord{4, 5},
 				rect.Coord{1, 6}, rect.Coord{3, 6}, rect.Coord{4, 6}, rect.Coord{5, 6},
@@ -93,7 +93,7 @@ var _ = Describe("Board test", func() {
 			})
 			Expect(attackedByBlack.Len()).To(Equal(9))
 			sort.Sort(attackedByBlack)
-			Expect(attackedByBlack.Equals(rect.NewCoords([]base.Coord{
+			Expect(attackedByBlack.Equals(rect.NewCoords([]base.ICoord{
 				rect.Coord{2, 1}, rect.Coord{1, 2}, rect.Coord{2, 2},
 				rect.Coord{3, 2}, rect.Coord{5, 2}, rect.Coord{2, 3},
 				rect.Coord{2, 5}, rect.Coord{3, 6}, rect.Coord{5, 6},

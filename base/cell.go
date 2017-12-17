@@ -6,12 +6,12 @@ import "fmt"
 type Cell struct {
 	board IBoard // reverse link to a board
 	num   int    // sequential number on the board
-	coord Coord  // cell coords
+	coord ICoord // cell coords
 	piece IPiece // contains piece
 }
 
 // NewCell returns a new cell
-func NewCell(board IBoard, num int, coord Coord) Cell {
+func NewCell(board IBoard, num int, coord ICoord) Cell {
 	return Cell{
 		board: board,
 		num:   num,

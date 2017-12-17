@@ -10,7 +10,7 @@ import (
 // Piece is a base piece
 type Piece struct {
 	colour         Colour
-	coord          Coord
+	coord          ICoord
 	name, literals string
 }
 
@@ -47,12 +47,12 @@ func (p *Piece) Colour() Colour {
 }
 
 // SetCoords sets piece's coords to
-func (p *Piece) SetCoords(to Coord) {
+func (p *Piece) SetCoords(to ICoord) {
 	p.coord = to
 }
 
 // Coord return piece coords
-func (p *Piece) Coord() Coord {
+func (p *Piece) Coord() ICoord {
 	return p.coord
 }
 

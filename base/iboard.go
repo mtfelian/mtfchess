@@ -2,19 +2,19 @@ package base
 
 // IBoard
 type IBoard interface {
-	Dim() Coord
-	SetDim(dim Coord)
+	Dim() ICoord
+	SetDim(dim ICoord)
 
-	Cell(c Coord) *Cell
+	Cell(c ICoord) *Cell
 	Cells() ICells
 
-	Empty(at Coord)
+	Empty(at ICoord)
 	Copy() IBoard
 	Set(b1 IBoard)
 
-	Piece(at Coord) IPiece
-	PlacePiece(to Coord, p IPiece)
-	MakeMove(to Coord, piece IPiece) bool
+	Piece(at ICoord) IPiece
+	PlacePiece(to ICoord, p IPiece)
+	MakeMove(to ICoord, piece IPiece) bool
 
 	FindPieces(f IPieceFilter) Pieces
 	FindAttackedCellsBy(f IPieceFilter) ICoords

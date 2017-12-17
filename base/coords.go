@@ -1,17 +1,21 @@
 package base
 
+import (
+	"strings"
+)
+
 // Coords is a base coords
 type Coords struct {
-	slice []Coord
+	slice []ICoord
 	i     int
 }
 
 // NewCoords returns new base coordinates
-func NewCoords(s []Coord) *Coords {
+func NewCoords(s []ICoord) *Coords {
 	return &Coords{slice: s, i: 0}
 }
 
-func (s *Coords) Get(i int) Coord { return s.slice[i] }
+func (s *Coords) Get(i int) ICoord { return s.slice[i] }
 
 // Next returns next coordinates element
 func (s *Coords) Next() interface{} {
@@ -28,10 +32,10 @@ func (s *Coords) Len() int      { return len(s.slice) }
 func (s *Coords) Swap(i, j int) { s.slice[i], s.slice[j] = s.slice[j], s.slice[i] }
 
 // Add adds an element to an underlying slice
-func (s *Coords) Add(c interface{}) { s.slice = append(s.slice, c.(Coord)) }
+func (s *Coords) Add(c interface{}) { s.slice = append(s.slice, c.(ICoord)) }
 
 // Contains returns true if c contains in s
-func (s *Coords) Contains(c Coord) bool {
+func (s *Coords) Contains(c ICoord) bool {
 	for i := range s.slice {
 		if s.Get(i).Equals(c) {
 			return true
@@ -51,4 +55,13 @@ func (c *Coords) Equals(to ICoords) bool {
 		}
 	}
 	return true
+}
+
+// String makes Coords to implement fmt.Stringer
+func (c *Coords) String() string {
+	s := "("
+	for i := range c.slice {
+		s += "(" + c.slice[i].String() + "),"
+	}
+	return strings.TrimRight(s, ",") + ")"
 }

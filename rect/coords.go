@@ -17,7 +17,7 @@ func (c Coord) String() string {
 }
 
 // Add adds o to c and returns the sum as a result
-func (c Coord) Add(o base.Coord) base.Coord {
+func (c Coord) Add(o base.ICoord) base.ICoord {
 	return Coord{X: c.X + o.(Coord).X, Y: c.Y + o.(Coord).Y}
 }
 
@@ -27,17 +27,17 @@ func (c Coord) Out(b base.IBoard) bool {
 }
 
 // Equals returns true if c equals c1
-func (c Coord) Equals(to base.Coord) bool {
+func (c Coord) Equals(to base.ICoord) bool {
 	return c.X == to.(Coord).X && c.Y == to.(Coord).Y
 }
 
 // Copy returns a copy of c
-func (c Coord) Copy() base.Coord {
+func (c Coord) Copy() base.ICoord {
 	return Coord{X: c.X, Y: c.Y}
 }
 
 // NewCoords returns new rectangular coordinates
-func NewCoords(c []base.Coord) Coords {
+func NewCoords(c []base.ICoord) Coords {
 	return Coords{Coords: base.NewCoords(c)}
 }
 

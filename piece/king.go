@@ -21,11 +21,11 @@ func NewKing(colour Colour) base.IPiece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
 func (p *King) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
-	o, d := []base.Coord{}, []base.Coord{}
+	o, d := []base.ICoord{}, []base.ICoord{}
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		o = []base.Coord{
+		o = []base.ICoord{
 			rect.Coord{-1, -1}, rect.Coord{-1, 0}, rect.Coord{-1, 1}, rect.Coord{0, -1},
 			rect.Coord{0, 1}, rect.Coord{1, -1}, rect.Coord{1, 0}, rect.Coord{1, 1},
 		}
@@ -38,7 +38,7 @@ func (p *King) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 		if to.Out(board) {
 			continue
 		}
-		// check thet destination cell isn't contains a piece of same colour
+		// check that destination cell isn't contains a piece of same colour
 		if dstPiece := board.Cell(to).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			continue
 		}
@@ -63,9 +63,9 @@ func (p *King) Destinations(b base.IBoard) base.ICoords {
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
-func (p *King) Project(to base.Coord, b base.IBoard) base.IBoard {
+func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
 	newBoard := b.Copy()
-	newBoard.Empty(to)
+	newBoard.Empty(p.Coord())
 	newBoard.PlacePiece(to, p.Copy())
 	return newBoard
 }

@@ -21,12 +21,12 @@ type IPiece interface {
 	// Colour returns piece colour
 	Colour() Colour
 	// SetCoords sets the figure coords to
-	SetCoords(to Coord)
+	SetCoords(to ICoord)
 	// Coord returns piece coords
-	Coord() Coord
+	Coord() ICoord
 	// Copy returns a deep copy of a piece
 	Copy() IPiece
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
 	// this don't change coords of a piece
-	Project(to Coord, b IBoard) IBoard
+	Project(to ICoord, b IBoard) IBoard
 }

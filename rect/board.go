@@ -36,12 +36,12 @@ func (b Board) String() string {
 }
 
 // Dim returns a board dimensions
-func (b Board) Dim() base.Coord {
+func (b Board) Dim() base.ICoord {
 	return Coord{X: b.width, Y: b.height}
 }
 
 // SetDim sets board dimensions to dim
-func (b *Board) SetDim(dim base.Coord) {
+func (b *Board) SetDim(dim base.ICoord) {
 	b.width, b.height = dim.(Coord).X, dim.(Coord).Y
 }
 
@@ -63,7 +63,7 @@ func (b *Board) createCell(x, y int) {
 }
 
 // Cell returns a pointer to cell at coords
-func (b *Board) Cell(at base.Coord) *base.Cell {
+func (b *Board) Cell(at base.ICoord) *base.Cell {
 	c := at.(Coord)
 	return &b.cells[b.Y(c.Y)][b.X(c.X)]
 }
@@ -79,18 +79,18 @@ func (b *Board) SetCells(s base.ICells) {
 }
 
 // Piece returns a piece at coords
-func (b *Board) Piece(at base.Coord) base.IPiece {
+func (b *Board) Piece(at base.ICoord) base.IPiece {
 	return b.Cell(at).Piece()
 }
 
 // PlacePiece places piece at coords (x, y)
-func (b *Board) PlacePiece(to base.Coord, p base.IPiece) {
+func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) {
 	p.SetCoords(to)
 	b.Cell(to).SetPiece(p)
 }
 
 // Empty removes piece at coords x, y
-func (b *Board) Empty(at base.Coord) {
+func (b *Board) Empty(at base.ICoord) {
 	b.Cell(at).Empty()
 }
 
@@ -110,10 +110,10 @@ func (b *Board) Set(b1 base.IBoard) {
 
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
-func (b *Board) MakeMove(to base.Coord, piece base.IPiece) bool {
+func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	destinations := piece.Destinations(b)
 	for destinations.HasNext() {
-		d := destinations.Next().(base.Coord)
+		d := destinations.Next().(base.ICoord)
 		if to.Equals(d) {
 			newBoard := piece.Project(to, b)
 			piece.SetCoords(to)
@@ -158,11 +158,11 @@ func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
 // FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
 func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
-	pieces, pairs := b.FindPieces(f.(PieceFilter)), NewCoords([]base.Coord{})
+	pieces, pairs := b.FindPieces(f.(PieceFilter)), NewCoords([]base.ICoord{})
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {
-			pair := attackedCoords.Next().(base.Coord)
+			pair := attackedCoords.Next().(base.ICoord)
 			if !pairs.Contains(pair) {
 				pairs.Add(pair)
 			}

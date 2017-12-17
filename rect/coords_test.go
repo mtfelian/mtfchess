@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("Coords test", func() {
 	It("checks iterations over coords", func() {
-		data := []base.Coord{rect.Coord{5, 5}, rect.Coord{4, 5}, rect.Coord{7, 8}}
+		data := []base.ICoord{rect.Coord{5, 5}, rect.Coord{4, 5}, rect.Coord{7, 8}}
 		func(coords rect.Coords) {
 			i := 0
 			for coords.HasNext() {

@@ -21,11 +21,11 @@ func NewKnight(colour Colour) base.IPiece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
 func (p *Knight) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
-	o, d := []base.Coord{}, []base.Coord{}
+	o, d := []base.ICoord{}, []base.ICoord{}
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		o = []base.Coord{
+		o = []base.ICoord{
 			rect.Coord{-2, -1}, rect.Coord{-2, 1}, rect.Coord{-1, -2}, rect.Coord{-1, 2},
 			rect.Coord{1, -2}, rect.Coord{1, 2}, rect.Coord{2, -1}, rect.Coord{2, 1},
 		}
@@ -63,7 +63,7 @@ func (p *Knight) Destinations(b base.IBoard) base.ICoords {
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
-func (p *Knight) Project(to base.Coord, b base.IBoard) base.IBoard {
+func (p *Knight) Project(to base.ICoord, b base.IBoard) base.IBoard {
 	newBoard := b.Copy()
 	newBoard.Empty(p.Coord())
 	newBoard.PlacePiece(to, p.Copy())
