@@ -1,4 +1,4 @@
-package mtfchess
+package rect
 
 import (
 	. "github.com/mtfelian/mtfchess/base"

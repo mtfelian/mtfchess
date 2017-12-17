@@ -8,8 +8,6 @@ type Board interface {
 	Cell(c Coord) *Cell
 	Cells() Cells
 
-	InCheck(colour Colour) bool
-
 	Empty(at Coord)
 	Copy() Board
 	Set(b1 Board)

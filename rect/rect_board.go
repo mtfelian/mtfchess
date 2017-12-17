@@ -1,4 +1,4 @@
-package mtfchess
+package rect
 
 import (
 	"fmt"
@@ -92,22 +92,6 @@ func (b *RectBoard) PlacePiece(to Coord, p Piece) {
 // Empty removes piece at coords x, y
 func (b *RectBoard) Empty(at Coord) {
 	b.Cell(at).Empty()
-}
-
-// InCheck returns true if there is a check on the board for colour, otherwise it returns false
-func (b *RectBoard) InCheck(colour Colour) bool {
-	return len(b.FindPieces(RectPieceFilter{
-		BasePieceFilter: BasePieceFilter{
-			Colours: []Colour{colour},
-			Names:   []string{NewKingPiece(Transparent).Name()},
-			Condition: func(p Piece) bool {
-				opponentPieces := RectPieceFilter{
-					BasePieceFilter: BasePieceFilter{Colours: []Colour{colour.Invert()}},
-				}
-				return b.FindAttackedCellsBy(opponentPieces).Contains(p.Coord())
-			},
-		},
-	})) > 0
 }
 
 // Copy returns a pointer to a deep copy of a board

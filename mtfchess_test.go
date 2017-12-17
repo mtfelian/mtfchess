@@ -1,10 +1,11 @@
-package mtfchess_test
+package mtfchess
 
 import (
 	"sort"
 
-	. "github.com/mtfelian/mtfchess"
 	. "github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/piece"
+	. "github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -203,8 +204,8 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(RectCoord{X: 5, Y: 4}, bk)
 			b.PlacePiece(RectCoord{X: 4, Y: 4}, wn)
 
-			Expect(b.InCheck(White)).To(BeTrue())
-			Expect(b.InCheck(Black)).To(BeFalse())
+			Expect(InCheck(b, White)).To(BeTrue())
+			Expect(InCheck(b, Black)).To(BeFalse())
 		})
 
 		It("is black in check", func() {
@@ -215,8 +216,8 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(RectCoord{X: 5, Y: 4}, wk)
 			b.PlacePiece(RectCoord{X: 4, Y: 4}, bn)
 
-			Expect(b.InCheck(White)).To(BeFalse())
-			Expect(b.InCheck(Black)).To(BeTrue())
+			Expect(InCheck(b, White)).To(BeFalse())
+			Expect(InCheck(b, Black)).To(BeTrue())
 		})
 	})
 })
