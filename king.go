@@ -27,7 +27,7 @@ func (p *King) dst(b Board, excludeCheckExpose bool) Pairs {
 			continue
 		}
 		// check thet destination cell isn't contains a piece of same colour
-		if dstPiece, ok := b.Cell(x1, y1).Piece().(*Knight); ok && dstPiece != nil && dstPiece.Colour() == p.Colour() {
+		if dstPiece := b.Cell(x1, y1).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			continue
 		}
 
