@@ -23,58 +23,12 @@ func NewRook(colour Colour) base.IPiece {
 func (p *Rook) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 	d := []base.ICoord{}
 
-	treat := func(to base.ICoord) bool {
-		if dstPiece := board.Cell(to).Piece(); dstPiece != nil {
-			if dstPiece.Colour() != p.Colour() {
-				d = append(d, to)
-			}
-			return false
-		}
-		d = append(d, to)
-		return true
-	}
-
 	switch board.Dim().(type) {
 	case rect.Coord:
-		pX, pY := p.Coord().(rect.Coord).X, p.Coord().(rect.Coord).Y
-		bW, bH := board.Dim().(rect.Coord).X, board.Dim().(rect.Coord).Y
-
-		for x := 1; x <= bW-pX; x++ {
-			to := p.Coord().Add(rect.Coord{x, 0})
-			if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-				continue
-			}
-			if !treat(to) {
-				break
-			}
-		}
-		for x := -1; x >= 1-pX; x-- {
-			to := p.Coord().Add(rect.Coord{x, 0})
-			if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-				continue
-			}
-			if !treat(to) {
-				break
-			}
-		}
-		for y := 1; y <= bH-pY; y++ {
-			to := p.Coord().Add(rect.Coord{0, y})
-			if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-				continue
-			}
-			if !treat(to) {
-				break
-			}
-		}
-		for y := -1; y >= 1-pY; y-- {
-			to := p.Coord().Add(rect.Coord{0, y})
-			if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-				continue
-			}
-			if !treat(to) {
-				break
-			}
-		}
+		d = append(d, east(p, board, excludeCheckExpose)...)
+		d = append(d, west(p, board, excludeCheckExpose)...)
+		d = append(d, north(p, board, excludeCheckExpose)...)
+		d = append(d, south(p, board, excludeCheckExpose)...)
 	default:
 		panic("invalid coord type")
 	}
