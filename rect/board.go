@@ -70,7 +70,7 @@ func (b *Board) Cell(at base.ICoord) *base.Cell {
 
 // Cells returns a cells slice
 func (b *Board) Cells() base.ICells {
-	return b.cells
+	return b.cells.Copy(b)
 }
 
 // SetCells sets cells to s
@@ -104,7 +104,8 @@ func (b *Board) Copy() base.IBoard {
 
 // Set changes b to b1
 func (b *Board) Set(b1 base.IBoard) {
-	*b = *b1.Copy().(*Board)
+	b.SetDim(b1.Dim())
+	b.SetCells(b1.Cells())
 }
 
 // MakeMove makes move with piece to coords (x,y)
@@ -127,10 +128,9 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	return false
 }
 
-// FindPieces finds and returns pieces by filter
-func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
+// baseFindPieces finds and returns pieces by base.PieceFilter
+func (b *Board) baseFindPieces(f base.PieceFilter) base.Pieces {
 	pieces := base.Pieces{}
-	f := pf.(PieceFilter)
 	for _, row := range b.cells {
 		for _, cell := range row {
 			p := cell.Piece()
@@ -143,12 +143,6 @@ func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
 			if len(f.Names) > 0 && !SliceContains(p.Name(), f.Names) {
 				continue
 			}
-			if len(f.X) > 0 && !SliceContains(p.Coord().(Coord).X, f.X) {
-				continue
-			}
-			if len(f.Y) > 0 && !SliceContains(p.Coord().(Coord).Y, f.Y) {
-				continue
-			}
 			if f.Condition != nil && !f.Condition(p) {
 				continue
 			}
@@ -158,10 +152,34 @@ func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
 	return pieces
 }
 
+// FindPieces finds and returns pieces by base.PieceFilter or rect.PieceFilter
+func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
+	pieces := base.Pieces{}
+	switch filter := pf.(type) {
+	case base.PieceFilter:
+		return b.baseFindPieces(filter)
+	case PieceFilter:
+		pieces = b.baseFindPieces(filter.PieceFilter)
+	}
+
+	f := pf.(PieceFilter)
+	r := base.Pieces{}
+	for _, p := range pieces {
+		if len(f.X) > 0 && !SliceContains(p.Coord().(Coord).X, f.X) {
+			continue
+		}
+		if len(f.Y) > 0 && !SliceContains(p.Coord().(Coord).Y, f.Y) {
+			continue
+		}
+		r = append(r, p)
+	}
+	return r
+}
+
 // FindAttackedCellsBy returns a slice of coords of cells attacked by filter of pieces.
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
 func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
-	pieces, pairs := b.FindPieces(f.(PieceFilter)), NewCoords([]base.ICoord{})
+	pieces, pairs := b.FindPieces(f), NewCoords([]base.ICoord{})
 	for _, piece := range pieces {
 		attackedCoords := piece.Attacks(b)
 		for attackedCoords.HasNext() {
