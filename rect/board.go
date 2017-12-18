@@ -202,7 +202,10 @@ func NewEmptyBoard(i, j int) *Board {
 
 /*
 todo to implement:
-  - pawn piece;
+  - directions_rect.go: front() based on piece colour
+  - pawn piece (one cell front, capture by one front diag);
+  - archbishop piece;
+  - chancellor piece;
   - with board options:
     - pawn moving by two cells;
     - EP, when a pawn goes by two cells, if at end of that move there is an opponent's pawn(s) by the side of the
@@ -210,10 +213,10 @@ todo to implement:
       pawns at the end of the same move);
       - rework InCheck() detection by simply keeping kings' coords always in board like with pawns' EP;
     - castling (some work with rooks memorizing like in EP and side cells check);
-    - pawn promotion (exchanging one piece with another);
+    - pawn promotion (exchanging one piece with another) to one from the list of allowed pieces;
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
   - returning legal moves in algebraic notation;
   - stalemate detection (no check and no legal moves);
-  - checkmate detection (check and no legal moves).
+  - checkmate detection (check and no legal moves);
 */
