@@ -39,10 +39,10 @@ func queen(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base
 	return d
 }
 
-// stroke returns true if mine imaginary arrow stroke some piece to coords on board, memorizing it's path
+// stroke returns true if mine imaginary arrow stroke some piece on coords on board, memorizing it's path
 // it returns false if an imaginary arrow still flying
-func stroke(to base.ICoord, board base.IBoard, mine base.IPiece, path *[]base.ICoord) bool {
-	if dstPiece := board.Cell(to).Piece(); dstPiece != nil {
+func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoord) bool {
+	if dstPiece := on.Cell(to).Piece(); dstPiece != nil {
 		if dstPiece.Colour() != mine.Colour() {
 			*path = append(*path, to)
 		}
