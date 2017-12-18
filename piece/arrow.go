@@ -85,3 +85,74 @@ func south(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base
 	}
 	return result
 }
+
+// nw launches piece's arrow to the north-west (x decreasing, y increasing) on a board
+// set excludeCheckExpose to true to exclude check exposing path
+func nw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
+	pX := piece.Coord().(rect.Coord).X
+	result := []base.ICoord{}
+	for x, y := -1, 1; x >= 1-pX && y <= bH-pY; x, y = x-1, y+1 {
+		to := piece.Coord().Add(rect.Coord{x, y})
+		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			continue
+		}
+		if stroke(to, board, piece, &result) {
+			break
+		}
+	}
+	return result
+}
+
+// ne launches piece's arrow to the north-east (x increasing, y increasing) on a board
+// set excludeCheckExpose to true to exclude check exposing path
+func ne(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
+	pX, bW := piece.Coord().(rect.Coord).X, board.Dim().(rect.Coord).X
+	result := []base.ICoord{}
+	for x, y := 1, 1; x <= bW-pX && y <= bH-pY; x, y = x+1, y+1 {
+		to := piece.Coord().Add(rect.Coord{x, y})
+		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			continue
+		}
+		if stroke(to, board, piece, &result) {
+			break
+		}
+	}
+	return result
+}
+
+// sw launches piece's arrow to the south-west (x decreasing, y decreasing) on a board
+// set excludeCheckExpose to true to exclude check exposing path
+func sw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	pX, pY := piece.Coord().(rect.Coord).X, board.Dim().(rect.Coord).Y
+	result := []base.ICoord{}
+	for x, y := -1, -1; x >= 1-pX && y >= 1-pY; x, y = x-1, y-1 {
+		to := piece.Coord().Add(rect.Coord{x, y})
+		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			continue
+		}
+		if stroke(to, board, piece, &result) {
+			break
+		}
+	}
+	return result
+}
+
+// se launches piece's arrow to the south-east (x increasing, y decreasing) on a board
+// set excludeCheckExpose to true to exclude check exposing path
+func se(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	pX, pY := piece.Coord().(rect.Coord).X, board.Dim().(rect.Coord).Y
+	bW := board.Dim().(rect.Coord).X
+	result := []base.ICoord{}
+	for x, y := 1, -1; x <= bW-pX && y >= 1-pY; x, y = x+1, y-1 {
+		to := piece.Coord().Add(rect.Coord{x, y})
+		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			continue
+		}
+		if stroke(to, board, piece, &result) {
+			break
+		}
+	}
+	return result
+}
