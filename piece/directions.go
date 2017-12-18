@@ -21,8 +21,8 @@ func inOneStep(piece base.IPiece, board base.IBoard, excludeCheckExpose bool, o 
 	return result
 }
 
-// stroke returns true if mine imaginary arrow stroke some piece on coords on board, memorizing it's path
-// it returns false if an imaginary arrow still flying
+// stroke returns true if mine imaginary beam strokes some piece on coords on board, memorizing it's path
+// it returns false if an imaginary beam is still going meats no barrier
 func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoord) bool {
 	if dstPiece := on.Cell(to).Piece(); dstPiece != nil {
 		if dstPiece.Colour() != mine.Colour() {
@@ -34,7 +34,7 @@ func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoor
 	return false
 }
 
-// king launches piece's (king) arrows on a board.
+// king launches piece's (king) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func king(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
@@ -46,7 +46,7 @@ func king(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 	}
 }
 
-// knight launches piece's (knight) arrows on a board.
+// knight launches piece's (knight) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
@@ -58,7 +58,7 @@ func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []bas
 	}
 }
 
-// rook launches piece's (rook) arrows on a board.
+// rook launches piece's (rook) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func rook(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
@@ -75,7 +75,7 @@ func rook(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 	return d
 }
 
-// bishopRect launches piece's (bishop) arrows on a board.
+// bishopRect launches piece's (bishop) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func bishop(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
@@ -96,7 +96,7 @@ func bishop(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []bas
 	return d
 }
 
-// queen launches piece's (queen) arrows on a board.
+// queen launches piece's (queen) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func queen(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
