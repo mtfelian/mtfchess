@@ -5,6 +5,15 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 )
 
+// knight launches piece's (knight) arrows on a board.
+// Set excludeCheckExpose to true to exclude check exposing path.
+// Returns a slice of destination coords.
+func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	d := []base.ICoord{}
+	// todo
+	return d
+}
+
 // rook launches piece's (rook) arrows on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.

@@ -38,14 +38,16 @@ func (p *Knight) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 		if to.Out(board) {
 			continue
 		}
+
+		if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
+			continue
+		}
+
 		// check that destination cell isn't contains a piece of same colour
 		if dstPiece := board.Cell(to).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
 			continue
 		}
 
-		if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-			continue
-		}
 		d = append(d, to)
 	}
 
