@@ -72,7 +72,7 @@ func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
 
 // Copy a piece
 func (p *King) Copy() base.IPiece {
-	return &Knight{
+	return &King{
 		Piece: p.Piece.Copy(),
 	}
 }
