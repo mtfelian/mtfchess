@@ -95,4 +95,17 @@ var _ = Describe("King test", func() {
 		Expect(b.Piece(br.Coord())).To(Equal(br))
 		Expect(b.Piece(bk.Coord())).To(Equal(bk))
 	})
+
+	It("can't go into same cell (skip move)", func() {
+		wk, bk, br := piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
+		b.PlacePiece(rect.Coord{2, 4}, wk)
+		b.PlacePiece(rect.Coord{4, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 5}, br)
+
+		c := wk.Coord()
+		Expect(b.MakeMove(c, wk)).To(BeFalse(), "performed a move into same cell!")
+		Expect(b.Piece(c)).To(Equal(wk))
+		Expect(b.Piece(br.Coord())).To(Equal(br))
+		Expect(b.Piece(bk.Coord())).To(Equal(bk))
+	})
 })

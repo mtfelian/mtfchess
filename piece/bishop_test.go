@@ -84,14 +84,20 @@ var _ = Describe("Bishop test", func() {
 		testReset()
 
 		boardCopy = b.Copy()
-		destinations := rect.NewCoords([]base.ICoord{rect.Coord{5, 6}, rect.Coord{2, 2}})
+		destinations := rect.NewCoords([]base.ICoord{rect.Coord{5, 6}, rect.Coord{2, 2}, wb.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wb.Coord()
 			Expect(b.MakeMove(d, wb)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
 			Expect(b.Piece(c)).To(Equal(wb))
-			// check destination cell to be empty
-			Expect(b.Piece(d)).To(BeNil())
+
+			// check that destination cell was not changed
+			if boardCopy.Piece(d) == nil {
+				Expect(b.Piece(d)).To(BeNil())
+			} else {
+				Expect(b.Piece(d)).To(Equal(boardCopy.Piece(d)))
+			}
+
 			// check another cell to contain another piece
 			Expect(b.Piece(br.Coord())).To(Equal(br))
 
