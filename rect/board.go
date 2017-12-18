@@ -192,8 +192,6 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 	return pairs
 }
 
-// todo implement other pieces except knight, to implement EP captures or diag captures like pawns, use move history and board
-
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
 func NewEmptyBoard(i, j int) *Board {
 	b := &Board{}
@@ -201,3 +199,21 @@ func NewEmptyBoard(i, j int) *Board {
 	b.createCells()
 	return b
 }
+
+/*
+todo to implement:
+  - pawn piece;
+  - with board options:
+    - pawn moving by two cells;
+    - EP, when a pawn goes by two cells, if at end of that move there is an opponent's pawn(s) by the side of the
+      destination cell, memorize side pawns' coords in board, and clean it at next move (can set again to different
+      pawns at the end of the same move);
+      - rework InCheck() detection by simply keeping kings' coords always in board like with pawns' EP;
+    - castling (some work with rooks memorizing like in EP and side cells check);
+    - pawn promotion (exchanging one piece with another);
+    - 3-fold repetition draw rule;
+    - 50 moves draw rule;
+  - returning legal moves in algebraic notation;
+  - stalemate detection (no check and no legal moves);
+  - checkmate detection (check and no legal moves).
+*/
