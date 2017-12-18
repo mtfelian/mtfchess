@@ -5,46 +5,46 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 )
 
-// knight launches piece's (knight) arrows on a board.
+// knightRect launches piece's (knight) arrows on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func knightRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	d := []base.ICoord{}
 	// todo
 	return d
 }
 
-// rook launches piece's (rook) arrows on a board.
+// rookRect launches piece's (rook) arrows on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func rook(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func rookRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	d := []base.ICoord{}
-	d = append(d, east(piece, board, excludeCheckExpose)...)
-	d = append(d, west(piece, board, excludeCheckExpose)...)
-	d = append(d, north(piece, board, excludeCheckExpose)...)
-	d = append(d, south(piece, board, excludeCheckExpose)...)
+	d = append(d, eastRect(piece, board, excludeCheckExpose)...)
+	d = append(d, westRect(piece, board, excludeCheckExpose)...)
+	d = append(d, northRect(piece, board, excludeCheckExpose)...)
+	d = append(d, southRect(piece, board, excludeCheckExpose)...)
 	return d
 }
 
-// bishop launches piece's (bishop) arrows on a board.
+// bishopRect launches piece's (bishop) arrows on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func bishop(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func bishopRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	d := []base.ICoord{}
-	d = append(d, nw(piece, board, excludeCheckExpose)...)
-	d = append(d, ne(piece, board, excludeCheckExpose)...)
-	d = append(d, sw(piece, board, excludeCheckExpose)...)
-	d = append(d, se(piece, board, excludeCheckExpose)...)
+	d = append(d, nwRect(piece, board, excludeCheckExpose)...)
+	d = append(d, neRect(piece, board, excludeCheckExpose)...)
+	d = append(d, swRect(piece, board, excludeCheckExpose)...)
+	d = append(d, seRect(piece, board, excludeCheckExpose)...)
 	return d
 }
 
-// queen launches piece's (queen) arrows on a board.
+// queenRect launches piece's (queen) arrows on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func queen(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func queenRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	d := []base.ICoord{}
-	d = append(d, rook(piece, board, excludeCheckExpose)...)
-	d = append(d, bishop(piece, board, excludeCheckExpose)...)
+	d = append(d, rookRect(piece, board, excludeCheckExpose)...)
+	d = append(d, bishopRect(piece, board, excludeCheckExpose)...)
 	return d
 }
 
@@ -61,10 +61,10 @@ func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoor
 	return false
 }
 
-// east launches piece's arrow to the east (x increasing) on a board.
+// eastRect launches piece's arrow to the east (x increasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func east(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func eastRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	pX, bW := piece.Coord().(rect.Coord).X, board.Dim().(rect.Coord).X
 	result := []base.ICoord{}
 	for x := 1; x <= bW-pX; x++ {
@@ -79,10 +79,10 @@ func east(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 	return result
 }
 
-// west launches piece's arrow to the west (x decreasing) on a board.
+// westRect launches piece's arrow to the west (x decreasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func west(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func westRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	pX := piece.Coord().(rect.Coord).X
 	result := []base.ICoord{}
 	for x := -1; x >= 1-pX; x-- {
@@ -97,10 +97,10 @@ func west(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 	return result
 }
 
-// north launches piece's arrow to the north (y increasing) on a board.
+// northRect launches piece's arrow to the north (y increasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func north(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func northRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	result := []base.ICoord{}
 	for y := 1; y <= bH-pY; y++ {
@@ -115,10 +115,10 @@ func north(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base
 	return result
 }
 
-// south launches piece's arrow to the south (y decreasing) on a board.
+// southRect launches piece's arrow to the south (y decreasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func south(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func southRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	pY := piece.Coord().(rect.Coord).Y
 	result := []base.ICoord{}
 	for y := -1; y >= 1-pY; y-- {
@@ -133,10 +133,10 @@ func south(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base
 	return result
 }
 
-// nw launches piece's arrow to the north-west (x decreasing, y increasing) on a board.
+// nwRect launches piece's arrow to the north-west (x decreasing, y increasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func nw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func nwRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	pX := piece.Coord().(rect.Coord).X
 	result := []base.ICoord{}
@@ -152,10 +152,10 @@ func nw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.IC
 	return result
 }
 
-// ne launches piece's arrow to the north-east (x increasing, y increasing) on a board.
+// neRect launches piece's arrow to the north-east (x increasing, y increasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func ne(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func neRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	pX, bW := piece.Coord().(rect.Coord).X, board.Dim().(rect.Coord).X
 	result := []base.ICoord{}
@@ -171,10 +171,10 @@ func ne(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.IC
 	return result
 }
 
-// sw launches piece's arrow to the south-west (x decreasing, y decreasing) on a board.
+// swRect launches piece's arrow to the south-west (x decreasing, y decreasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func sw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func swRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	pX, pY := piece.Coord().(rect.Coord).X, piece.Coord().(rect.Coord).Y
 	result := []base.ICoord{}
 	for x, y := -1, -1; x >= 1-pX && y >= 1-pY; x, y = x-1, y-1 {
@@ -189,10 +189,10 @@ func sw(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.IC
 	return result
 }
 
-// se launches piece's arrow to the south-east (x increasing, y decreasing) on a board.
+// seRect launches piece's arrow to the south-east (x increasing, y decreasing) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func se(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+func seRect(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	pX, pY := piece.Coord().(rect.Coord).X, piece.Coord().(rect.Coord).Y
 	bW := board.Dim().(rect.Coord).X
 	result := []base.ICoord{}

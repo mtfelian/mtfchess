@@ -25,7 +25,7 @@ func (p *Bishop) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		d = bishop(p, board, excludeCheckExpose)
+		d = bishopRect(p, board, excludeCheckExpose)
 	default:
 		panic("invalid coord type")
 	}

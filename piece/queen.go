@@ -25,7 +25,7 @@ func (p *Queen) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		d = queen(p, board, excludeCheckExpose)
+		d = queenRect(p, board, excludeCheckExpose)
 	default:
 		panic("invalid coord type")
 	}
