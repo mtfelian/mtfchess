@@ -37,10 +37,10 @@ func rook(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 	d := []base.ICoord{}
 	switch b := board.(type) {
 	case *rect.Board:
-		d = append(d, east(piece, b, excludeCheckExpose)...)
-		d = append(d, west(piece, b, excludeCheckExpose)...)
-		d = append(d, north(piece, b, excludeCheckExpose)...)
-		d = append(d, south(piece, b, excludeCheckExpose)...)
+		d = append(d, east(piece, b, excludeCheckExpose, b.Dim().(rect.Coord).X-1)...)
+		d = append(d, west(piece, b, excludeCheckExpose, b.Dim().(rect.Coord).X-1)...)
+		d = append(d, north(piece, b, excludeCheckExpose, b.Dim().(rect.Coord).Y-1)...)
+		d = append(d, south(piece, b, excludeCheckExpose, b.Dim().(rect.Coord).Y-1)...)
 	default:
 		panic("invalid coord type")
 	}
@@ -54,10 +54,14 @@ func bishop(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []bas
 	d := []base.ICoord{}
 	switch b := board.(type) {
 	case *rect.Board:
-		d = append(d, northWest(piece, b, excludeCheckExpose)...)
-		d = append(d, northEast(piece, b, excludeCheckExpose)...)
-		d = append(d, southWest(piece, b, excludeCheckExpose)...)
-		d = append(d, southEast(piece, b, excludeCheckExpose)...)
+		max, h := b.Dim().(rect.Coord).X, b.Dim().(rect.Coord).Y
+		if h > max {
+			max = h
+		}
+		d = append(d, northWest(piece, b, excludeCheckExpose, max-1)...)
+		d = append(d, northEast(piece, b, excludeCheckExpose, max-1)...)
+		d = append(d, southWest(piece, b, excludeCheckExpose, max-1)...)
+		d = append(d, southEast(piece, b, excludeCheckExpose, max-1)...)
 	default:
 		panic("invalid coord type")
 	}
