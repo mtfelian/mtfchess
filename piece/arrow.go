@@ -5,6 +5,22 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 )
 
+// inOneStep returns legal moves for pieces which move in one step, like knight and king
+func inOneStep(piece base.IPiece, board base.IBoard, excludeCheckExpose bool, o []base.ICoord) []base.ICoord {
+	result := []base.ICoord{}
+	for i := range o {
+		to := piece.Coord().Add(o[i])
+		if to.OutOf(board) {
+			continue
+		}
+		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			continue
+		}
+		stroke(to, board, piece, &result) // here should not break even if true!
+	}
+	return result
+}
+
 // stroke returns true if mine imaginary arrow stroke some piece on coords on board, memorizing it's path
 // it returns false if an imaginary arrow still flying
 func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoord) bool {
@@ -16,6 +32,18 @@ func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoor
 	}
 	*path = append(*path, to)
 	return false
+}
+
+// king launches piece's (king) arrows on a board.
+// Set excludeCheckExpose to true to exclude check exposing path.
+// Returns a slice of destination coords.
+func king(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
+	switch b := board.(type) {
+	case *rect.Board:
+		return likeKing(piece, b, excludeCheckExpose)
+	default:
+		panic("invalid coord type")
+	}
 }
 
 // knight launches piece's (knight) arrows on a board.

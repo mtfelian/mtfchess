@@ -21,8 +21,8 @@ func (c Coord) Add(o base.ICoord) base.ICoord {
 	return Coord{X: c.X + o.(Coord).X, Y: c.Y + o.(Coord).Y}
 }
 
-// Out returns true if c is a coords out of board
-func (c Coord) Out(b base.IBoard) bool {
+// OutOf returns true if c is a coords out of board
+func (c Coord) OutOf(b base.IBoard) bool {
 	return c.X < 1 || c.Y < 1 || c.X > b.Dim().(Coord).X || c.Y > b.Dim().(Coord).Y
 }
 

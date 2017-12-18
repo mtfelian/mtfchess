@@ -7,60 +7,28 @@ import (
 )
 
 // King is a chess king
-type King struct {
-	base.Piece
-}
+type King struct{ base.Piece }
 
 // NewKing creates new king with colour
-func NewKing(colour Colour) base.IPiece {
-	return &King{
-		Piece: base.NewPiece(colour, "king", "K♔♚"),
-	}
-}
+func NewKing(colour Colour) base.IPiece { return &King{Piece: base.NewPiece(colour, "king", "K♔♚")} }
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
 func (p *King) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
-	o, d := []base.ICoord{}, []base.ICoord{}
-
+	coords := king(p, board, excludeCheckExpose)
 	switch board.Dim().(type) {
 	case rect.Coord:
-		o = []base.ICoord{
-			rect.Coord{-1, -1}, rect.Coord{-1, 0}, rect.Coord{-1, 1}, rect.Coord{0, -1},
-			rect.Coord{0, 1}, rect.Coord{1, -1}, rect.Coord{1, 0}, rect.Coord{1, 1},
-		}
+		return rect.NewCoords(coords)
 	default:
-		panic("invalid coord type")
+		panic("invalid coords type")
 	}
-
-	for i := 0; i < len(o); i++ {
-		to := p.Coord().Add(o[i])
-		if to.Out(board) {
-			continue
-		}
-		// check that destination cell isn't contains a piece of same colour
-		if dstPiece := board.Cell(to).Piece(); dstPiece != nil && dstPiece.Colour() == p.Colour() {
-			continue
-		}
-
-		if excludeCheckExpose && InCheck(p.Project(to, board), p.Colour()) {
-			continue
-		}
-		d = append(d, to)
-	}
-
-	return rect.NewCoords(d)
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
-func (p *King) Attacks(b base.IBoard) base.ICoords {
-	return p.dst(b, false)
-}
+func (p *King) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
 
 // Destinations returns a slice of cells coords, making it's legal moves
-func (p *King) Destinations(b base.IBoard) base.ICoords {
-	return p.dst(b, true)
-}
+func (p *King) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
 func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
@@ -71,8 +39,4 @@ func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
 }
 
 // Copy a piece
-func (p *King) Copy() base.IPiece {
-	return &King{
-		Piece: p.Piece.Copy(),
-	}
-}
+func (p *King) Copy() base.IPiece { return &King{Piece: p.Piece.Copy()} }

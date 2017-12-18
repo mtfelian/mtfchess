@@ -8,23 +8,24 @@ import (
 // likeKnight21 launches piece's arrow like knight (+/- 2, rot90, +/- 1) on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
-func likeKnight21(piece base.IPiece, board *rect.Board, excludeCheckExpose bool) []base.ICoord {
-	o := []base.ICoord{
+func likeKnight21(me base.IPiece, board *rect.Board, excludeCheckExpose bool) []base.ICoord {
+	offsets := []base.ICoord{
 		rect.Coord{-2, -1}, rect.Coord{-2, 1}, rect.Coord{-1, -2}, rect.Coord{-1, 2},
 		rect.Coord{1, -2}, rect.Coord{1, 2}, rect.Coord{2, -1}, rect.Coord{2, 1},
 	}
-	result := []base.ICoord{}
-	for i := range o {
-		to := piece.Coord().Add(o[i])
-		if to.Out(board) {
-			continue
-		}
-		if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
-			continue
-		}
-		stroke(to, board, piece, &result) // here should not break even if true!
+	return inOneStep(me, board, excludeCheckExpose, offsets)
+}
+
+// likeKing launches piece's arrow like king (+/-1 around) on a board.
+// It is equivalent to sequently append() all the directions with 'max' set to 1, but this works much faster.
+// Set excludeCheckExpose to true to exclude check exposing path.
+// Returns a slice of destination coords.
+func likeKing(me base.IPiece, board *rect.Board, excludeCheckExpose bool) []base.ICoord {
+	offsets := []base.ICoord{
+		rect.Coord{-1, -1}, rect.Coord{-1, 0}, rect.Coord{-1, 1}, rect.Coord{0, -1},
+		rect.Coord{0, 1}, rect.Coord{1, -1}, rect.Coord{1, 0}, rect.Coord{1, 1},
 	}
-	return result
+	return inOneStep(me, board, excludeCheckExpose, offsets)
 }
 
 // east launches piece's arrow to the east (x increasing) on a board.
