@@ -25,10 +25,7 @@ func (p *Bishop) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		d = append(d, ne(p, board, excludeCheckExpose)...)
-		d = append(d, nw(p, board, excludeCheckExpose)...)
-		d = append(d, se(p, board, excludeCheckExpose)...)
-		d = append(d, sw(p, board, excludeCheckExpose)...)
+		d = bishop(p, board, excludeCheckExpose)
 	default:
 		panic("invalid coord type")
 	}

@@ -104,8 +104,7 @@ func (b *Board) Copy() base.IBoard {
 
 // Set changes b to b1
 func (b *Board) Set(b1 base.IBoard) {
-	b.SetDim(b1.Dim())
-	b.SetCells(b1.Cells())
+	*b = *b1.Copy().(*Board)
 }
 
 // MakeMove makes move with piece to coords (x,y)

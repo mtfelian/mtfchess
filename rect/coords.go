@@ -13,7 +13,7 @@ type Coord struct {
 
 // String makes RectCoord to implement fmt.Stringer
 func (c Coord) String() string {
-	return fmt.Sprintf("%d,%d", c.X, c.Y)
+	return fmt.Sprintf("(%d,%d)", c.X, c.Y)
 }
 
 // Add adds o to c and returns the sum as a result

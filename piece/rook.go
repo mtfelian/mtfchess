@@ -25,10 +25,7 @@ func (p *Rook) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
 
 	switch board.Dim().(type) {
 	case rect.Coord:
-		d = append(d, east(p, board, excludeCheckExpose)...)
-		d = append(d, west(p, board, excludeCheckExpose)...)
-		d = append(d, north(p, board, excludeCheckExpose)...)
-		d = append(d, south(p, board, excludeCheckExpose)...)
+		d = rook(p, board, excludeCheckExpose)
 	default:
 		panic("invalid coord type")
 	}

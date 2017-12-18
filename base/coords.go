@@ -61,7 +61,7 @@ func (c *Coords) Equals(to ICoords) bool {
 func (c *Coords) String() string {
 	s := "("
 	for i := range c.slice {
-		s += "(" + c.slice[i].String() + "),"
+		s += c.slice[i].String() + ","
 	}
 	return strings.TrimRight(s, ",") + ")"
 }
