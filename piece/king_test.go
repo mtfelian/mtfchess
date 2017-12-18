@@ -18,9 +18,9 @@ var _ = Describe("King test", func() {
 
 	It("generates moves", func() {
 		wk, wn, bn := piece.NewKing(White), piece.NewKnight(White), piece.NewKnight(Black)
-		b.PlacePiece(rect.Coord{X: 2, Y: 2}, wk)
-		b.PlacePiece(rect.Coord{X: 2, Y: 3}, wn)
-		b.PlacePiece(rect.Coord{X: 1, Y: 1}, bn)
+		b.PlacePiece(rect.Coord{2, 2}, wk)
+		b.PlacePiece(rect.Coord{2, 3}, wn)
+		b.PlacePiece(rect.Coord{1, 1}, bn)
 		d := wk.Destinations(b)
 		Expect(d.Len()).To(Equal(6))
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{
@@ -34,9 +34,9 @@ var _ = Describe("King test", func() {
 		var boardCopy base.IBoard
 		testReset := func() {
 			wk, bk, br = piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
-			b.PlacePiece(rect.Coord{X: 2, Y: 3}, wk)
-			b.PlacePiece(rect.Coord{X: 4, Y: 3}, bk)
-			b.PlacePiece(rect.Coord{X: 4, Y: 5}, br)
+			b.PlacePiece(rect.Coord{2, 3}, wk)
+			b.PlacePiece(rect.Coord{4, 3}, bk)
+			b.PlacePiece(rect.Coord{4, 5}, br)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}
@@ -63,9 +63,9 @@ var _ = Describe("King test", func() {
 
 	It("can't go under check of rook", func() {
 		wk, bk, br := piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
-		b.PlacePiece(rect.Coord{X: 2, Y: 4}, wk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 3}, bk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 5}, br)
+		b.PlacePiece(rect.Coord{2, 4}, wk)
+		b.PlacePiece(rect.Coord{4, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 5}, br)
 
 		d, c := rect.Coord{2, 5}, wk.Coord()
 		Expect(b.MakeMove(d, wk)).To(BeFalse(), "gone under rook's check!")
@@ -84,9 +84,9 @@ var _ = Describe("King test", func() {
 
 	It("can't go to a opponent's king neighbour cell", func() {
 		wk, bk, br := piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
-		b.PlacePiece(rect.Coord{X: 2, Y: 4}, wk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 3}, bk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 5}, br)
+		b.PlacePiece(rect.Coord{2, 4}, wk)
+		b.PlacePiece(rect.Coord{4, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 5}, br)
 
 		d, c := rect.Coord{3, 4}, wk.Coord()
 		Expect(b.MakeMove(d, wk)).To(BeFalse(), "two kings on a neighbour cells!")

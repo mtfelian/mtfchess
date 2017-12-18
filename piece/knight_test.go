@@ -16,9 +16,9 @@ var _ = Describe("Knight test", func() {
 
 	It("generates moves", func() {
 		wn1, wn2, bn := piece.NewKnight(White), piece.NewKnight(White), piece.NewKnight(Black)
-		b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn1)
-		b.PlacePiece(rect.Coord{X: 3, Y: 3}, wn2)
-		b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
+		b.PlacePiece(rect.Coord{2, 1}, wn1)
+		b.PlacePiece(rect.Coord{3, 3}, wn2)
+		b.PlacePiece(rect.Coord{4, 2}, bn)
 
 		d := wn1.Destinations(b)
 		Expect(d.Len()).To(Equal(2))
@@ -30,8 +30,8 @@ var _ = Describe("Knight test", func() {
 		var boardCopy base.IBoard
 		testReset := func() {
 			wn, bn = piece.NewKnight(White), piece.NewKnight(Black)
-			b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn)
-			b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
+			b.PlacePiece(rect.Coord{2, 1}, wn)
+			b.PlacePiece(rect.Coord{4, 2}, bn)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}
@@ -56,13 +56,13 @@ var _ = Describe("Knight test", func() {
 		}
 	})
 
-	It("makes illegal moves", func() {
+	It("don't makes illegal moves", func() {
 		var wn, bn base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {
 			wn, bn = piece.NewKnight(White), piece.NewKnight(Black)
-			b.PlacePiece(rect.Coord{X: 2, Y: 1}, wn)
-			b.PlacePiece(rect.Coord{X: 4, Y: 2}, bn)
+			b.PlacePiece(rect.Coord{2, 1}, wn)
+			b.PlacePiece(rect.Coord{4, 2}, bn)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}

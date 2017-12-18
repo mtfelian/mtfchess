@@ -17,10 +17,10 @@ var _ = Describe("Check test", func() {
 	It("is white in check", func() {
 		wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
 		wk, bk := piece.NewKing(White), piece.NewKing(Black)
-		b.PlacePiece(rect.Coord{X: 1, Y: 1}, wk)
-		b.PlacePiece(rect.Coord{X: 3, Y: 2}, bn)
-		b.PlacePiece(rect.Coord{X: 5, Y: 4}, bk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 4}, wn)
+		b.PlacePiece(rect.Coord{1, 1}, wk)
+		b.PlacePiece(rect.Coord{3, 2}, bn)
+		b.PlacePiece(rect.Coord{5, 4}, bk)
+		b.PlacePiece(rect.Coord{4, 4}, wn)
 
 		Expect(piece.InCheck(b, White)).To(BeTrue())
 		Expect(piece.InCheck(b, Black)).To(BeFalse())
@@ -29,10 +29,10 @@ var _ = Describe("Check test", func() {
 	It("is black in check", func() {
 		wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
 		wk, bk := piece.NewKing(White), piece.NewKing(Black)
-		b.PlacePiece(rect.Coord{X: 1, Y: 1}, bk)
-		b.PlacePiece(rect.Coord{X: 3, Y: 2}, wn)
-		b.PlacePiece(rect.Coord{X: 5, Y: 4}, wk)
-		b.PlacePiece(rect.Coord{X: 4, Y: 4}, bn)
+		b.PlacePiece(rect.Coord{1, 1}, bk)
+		b.PlacePiece(rect.Coord{3, 2}, wn)
+		b.PlacePiece(rect.Coord{5, 4}, wk)
+		b.PlacePiece(rect.Coord{4, 4}, bn)
 
 		Expect(piece.InCheck(b, White)).To(BeFalse())
 		Expect(piece.InCheck(b, Black)).To(BeTrue())
@@ -40,9 +40,9 @@ var _ = Describe("Check test", func() {
 
 	It("can't expose check", func() {
 		wn, br, wk := piece.NewKnight(White), piece.NewRook(Black), piece.NewKing(White)
-		b.PlacePiece(rect.Coord{X: 3, Y: 2}, br)
-		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wn)
-		b.PlacePiece(rect.Coord{X: 5, Y: 2}, wk)
+		b.PlacePiece(rect.Coord{3, 2}, br)
+		b.PlacePiece(rect.Coord{4, 2}, wn)
+		b.PlacePiece(rect.Coord{5, 2}, wk)
 
 		d, c := rect.Coord{2, 1}, wn.Coord()
 		Expect(b.MakeMove(d, wn)).To(BeFalse(), "check exposed!")
@@ -56,9 +56,9 @@ var _ = Describe("Check test", func() {
 
 	It("can capture at pin", func() {
 		wr, bn, wk := piece.NewRook(White), piece.NewKnight(Black), piece.NewKing(White)
-		b.PlacePiece(rect.Coord{X: 3, Y: 2}, bn)
-		b.PlacePiece(rect.Coord{X: 4, Y: 2}, wr)
-		b.PlacePiece(rect.Coord{X: 5, Y: 2}, wk)
+		b.PlacePiece(rect.Coord{3, 2}, bn)
+		b.PlacePiece(rect.Coord{4, 2}, wr)
+		b.PlacePiece(rect.Coord{5, 2}, wk)
 
 		d, c := rect.Coord{3, 2}, wr.Coord()
 		Expect(b.MakeMove(d, wr)).To(BeTrue(), "can't capture at pin!")

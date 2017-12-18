@@ -28,14 +28,14 @@ var _ = Describe("Board test", func() {
 			wn1, wn2, wn3 = piece.NewKnight(White), piece.NewKnight(White), piece.NewKnight(White)
 			bn1, bn2, bn3 = piece.NewKnight(Black), piece.NewKnight(Black), piece.NewKnight(Black)
 			wk, bk = piece.NewKing(White), piece.NewKing(Black)
-			b.PlacePiece(rect.Coord{X: 1, Y: 1}, wn1)
-			b.PlacePiece(rect.Coord{X: 1, Y: 2}, wn2)
-			b.PlacePiece(rect.Coord{X: 3, Y: 4}, wn3)
-			b.PlacePiece(rect.Coord{X: 5, Y: 5}, bn1)
-			b.PlacePiece(rect.Coord{X: 5, Y: 6}, bn2)
-			b.PlacePiece(rect.Coord{X: 4, Y: 3}, bn3)
-			b.PlacePiece(rect.Coord{X: 2, Y: 1}, wk)
-			b.PlacePiece(rect.Coord{X: 5, Y: 4}, bk)
+			b.PlacePiece(rect.Coord{1, 1}, wn1)
+			b.PlacePiece(rect.Coord{1, 2}, wn2)
+			b.PlacePiece(rect.Coord{3, 4}, wn3)
+			b.PlacePiece(rect.Coord{5, 5}, bn1)
+			b.PlacePiece(rect.Coord{5, 6}, bn2)
+			b.PlacePiece(rect.Coord{4, 3}, bn3)
+			b.PlacePiece(rect.Coord{2, 1}, wk)
+			b.PlacePiece(rect.Coord{5, 4}, bk)
 		})
 		It("normally", func() {
 			filter := rect.PieceFilter{ // find all white knights
@@ -72,10 +72,10 @@ var _ = Describe("Board test", func() {
 		It("works", func() {
 			wn, bn := piece.NewKnight(White), piece.NewKnight(Black)
 			wk, bk := piece.NewKing(White), piece.NewKing(Black)
-			b.PlacePiece(rect.Coord{X: 1, Y: 1}, bk)
-			b.PlacePiece(rect.Coord{X: 2, Y: 4}, wn)
-			b.PlacePiece(rect.Coord{X: 5, Y: 5}, wk)
-			b.PlacePiece(rect.Coord{X: 4, Y: 4}, bn)
+			b.PlacePiece(rect.Coord{1, 1}, bk)
+			b.PlacePiece(rect.Coord{2, 4}, wn)
+			b.PlacePiece(rect.Coord{5, 5}, wk)
+			b.PlacePiece(rect.Coord{4, 4}, bn)
 
 			attackedByWhite := b.FindAttackedCellsBy(rect.PieceFilter{
 				PieceFilter: base.PieceFilter{Colours: []Colour{White}},
