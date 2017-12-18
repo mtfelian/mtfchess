@@ -17,9 +17,10 @@ func NewBishop(colour Colour) base.IPiece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if excludeCheckExpose is false then pairs leading to check-exposing moves also included
 func (p *Bishop) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
+	coords := bishop(p, board, excludeCheckExpose)
 	switch board.Dim().(type) {
 	case rect.Coord:
-		return rect.NewCoords(bishop(p, board, excludeCheckExpose))
+		return rect.NewCoords(coords)
 	default:
 		panic("invalid coords type")
 	}
