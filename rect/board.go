@@ -202,7 +202,7 @@ func NewEmptyBoard(i, j int) *Board {
 
 /*
 todo to implement:
-  - directions_rect.go: front() based on piece colour
+  - directions_rect.go: front(), frontDiag() based on piece colour
   - pawn piece (one cell front, capture by one front diag);
   - archbishop piece;
   - chancellor piece;
