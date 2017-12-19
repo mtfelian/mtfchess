@@ -40,7 +40,7 @@ func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoor
 func king(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	switch b := board.(type) {
 	case *rect.Board:
-		return likeKing(piece, b, excludeCheckExpose)
+		return append(leaper(1, 0, piece, b, excludeCheckExpose, 0), leaper(1, 1, piece, b, excludeCheckExpose, 0)...)
 	default:
 		panic("invalid coord type")
 	}
@@ -52,7 +52,7 @@ func king(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.
 func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
 	switch b := board.(type) {
 	case *rect.Board:
-		return likeKnight21(piece, b, excludeCheckExpose)
+		return leaper(1, 2, piece, b, excludeCheckExpose, 0)
 	default:
 		panic("invalid coord type")
 	}
@@ -62,28 +62,24 @@ func knight(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []bas
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func rook(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
-	d := []base.ICoord{}
 	switch b := board.(type) {
 	case *rect.Board:
 		return reader(1, 0, piece, b, excludeCheckExpose, 0, 0)
 	default:
 		panic("invalid coord type")
 	}
-	return d
 }
 
 // bishopRect launches piece's (bishop) beams on a board.
 // Set excludeCheckExpose to true to exclude check exposing path.
 // Returns a slice of destination coords.
 func bishop(piece base.IPiece, board base.IBoard, excludeCheckExpose bool) []base.ICoord {
-	d := []base.ICoord{}
 	switch b := board.(type) {
 	case *rect.Board:
 		return reader(1, 1, piece, b, excludeCheckExpose, 0, 0)
 	default:
 		panic("invalid coord type")
 	}
-	return d
 }
 
 // queen launches piece's (queen) beams on a board.

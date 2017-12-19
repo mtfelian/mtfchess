@@ -23,9 +23,10 @@ var _ = Describe("King test", func() {
 		b.PlacePiece(rect.Coord{1, 1}, bn)
 		d := wk.Destinations(b)
 		Expect(d.Len()).To(Equal(6))
+		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{
-			rect.Coord{1, 1}, rect.Coord{1, 2}, rect.Coord{1, 3},
-			rect.Coord{2, 1}, rect.Coord{3, 1}, rect.Coord{3, 3},
+			rect.Coord{1, 1}, rect.Coord{2, 1}, rect.Coord{3, 1},
+			rect.Coord{1, 2}, rect.Coord{1, 3}, rect.Coord{3, 3},
 		}))).To(BeTrue())
 	})
 

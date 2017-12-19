@@ -3,6 +3,7 @@ package piece_test
 import (
 	"sort"
 
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -31,13 +32,13 @@ var _ = Describe("Rook test", func() {
 		}))).To(BeTrue())
 	})
 
-	It("makes legal moves", func() {
+	FIt("makes legal moves", func() {
 		var wr, br base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {
 			wr, br = piece.NewRook(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 1}, wr)
-			b.PlacePiece(rect.Coord{4, 2}, br)
+			b.PlacePiece(rect.Coord{4, 1}, br)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}
@@ -48,14 +49,19 @@ var _ = Describe("Rook test", func() {
 
 		for destinations.HasNext() {
 			d, c := destinations.Next().(base.ICoord), wr.Coord()
+			fmt.Println(b)
 			Expect(b.MakeMove(d, wr)).To(BeTrue(), "failed at destination %d", destinations.I())
+			fmt.Println(b)
 			// check source cell to be empty
 			Expect(b.Piece(c)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wr))
+			fmt.Println(br.Coord())
 			if !br.Coord().Equals(d) { // if not capture
 				// then there should be another piece
 				Expect(b.Piece(br.Coord())).To(Equal(br))
+			} else {
+				Expect(br.Coord()).To(BeNil())
 			}
 
 			testReset()
