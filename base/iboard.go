@@ -8,12 +8,12 @@ type IBoard interface {
 	Cell(c ICoord) *Cell
 	Cells() ICells
 
-	Empty(at ICoord)
+	Empty(at ICoord) IBoard
 	Copy() IBoard
 	Set(b1 IBoard)
 
 	Piece(at ICoord) IPiece
-	PlacePiece(to ICoord, p IPiece)
+	PlacePiece(to ICoord, p IPiece) IBoard
 	MakeMove(to ICoord, piece IPiece) bool
 
 	FindPieces(f IPieceFilter) Pieces

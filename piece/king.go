@@ -32,10 +32,7 @@ func (p *King) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) 
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
 func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
-	newBoard := b.Copy()
-	newBoard.Empty(p.Coord())
-	newBoard.PlacePiece(to, p.Copy())
-	return newBoard
+	return b.Copy().Empty(p.Coord()).PlacePiece(to, p.Copy())
 }
 
 // Copy a piece

@@ -84,14 +84,16 @@ func (b *Board) Piece(at base.ICoord) base.IPiece {
 }
 
 // PlacePiece places piece at coords (x, y)
-func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) {
+func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
 	p.SetCoords(to)
 	b.Cell(to).SetPiece(p)
+	return b
 }
 
 // Empty removes piece at coords x, y
-func (b *Board) Empty(at base.ICoord) {
+func (b *Board) Empty(at base.ICoord) base.IBoard {
 	b.Cell(at).Empty()
+	return b
 }
 
 // Copy returns a pointer to a deep copy of a board
