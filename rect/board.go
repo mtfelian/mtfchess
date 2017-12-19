@@ -26,9 +26,9 @@ func (b Board) Y(y int) int {
 // String makes Board to implement Stringer
 func (b Board) String() string {
 	var s string
-	for _, row := range b.cells {
-		for _, cell := range row {
-			s += fmt.Sprintf("%s", cell)
+	for i := range b.cells {
+		for j := range b.cells[i] {
+			s += fmt.Sprintf("%s", b.cells[i][j])
 		}
 		s += "\n"
 	}
@@ -137,9 +137,9 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 // baseFindPieces finds and returns pieces by base.PieceFilter
 func (b *Board) baseFindPieces(f base.PieceFilter) base.Pieces {
 	pieces := base.Pieces{}
-	for _, row := range b.cells {
-		for _, cell := range row {
-			p := cell.Piece()
+	for i := range b.cells {
+		for j := range b.cells[i] {
+			p := b.cells[i][j].Piece()
 			if p == nil {
 				continue
 			}
@@ -186,8 +186,8 @@ func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
 // For ex., call b.FindAttackedCells(White) to get cell coords attacked by white pieces.
 func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 	pieces, pairs := b.FindPieces(f), NewCoords([]base.ICoord{})
-	for _, piece := range pieces {
-		attackedCoords := piece.Attacks(b)
+	for i := range pieces {
+		attackedCoords := pieces[i].Attacks(b)
 		for attackedCoords.HasNext() {
 			pair := attackedCoords.Next().(base.ICoord)
 			if !pairs.Contains(pair) {

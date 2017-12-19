@@ -46,6 +46,12 @@ var _ = Describe("Rook test", func() {
 		testReset()
 		boardCopy = b.Copy()
 		destinations := wr.Destinations(b)
+		sort.Sort(destinations)
+		Expect(destinations.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{1, 1}, rect.Coord{3, 1}, rect.Coord{4, 1},
+			rect.Coord{2, 2}, rect.Coord{2, 3}, rect.Coord{2, 4},
+			rect.Coord{2, 5}, rect.Coord{2, 6},
+		}))).To(BeTrue())
 
 		brCoord, wrCoord := br.Coord().Copy(), wr.Coord().Copy()
 		for destinations.HasNext() {

@@ -43,13 +43,17 @@ var _ = Describe("Knight test", func() {
 		testReset()
 		boardCopy = b.Copy()
 		destinations := wn.Destinations(b)
+		sort.Sort(destinations)
+		Expect(destinations.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{4, 2}, rect.Coord{1, 3}, rect.Coord{3, 3},
+		}))).To(BeTrue())
 
 		bqCoord, wnCoord := bq.Coord().Copy(), wn.Coord().Copy()
 		for destinations.HasNext() {
+			fmt.Println(b)
 			d := destinations.Next().(base.ICoord)
-			fmt.Printf(">>1 %s %s %p %p\n", wn.Coord(), bq.Coord(), wn, b.(*rect.Board))
 			Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
-			fmt.Printf(">>2 %s %s %p %p\n", wn.Coord(), bq.Coord(), wn, b.(*rect.Board))
+			fmt.Println(b)
 			// check source cell to be empty
 			Expect(b.Piece(wnCoord)).To(BeNil())
 			// check destination cell to contain new piece
