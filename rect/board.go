@@ -170,14 +170,14 @@ func (b *Board) FindPieces(pf base.IPieceFilter) base.Pieces {
 
 	f := pf.(PieceFilter)
 	r := base.Pieces{}
-	for _, p := range pieces {
-		if len(f.X) > 0 && !SliceContains(p.Coord().(Coord).X, f.X) {
+	for i := range pieces {
+		if len(f.X) > 0 && !SliceContains(pieces[i].Coord().(Coord).X, f.X) {
 			continue
 		}
-		if len(f.Y) > 0 && !SliceContains(p.Coord().(Coord).Y, f.Y) {
+		if len(f.Y) > 0 && !SliceContains(pieces[i].Coord().(Coord).Y, f.Y) {
 			continue
 		}
-		r = append(r, p)
+		r = append(r, pieces[i])
 	}
 	return r
 }

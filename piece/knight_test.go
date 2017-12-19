@@ -29,7 +29,7 @@ var _ = Describe("Knight test", func() {
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 2}, rect.Coord{1, 3}}))).To(BeTrue())
 	})
 
-	It("makes legal moves", func() {
+	FIt("makes legal moves", func() {
 		var wn, bq base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {

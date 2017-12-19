@@ -32,7 +32,7 @@ var _ = Describe("Rook test", func() {
 		}))).To(BeTrue())
 	})
 
-	It("makes legal moves", func() {
+	FIt("makes legal moves", func() {
 		var wr, br base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {
@@ -64,7 +64,7 @@ var _ = Describe("Rook test", func() {
 				// capturing piece's coords is destination
 				Expect(wr.Coord()).To(Equal(d))
 				// captured piece's coords is nil
-				// Expect(br.Coord()).To(BeNil()) todo fix
+				Expect(br.Coord()).To(BeNil()) //todo fix
 			}
 
 			testReset()
