@@ -114,16 +114,17 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	destinations := piece.Destinations(b)
 	for destinations.HasNext() {
 		d := destinations.Next().(base.ICoord)
-		if to.Equals(d) {
-			wasPiece := b.Cell(to).Piece()
-			if wasPiece != nil {
-				wasPiece.SetCoords(nil)
-			}
-			newBoard := piece.Project(to, b)
-			piece.SetCoords(to)
-			b.Set(newBoard)
-			return true
+		if !to.Equals(d) {
+			continue
 		}
+		wasPiece := b.Cell(to).Piece()
+		if wasPiece != nil {
+			wasPiece.SetCoords(nil)
+		}
+		newBoard := piece.Project(to, b)
+		piece.SetCoords(to)
+		b.Set(newBoard)
+		return true
 	}
 	return false
 }
