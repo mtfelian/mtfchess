@@ -47,17 +47,16 @@ var _ = Describe("Rook test", func() {
 		boardCopy = b.Copy()
 		destinations := wr.Destinations(b)
 
+		brCoord := br.Coord().Copy()
 		for destinations.HasNext() {
 			d, c := destinations.Next().(base.ICoord), wr.Coord()
-			fmt.Println(b)
 			Expect(b.MakeMove(d, wr)).To(BeTrue(), "failed at destination %d", destinations.I())
-			fmt.Println(b)
 			// check source cell to be empty
 			Expect(b.Piece(c)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wr))
-			fmt.Println(br.Coord())
-			if !br.Coord().Equals(d) { // if not capture
+			fmt.Println("@@", wr.Coord(), br.Coord())
+			if !brCoord.Equals(d) { // if not capture
 				// then there should be another piece
 				Expect(b.Piece(br.Coord())).To(Equal(br))
 			} else {

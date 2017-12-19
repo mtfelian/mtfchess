@@ -65,14 +65,15 @@ func inManySteps(piece base.IPiece, board base.IBoard, excludeCheckExpose bool, 
 		return oX >= 1-pX && oY >= 1-pY && oX <= bW-pX && oY <= bH-pY && (step < max || max == 0)
 	}
 	result := []base.ICoord{}
+offsets:
 	for i := range o {
 		for oX, oY, step := o[i].X, o[i].Y, 0; notOut(oX, oY, step); oX, oY, step = oX+o[i].X, oY+o[i].Y, step+1 {
 			to := piece.Coord().Add(rect.Coord{oX, oY})
 			if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
-				continue
+				continue offsets // check exposed, don't go further in that direction
 			}
 			if stroke(to, board, piece, &result) {
-				break
+				break offsets // capture occured, don't go further in that direction
 			}
 		}
 	}

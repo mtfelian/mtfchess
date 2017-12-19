@@ -121,7 +121,9 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		}
 		wasPiece := b.Cell(to).Piece()
 		if wasPiece != nil {
+			fmt.Println("!", wasPiece.Coord())
 			wasPiece.SetCoords(nil)
+			fmt.Println("!", wasPiece.Coord())
 		}
 		newBoard := piece.Project(to, b)
 		piece.SetCoords(to)

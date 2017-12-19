@@ -3,6 +3,7 @@ package piece_test
 import (
 	"sort"
 
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -53,6 +54,7 @@ var _ = Describe("Bishop test", func() {
 		boardCopy = b.Copy()
 		destinations := wb.Destinations(b)
 
+		brCoord := br.Coord().Copy()
 		Expect(destinations.Len()).To(Equal(7))
 		for destinations.HasNext() {
 			d, c := destinations.Next().(base.ICoord), wb.Coord()
@@ -61,9 +63,12 @@ var _ = Describe("Bishop test", func() {
 			Expect(b.Piece(c)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wb))
-			if !br.Coord().Equals(d) { // if not capture
+			fmt.Println("$$", wb.Coord(), br.Coord())
+			if !brCoord.Equals(d) { // if not capture
 				// then there should be another piece
 				Expect(b.Piece(br.Coord())).To(Equal(br))
+			} else {
+				Expect(br.Coord()).To(BeNil())
 			}
 
 			testReset()

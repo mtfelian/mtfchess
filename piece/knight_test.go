@@ -3,6 +3,7 @@ package piece_test
 import (
 	"sort"
 
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -28,7 +29,7 @@ var _ = Describe("Knight test", func() {
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 2}, rect.Coord{1, 3}}))).To(BeTrue())
 	})
 
-	It("makes legal moves", func() {
+	FIt("makes legal moves", func() {
 		var wn, bn base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {
@@ -51,10 +52,12 @@ var _ = Describe("Knight test", func() {
 			Expect(b.Piece(c)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wn))
-			// todo investigate why bn.Coord() here returns nil
+			fmt.Println(">>", wn.Coord(), bn.Coord())
 			if !bnCoord.Equals(d) { // if not capture
 				// then there should be another piece
 				Expect(b.Piece(bn.Coord())).To(Equal(bn))
+			} else {
+				Expect(bn.Coord()).To(BeNil())
 			}
 
 			testReset()

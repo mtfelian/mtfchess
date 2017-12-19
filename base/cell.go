@@ -53,5 +53,5 @@ func (s Cell) String() string {
 	if s.piece != nil {
 		p = fmt.Sprintf("%s", s.piece)
 	}
-	return fmt.Sprintf("%4d[%s](%s)", s.num, p, s.coord)
+	return fmt.Sprintf("%4d[%s]%s", s.num, p, s.coord)
 }

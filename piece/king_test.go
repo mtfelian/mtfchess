@@ -3,6 +3,7 @@ package piece_test
 import (
 	"sort"
 
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -36,8 +37,8 @@ var _ = Describe("King test", func() {
 		testReset := func() {
 			wk, bk, br = piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wk)
-			b.PlacePiece(rect.Coord{4, 3}, bk)
-			b.PlacePiece(rect.Coord{4, 5}, br)
+			b.PlacePiece(rect.Coord{3, 4}, br)
+			b.PlacePiece(rect.Coord{4, 2}, bk)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}
@@ -46,6 +47,8 @@ var _ = Describe("King test", func() {
 		boardCopy = b.Copy()
 		destinations := wk.Destinations(b)
 
+		brCoord := br.Coord().Copy()
+		fmt.Println(destinations)
 		for destinations.HasNext() {
 			d, c := destinations.Next().(base.ICoord), wk.Coord()
 			Expect(b.MakeMove(d, wk)).To(BeTrue(), "failed at destination %d", destinations.I())
@@ -53,9 +56,12 @@ var _ = Describe("King test", func() {
 			Expect(b.Piece(c)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wk))
-			if !bk.Coord().Equals(d) { // if not capture
+			fmt.Println("%%", wk.Coord(), br.Coord())
+			if !brCoord.Equals(d) { // if not capture
 				// then there should be another piece
-				Expect(b.Piece(bk.Coord())).To(Equal(bk))
+				Expect(b.Piece(br.Coord())).To(Equal(br))
+			} else {
+				Expect(br.Coord()).To(BeNil())
 			}
 
 			testReset()
