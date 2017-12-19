@@ -2,6 +2,7 @@ package piece
 
 import (
 	"github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/rect"
 )
 
@@ -26,6 +27,24 @@ func likeKing(me base.IPiece, board *rect.Board, excludeCheckExpose bool) []base
 		rect.Coord{0, 1}, rect.Coord{1, -1}, rect.Coord{1, 0}, rect.Coord{1, 1},
 	}
 	return inOneStep(me, board, excludeCheckExpose, offsets)
+}
+
+// front acts like north() for White pieces and like south() for Black pieces
+func front(piece base.IPiece, board *rect.Board, excludeCheckExpose bool, max int) []base.ICoord {
+	return map[Colour]func(base.IPiece, *rect.Board, bool, int) []base.ICoord{
+		White: north,
+		Black: south,
+	}[piece.Colour()](piece, board, excludeCheckExpose, max)
+}
+
+// frontDiag acts like northWest()+northWest() for White pieces and like southWest()+southEast() for Black pieces
+func frontDiag(piece base.IPiece, board *rect.Board, excludeCheckExpose bool, max int) []base.ICoord {
+	funcs := map[Colour][2]func(base.IPiece, *rect.Board, bool, int) []base.ICoord{
+		White: {northWest, northEast},
+		Black: {southWest, southEast},
+	}[piece.Colour()]
+	return append(funcs[0](piece, board, excludeCheckExpose, max),
+		funcs[1](piece, board, excludeCheckExpose, max)...)
 }
 
 // east launches piece's beam to the east (x increasing) on a board.
