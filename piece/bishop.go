@@ -7,7 +7,7 @@ import (
 )
 
 // Bishop is a chess bishop
-type Bishop struct{ base.Piece }
+type Bishop struct{ *base.Piece }
 
 // NewBishop creates new bishop with colour
 func NewBishop(colour Colour) base.IPiece {

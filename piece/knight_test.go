@@ -29,13 +29,13 @@ var _ = Describe("Knight test", func() {
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 2}, rect.Coord{1, 3}}))).To(BeTrue())
 	})
 
-	FIt("makes legal moves", func() {
-		var wn, bn base.IPiece
+	It("makes legal moves", func() {
+		var wn, bq base.IPiece
 		var boardCopy base.IBoard
 		testReset := func() {
-			wn, bn = piece.NewKnight(White), piece.NewKnight(Black)
+			wn, bq = piece.NewKnight(White), piece.NewQueen(Black)
 			b.PlacePiece(rect.Coord{2, 1}, wn)
-			b.PlacePiece(rect.Coord{4, 2}, bn)
+			b.PlacePiece(rect.Coord{4, 2}, bq)
 			if boardCopy != nil {
 				b.Set(boardCopy)
 			}
@@ -44,20 +44,24 @@ var _ = Describe("Knight test", func() {
 		boardCopy = b.Copy()
 		destinations := wn.Destinations(b)
 
-		bnCoord := bn.Coord().Copy()
+		bqCoord, wnCoord := bq.Coord().Copy(), wn.Coord().Copy()
 		for destinations.HasNext() {
-			d, c := destinations.Next().(base.ICoord), wn.Coord()
+			d := destinations.Next().(base.ICoord)
+			fmt.Printf(">>1 %s %s %p %p\n", wn.Coord(), bq.Coord(), wn, b.(*rect.Board))
 			Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
+			fmt.Printf(">>2 %s %s %p %p\n", wn.Coord(), bq.Coord(), wn, b.(*rect.Board))
 			// check source cell to be empty
-			Expect(b.Piece(c)).To(BeNil())
+			Expect(b.Piece(wnCoord)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wn))
-			fmt.Println(">>", wn.Coord(), bn.Coord())
-			if !bnCoord.Equals(d) { // if not capture
-				// then there should be another piece
-				Expect(b.Piece(bn.Coord())).To(Equal(bn))
-			} else {
-				Expect(bn.Coord()).To(BeNil())
+			if !bqCoord.Equals(d) { // if not capture
+				// not captured piece still stands
+				Expect(b.Piece(bqCoord)).To(Equal(bq))
+			} else { // capture
+				// capturing piece's coords is destination
+				Expect(wn.Coord()).To(Equal(d))
+				// captured piece's coords is nil
+				Expect(bq.Coord()).To(BeNil())
 			}
 
 			testReset()

@@ -15,12 +15,12 @@ type Piece struct {
 }
 
 // NewPiece creates new base piece with colour
-func NewPiece(colour Colour, name, literals string) Piece {
+func NewPiece(colour Colour, name, literals string) *Piece {
 	if utf8.RuneCountInString(literals) != 3 {
 		cli.Println("{R|Invalid literals: %s{0|", literals)
 		literals = "?"
 	}
-	return Piece{
+	return &Piece{
 		colour:   colour,
 		name:     name,
 		literals: literals,
@@ -57,11 +57,12 @@ func (p *Piece) Coord() ICoord {
 }
 
 // Copy returns a copy of a BasePiece
-func (p *Piece) Copy() Piece {
-	newPiece := Piece{
+func (p *Piece) Copy() *Piece {
+	newPiece := &Piece{
 		colour:   p.colour,
 		literals: p.literals,
 		name:     p.name,
+		coord:    nil,
 	}
 	if p.coord != nil {
 		newPiece.coord = p.coord.Copy()

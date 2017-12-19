@@ -53,6 +53,7 @@ func leaper(m, n int, piece base.IPiece, board *rect.Board, excludeCheckExpose b
 	for i := range offsets {
 		iOffsets[i] = offsets[i]
 	}
+
 	return inOneStep(piece, board, excludeCheckExpose, iOffsets)
 }
 
@@ -73,7 +74,7 @@ offsets:
 				continue offsets // check exposed, don't go further in that direction
 			}
 			if stroke(to, board, piece, &result) {
-				break offsets // capture occured, don't go further in that direction
+				continue offsets // capture occured, don't go further in that direction
 			}
 		}
 	}

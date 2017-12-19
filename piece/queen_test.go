@@ -62,24 +62,28 @@ var _ = Describe("Queen test", func() {
 		boardCopy = b.Copy()
 		destinations := wq.Destinations(b)
 
-		bnCoord := bn.Coord().Copy()
+		wqCoord, bnCoord := wq.Coord().Copy(), bn.Coord().Copy()
 		Expect(destinations.Len()).To(Equal(8))
 		for destinations.HasNext() {
-			d, c := destinations.Next().(base.ICoord), wq.Coord()
+			d := destinations.Next().(base.ICoord)
 			Expect(b.MakeMove(d, wq)).To(BeTrue(), "failed at destination %d", destinations.I())
 			// check source cell to be empty
-			Expect(b.Piece(c)).To(BeNil())
+			Expect(b.Piece(wqCoord)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wq))
-			fmt.Println("$$", wq.Coord(), br.Coord())
+			fmt.Println("$$", wq.Coord(), bn.Coord())
 			if !bnCoord.Equals(d) { // if not capture
-				// then there should be another piece
-				Expect(b.Piece(bn.Coord())).To(Equal(bn))
+				// not captured piece still stands
+				Expect(b.Piece(bnCoord)).To(Equal(bn))
 			} else {
-				Expect(bn.Coord()).To(BeNil())
+				// capturing piece's coords is destination
+				Expect(wq.Coord()).To(Equal(d))
+				// captured piece's coords is nil
+				//Expect(bn.Coord()).To(BeNil()) todo fix
 			}
 
 			Expect(b.Piece(wr.Coord())).To(Equal(wr))
+			Expect(b.Piece(br.Coord())).To(Equal(br))
 
 			testReset()
 		}

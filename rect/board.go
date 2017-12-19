@@ -70,7 +70,7 @@ func (b *Board) Cell(at base.ICoord) *base.Cell {
 
 // Cells returns a cells slice
 func (b *Board) Cells() base.ICells {
-	return b.cells.Copy(b)
+	return b.cells
 }
 
 // SetCells sets cells to s
@@ -92,6 +92,10 @@ func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
 
 // Empty removes piece at coords x, y
 func (b *Board) Empty(at base.ICoord) base.IBoard {
+	piece := b.Cell(at).Piece()
+	if piece != nil {
+		piece.SetCoords(nil)
+	}
 	b.Cell(at).Empty()
 	return b
 }
@@ -106,28 +110,25 @@ func (b *Board) Copy() base.IBoard {
 
 // Set changes b to b1
 func (b *Board) Set(b1 base.IBoard) {
-	b.SetDim(b1.Dim())
-	b.SetCells(b1.Cells())
+	*b = *(b1.Copy().(*Board))
 }
 
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
-	destinations := piece.Destinations(b)
+	destinations, wasPiece := piece.Destinations(b), b.Piece(to)
 	for destinations.HasNext() {
 		d := destinations.Next().(base.ICoord)
 		if !to.Equals(d) {
 			continue
 		}
-		wasPiece := b.Cell(to).Piece()
 		if wasPiece != nil {
 			fmt.Println("!", wasPiece.Coord())
 			wasPiece.SetCoords(nil)
 			fmt.Println("!", wasPiece.Coord())
 		}
-		newBoard := piece.Project(to, b)
+		b.Set(piece.Project(to, b))
 		piece.SetCoords(to)
-		b.Set(newBoard)
 		return true
 	}
 	return false

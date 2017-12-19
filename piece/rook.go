@@ -7,7 +7,7 @@ import (
 )
 
 // Rook is a chess rook
-type Rook struct{ base.Piece }
+type Rook struct{ *base.Piece }
 
 // NewRook creates new rook with colour
 func NewRook(colour Colour) base.IPiece { return &Rook{Piece: base.NewPiece(colour, "rook", "R♖♜")} }

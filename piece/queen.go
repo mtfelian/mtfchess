@@ -7,7 +7,7 @@ import (
 )
 
 // Queen is a chess queen
-type Queen struct{ base.Piece }
+type Queen struct{ *base.Piece }
 
 // NewQueen creates new queen with colour
 func NewQueen(colour Colour) base.IPiece {
