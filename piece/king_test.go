@@ -10,6 +10,7 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"reflect"
 )
 
 var _ = Describe("King test", func() {
@@ -39,7 +40,7 @@ var _ = Describe("King test", func() {
 			b.PlacePiece(rect.Coord{2, 3}, wk)
 			b.PlacePiece(rect.Coord{3, 4}, br)
 			b.PlacePiece(rect.Coord{4, 2}, bk)
-			if boardCopy != nil {
+			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
 				b.Set(boardCopy)
 			}
 		}

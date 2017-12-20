@@ -5,6 +5,7 @@ import (
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/utils"
+	"reflect"
 )
 
 // Board is a game rectangular board
@@ -93,7 +94,7 @@ func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
 // Empty removes piece at coords x, y
 func (b *Board) Empty(at base.ICoord) base.IBoard {
 	piece := b.Cell(at).Piece()
-	if piece != nil {
+	if piece != nil && !reflect.ValueOf(piece).IsNil() {
 		piece.SetCoords(nil)
 	}
 	b.Cell(at).Empty()
@@ -122,7 +123,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if !to.Equals(d) {
 			continue
 		}
-		if wasPiece != nil {
+		if wasPiece != nil && !reflect.ValueOf(wasPiece).IsNil() {
 			fmt.Println("!", wasPiece.Coord())
 			wasPiece.SetCoords(nil)
 			fmt.Println("!", wasPiece.Coord())
@@ -140,7 +141,7 @@ func (b *Board) baseFindPieces(f base.PieceFilter) base.Pieces {
 	for i := range b.cells {
 		for j := range b.cells[i] {
 			p := b.cells[i][j].Piece()
-			if p == nil {
+			if p == nil || reflect.ValueOf(p).IsNil() {
 				continue
 			}
 			if len(f.Colours) > 0 && !SliceContains(p.Colour(), f.Colours) {

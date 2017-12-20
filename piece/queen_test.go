@@ -10,6 +10,7 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"reflect"
 )
 
 var _ = Describe("Queen test", func() {
@@ -54,7 +55,7 @@ var _ = Describe("Queen test", func() {
 			b.PlacePiece(rect.Coord{1, 3}, br)
 			b.PlacePiece(rect.Coord{2, 4}, wr)
 			b.PlacePiece(rect.Coord{4, 4}, bn)
-			if boardCopy != nil {
+			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
 				b.Set(boardCopy)
 			}
 		}
@@ -99,7 +100,7 @@ var _ = Describe("Queen test", func() {
 			b.PlacePiece(rect.Coord{1, 3}, br)
 			b.PlacePiece(rect.Coord{2, 4}, wr)
 			b.PlacePiece(rect.Coord{4, 4}, bn)
-			if boardCopy != nil {
+			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
 				b.Set(boardCopy)
 			}
 		}
@@ -114,7 +115,8 @@ var _ = Describe("Queen test", func() {
 			Expect(b.Piece(c)).To(Equal(wq))
 
 			// check that destination cell was not changed
-			if boardCopy.Piece(d) == nil {
+			p := boardCopy.Piece(d)
+			if p == nil || reflect.ValueOf(p).IsNil() {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
 				Expect(b.Piece(d)).To(Equal(boardCopy.Piece(d)))

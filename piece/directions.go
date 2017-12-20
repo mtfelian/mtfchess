@@ -3,6 +3,7 @@ package piece
 import (
 	"github.com/mtfelian/mtfchess/base"
 	"github.com/mtfelian/mtfchess/rect"
+	"reflect"
 )
 
 // inOneStep returns legal moves for pieces which move in one step, like knight and king
@@ -24,7 +25,7 @@ func inOneStep(piece base.IPiece, board base.IBoard, excludeCheckExpose bool, o 
 // stroke returns true if mine imaginary beam strokes some piece on coords on board, memorizing it's path
 // it returns false if an imaginary beam is still going meats no barrier
 func stroke(to base.ICoord, on base.IBoard, mine base.IPiece, path *[]base.ICoord) bool {
-	if dstPiece := on.Cell(to).Piece(); dstPiece != nil {
+	if dstPiece := on.Cell(to).Piece(); dstPiece != nil && !reflect.ValueOf(dstPiece).IsNil() {
 		if dstPiece.Colour() != mine.Colour() {
 			*path = append(*path, to)
 		}
