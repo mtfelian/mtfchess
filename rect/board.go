@@ -240,7 +240,11 @@ func NewEmptyBoard(i, j int) *Board {
 
 /*
 todo to implement:
-  - pawn piece (one cell front, capture by one front diag);
+  - write tests to check thet attacking coords include own pieces and cells from under check,
+    but destination coords don't include all of that
+  - REFACTOR probably move Project() from piece to board;
+  - REFACTOR move pieces funcs from directions.go to pieces go files;
+  - allow leaper to capture differently from non-capturing moves: pawn piece (one cell front, capture by one front diag);
   - archbishop piece;
   - chancellor piece;
   - with board options:
@@ -248,7 +252,6 @@ todo to implement:
     - EP, when a pawn goes by two cells, if at end of that move there is an opponent's pawn(s) by the side of the
       destination cell, memorize side pawns' coords in board, and clean it at next move (can set again to different
       pawns at the end of the same move);
-      - rework InCheck() detection by simply keeping kings' coords always in board like with pawns' EP;
     - castling (some work with rooks memorizing like in EP and side cells check);
     - pawn promotion (exchanging one piece with another) to one from the list of allowed pieces;
     - 3-fold repetition draw rule;

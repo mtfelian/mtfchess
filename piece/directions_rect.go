@@ -7,12 +7,12 @@ import (
 )
 
 // leaper launches piece's beam like knight (+/- m/n, rot90, +/- n,m) on a board.
-// Set excludeCheckExpose to true to exclude check exposing path.
+// Set static to true to exclude check exposing path and defending own piece path.
 // Set f (front) to 1 to allow movement only forward.
 // Set f to -1 to allow only backward movement.
 // Set f to 0 to allow both forward and backward piece movement.
 // Returns a slice of destination coords.
-func leaper(m, n int, piece base.IPiece, board *rect.Board, excludeCheckExpose bool, f int) []base.ICoord {
+func leaper(m, n int, piece base.IPiece, board *rect.Board, static bool, f int) []base.ICoord {
 	if piece.Colour() == Black {
 		f *= -1
 	}
@@ -54,11 +54,11 @@ func leaper(m, n int, piece base.IPiece, board *rect.Board, excludeCheckExpose b
 		iOffsets[i] = offsets[i]
 	}
 
-	return inOneStep(piece, board, excludeCheckExpose, iOffsets)
+	return inOneStep(piece, board, static, iOffsets)
 }
 
 // inManySteps returns legal moves for pieces which move in many steps, like rook and bishop
-func inManySteps(piece base.IPiece, board base.IBoard, excludeCheckExpose bool, o []rect.Coord, max int) []base.ICoord {
+func inManySteps(piece base.IPiece, board base.IBoard, static bool, o []rect.Coord, max int) []base.ICoord {
 	bW, pX := board.Dim().(rect.Coord).X, piece.Coord().(rect.Coord).X
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	// oX, oY - offsets, step - current step of a reader
@@ -70,10 +70,10 @@ offsets:
 	for i := range o {
 		for oX, oY, step := o[i].X, o[i].Y, 0; notOut(oX, oY, step); oX, oY, step = oX+o[i].X, oY+o[i].Y, step+1 {
 			to := piece.Coord().Add(rect.Coord{oX, oY})
-			if excludeCheckExpose && InCheck(piece.Project(to, board), piece.Colour()) {
+			if static && InCheck(piece.Project(to, board), piece.Colour()) {
 				continue offsets // check exposed, don't go further in that direction
 			}
-			if stroke(to, board, piece, &result) {
+			if stroke(to, static, board, piece, &result) {
 				continue offsets // capture occured, don't go further in that direction
 			}
 		}
@@ -82,14 +82,14 @@ offsets:
 }
 
 // reader launches (m,n)-reader piece's beam on a board.
-// Set excludeCheckExpose to true to exclude check exposing path.
+// Set static to true to exclude check exposing path and defending own pieces path.
 // Set max to non-0 value to restrict the maximum steps to move in each one direction.
 // max value of 0 means no maximum steps restriction.
 // Set f (front) to 1 to allow movement only forward.
 // Set f to -1 to allow only backward movement.
 // Set f to 0 to allow both forward and backward piece movement.
 // Returns a slice of destination coords.
-func reader(m, n int, piece base.IPiece, board *rect.Board, excludeCheckExpose bool, max int, f int) []base.ICoord {
+func reader(m, n int, piece base.IPiece, board *rect.Board, static bool, max int, f int) []base.ICoord {
 	if piece.Colour() == Black {
 		f *= -1
 	}
@@ -127,5 +127,5 @@ func reader(m, n int, piece base.IPiece, board *rect.Board, excludeCheckExpose b
 		panic("wrong front value")
 	}
 
-	return inManySteps(piece, board, excludeCheckExpose, offsets, max)
+	return inManySteps(piece, board, static, offsets, max)
 }
