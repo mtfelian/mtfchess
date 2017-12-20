@@ -32,7 +32,7 @@ func (p *King) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) 
 // SetCoords sets piece's coords to
 func (p *King) SetCoords(board base.IBoard, to base.ICoord) {
 	p.Piece.SetCoords(board, to)
-	board.SetKing(p.Colour(), p)
+	board.SetKing(p.Colour(), p) // when king moves, set it to a board for faster check detection
 }
 
 // Project a copy of a piece to the specified coords on board, return a copy of a board
