@@ -247,11 +247,9 @@ func NewEmptyBoard(i, j int) *Board {
 
 /*
 todo to implement:
-  - write tests to check thet attacking coords include own pieces and cells from under check,
-    but destination coords don't include all of that
   - REFACTOR probably move Project() from piece to board;
-  - REFACTOR move pieces funcs from directions.go to pieces go files;
   - allow leaper to capture differently from non-capturing moves: pawn piece (one cell front, capture by one front diag);
+    leaper() - add flag 'capturing': 0, 1, 2; 0 - move/capture, 1- only non-capture move, 2 - only capture
   - archbishop piece;
   - chancellor piece;
   - with board options:
