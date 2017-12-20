@@ -3,14 +3,12 @@ package piece_test
 import (
 	"sort"
 
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"reflect"
 )
 
 var _ = Describe("Bishop test", func() {
@@ -60,7 +58,6 @@ var _ = Describe("Bishop test", func() {
 			Expect(b.Piece(wbCoord)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wb))
-			fmt.Println("$$", wb.Coord(), br.Coord())
 			if !brCoord.Equals(d) { // if not capture
 				// not captured piece still stands
 				Expect(b.Piece(brCoord)).To(Equal(br))
@@ -94,7 +91,7 @@ var _ = Describe("Bishop test", func() {
 
 			// check that destination cell was not changed
 			p := b.Piece(d)
-			if p == nil || reflect.ValueOf(p).IsNil() {
+			if p == nil {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
 				Expect(b.Piece(d)).To(Equal(b.Piece(d)))

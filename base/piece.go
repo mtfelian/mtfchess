@@ -64,7 +64,7 @@ func (p *Piece) Copy() *Piece {
 		name:     p.name,
 		coord:    nil,
 	}
-	if p.coord != nil /*&& !reflect.ValueOf(p.coord).IsNil()*/ {
+	if p.coord != nil {
 		newPiece.coord = p.coord.Copy()
 	}
 	return newPiece

@@ -3,14 +3,12 @@ package piece_test
 import (
 	"sort"
 
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"reflect"
 )
 
 var _ = Describe("Knight test", func() {
@@ -47,10 +45,8 @@ var _ = Describe("Knight test", func() {
 
 		bqCoord, wnCoord := bq.Coord().Copy(), wn.Coord().Copy()
 		for destinations.HasNext() {
-			fmt.Println(b)
 			d := destinations.Next().(base.ICoord)
 			Expect(b.MakeMove(d, wn)).To(BeTrue(), "failed at destination %d", destinations.I())
-			fmt.Println(b)
 			// check source cell to be empty
 			Expect(b.Piece(wnCoord)).To(BeNil())
 			// check destination cell to contain new piece
@@ -87,7 +83,7 @@ var _ = Describe("Knight test", func() {
 
 			// check that destination cell was not changed
 			p := b.Piece(d)
-			if p == nil || reflect.ValueOf(p).IsNil() {
+			if p == nil {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
 				Expect(b.Piece(d)).To(Equal(b.Piece(d)))

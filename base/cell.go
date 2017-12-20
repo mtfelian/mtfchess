@@ -2,7 +2,6 @@ package base
 
 import (
 	"fmt"
-	"reflect"
 )
 
 // Cell is a cell on a board
@@ -45,7 +44,7 @@ func (s *Cell) Copy(board IBoard) Cell {
 		coord: s.coord.Copy(),
 		piece: nil,
 	}
-	if s.piece != nil && !reflect.ValueOf(s.piece).IsNil() {
+	if s.piece != nil {
 		newCell.piece = s.piece.Copy()
 	}
 	return newCell
@@ -54,7 +53,7 @@ func (s *Cell) Copy(board IBoard) Cell {
 // String makes Cell implement Stringer
 func (s Cell) String() string {
 	p := " "
-	if s.piece != nil && !reflect.ValueOf(s.piece).IsNil() {
+	if s.piece != nil {
 		p = fmt.Sprintf("%s", s.piece)
 	}
 	return fmt.Sprintf("%4d[%s]%s", s.num, p, s.coord)

@@ -3,14 +3,12 @@ package piece_test
 import (
 	"sort"
 
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"reflect"
 )
 
 var _ = Describe("Rook test", func() {
@@ -54,9 +52,7 @@ var _ = Describe("Rook test", func() {
 		brCoord, wrCoord := br.Coord().Copy(), wr.Coord().Copy()
 		for destinations.HasNext() {
 			d := destinations.Next().(base.ICoord)
-			fmt.Printf("@@1 %s %s %p %p\n", wr.Coord(), br.Coord(), wr, b.(*rect.Board))
 			Expect(b.MakeMove(d, wr)).To(BeTrue(), "failed at destination %d", destinations.I())
-			fmt.Printf("@@2 %s %s %p %p\n", wr.Coord(), br.Coord(), wr, b.(*rect.Board))
 			// check source cell to be empty
 			Expect(b.Piece(wrCoord)).To(BeNil())
 			// check destination cell to contain new piece
@@ -94,7 +90,7 @@ var _ = Describe("Rook test", func() {
 
 			// check that destination cell was not changed
 			p := b.Piece(d)
-			if p == nil || reflect.ValueOf(p).IsNil() {
+			if p == nil {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
 				Expect(b.Piece(d)).To(Equal(b.Piece(d)))

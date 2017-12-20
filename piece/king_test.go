@@ -3,7 +3,6 @@ package piece_test
 import (
 	"sort"
 
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -44,7 +43,6 @@ var _ = Describe("King test", func() {
 		destinations := wk.Destinations(b)
 
 		wkCoord, brCoord := wk.Coord().Copy(), br.Coord().Copy()
-		fmt.Println(destinations)
 		for destinations.HasNext() {
 			d := destinations.Next().(base.ICoord)
 			Expect(b.MakeMove(d, wk)).To(BeTrue(), "failed at destination %d", destinations.I())
@@ -52,7 +50,6 @@ var _ = Describe("King test", func() {
 			Expect(b.Piece(wkCoord)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wk))
-			fmt.Println("%%", wk.Coord(), br.Coord())
 			if !brCoord.Equals(d) { // if not capture
 				// then there should be another piece
 				Expect(b.Piece(brCoord)).To(Equal(br))
