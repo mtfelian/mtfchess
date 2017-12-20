@@ -38,6 +38,52 @@ var _ = Describe("Bishop test", func() {
 		}))).To(BeTrue())
 	})
 
+	It("attacks right cells, can release check by capture", func() {
+		wb, bq := piece.NewBishop(White), piece.NewQueen(Black)
+		bn, wr, wk := piece.NewKnight(Black), piece.NewRook(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{2, 5}, bq)
+		b.PlacePiece(rect.Coord{4, 3}, wb)
+		b.PlacePiece(rect.Coord{2, 3}, wk)
+		b.PlacePiece(rect.Coord{5, 1}, bn)
+		b.PlacePiece(rect.Coord{5, 4}, wr)
+
+		attacking := wb.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{2, 1}, rect.Coord{3, 2}, rect.Coord{5, 2},
+			rect.Coord{3, 4}, rect.Coord{5, 4}, rect.Coord{2, 5},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{5, 4}, wb)).To(BeFalse(), "captured own piece, and king in check")
+		Expect(b.MakeMove(rect.Coord{3, 2}, wb)).To(BeFalse(), "king still in check")
+		Expect(b.MakeMove(rect.Coord{1, 6}, wb)).To(BeFalse(), "jumped over own piece, and check")
+
+		// successful capture releasing check
+		Expect(b.MakeMove(rect.Coord{2, 5}, wb)).To(BeTrue(), "can't capture releasing check")
+	})
+
+	It("attacks right cells, can't release from double check by capture", func() {
+		wb, bq := piece.NewBishop(White), piece.NewQueen(Black)
+		bn, wr, wk := piece.NewKnight(Black), piece.NewRook(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{2, 5}, bq)
+		b.PlacePiece(rect.Coord{4, 3}, wb)
+		b.PlacePiece(rect.Coord{2, 3}, wk)
+		b.PlacePiece(rect.Coord{3, 1}, bn)
+		b.PlacePiece(rect.Coord{5, 4}, wr)
+
+		attacking := wb.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{2, 1}, rect.Coord{3, 2}, rect.Coord{5, 2},
+			rect.Coord{3, 4}, rect.Coord{5, 4}, rect.Coord{2, 5},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{5, 4}, wb)).To(BeFalse(), "captured own piece, and king in check")
+		Expect(b.MakeMove(rect.Coord{3, 2}, wb)).To(BeFalse(), "king still in check")
+		Expect(b.MakeMove(rect.Coord{1, 6}, wb)).To(BeFalse(), "jumped over own piece, and check")
+		Expect(b.MakeMove(rect.Coord{2, 5}, wb)).To(BeFalse(), "released from DOUBLE check by capture")
+	})
+
 	It("makes legal moves", func() {
 		var wb, br base.IPiece
 		testReset := func() {

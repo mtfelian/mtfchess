@@ -100,6 +100,10 @@ func (b *Board) Piece(at base.ICoord) base.IPiece {
 
 // PlacePiece places piece at coords (x, y)
 func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
+	if to.OutOf(b) {
+		panic("out of board")
+		//return b
+	}
 	p.SetCoords(b, to)
 	b.Cell(to).SetPiece(p)
 	return b
@@ -149,6 +153,9 @@ func (b *Board) Set(b1 base.IBoard) {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
+	if to.OutOf(b) {
+		return false
+	}
 	destinations, capturedPiece := piece.Destinations(b), b.Piece(to)
 	for destinations.HasNext() {
 		d := destinations.Next().(base.ICoord)

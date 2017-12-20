@@ -31,6 +31,28 @@ var _ = Describe("Rook test", func() {
 		}))).To(BeTrue())
 	})
 
+	It("attacks right cells", func() {
+		wr, bq := piece.NewRook(White), piece.NewQueen(Black)
+		bn, wn, wk := piece.NewKnight(Black), piece.NewKnight(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{1, 2}, bq)
+		b.PlacePiece(rect.Coord{2, 2}, wr)
+		b.PlacePiece(rect.Coord{3, 2}, wk)
+		b.PlacePiece(rect.Coord{2, 1}, bn)
+		b.PlacePiece(rect.Coord{2, 5}, wn)
+
+		attacking := wr.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{2, 1}, rect.Coord{1, 2}, rect.Coord{3, 2},
+			rect.Coord{2, 3}, rect.Coord{2, 4}, rect.Coord{2, 5},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{2, 5}, wn)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(rect.Coord{3, 2}, wn)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(rect.Coord{1, 2}, wn)).To(BeFalse(), "can't capture")
+		Expect(b.MakeMove(rect.Coord{2, 6}, wn)).To(BeFalse(), "jumped over own piece")
+	})
+
 	It("makes legal moves", func() {
 		var wr, br base.IPiece
 		testReset := func() {

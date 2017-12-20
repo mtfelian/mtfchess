@@ -71,7 +71,7 @@ directions:
 		for oX, oY, step := o[i].X, o[i].Y, 0; notOut(oX, oY, step); oX, oY, step = oX+o[i].X, oY+o[i].Y, step+1 {
 			to := piece.Coord().Add(rect.Coord{oX, oY})
 			if moving && InCheck(piece.Project(to, board), piece.Colour()) {
-				continue directions // check exposed, don't go further in that direction
+				continue // should continue in same direction (may be further capture releases check?)
 			}
 			if stroke(to, moving, board, piece, &result) {
 				continue directions // capture occured, don't go further in that direction

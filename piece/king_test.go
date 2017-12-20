@@ -30,6 +30,52 @@ var _ = Describe("King test", func() {
 		}))).To(BeTrue())
 	})
 
+	It("attacks right cells, can release check by capture", func() {
+		wn, bq := piece.NewKnight(White), piece.NewQueen(Black)
+		bn, wr, wk := piece.NewKnight(Black), piece.NewRook(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{2, 5}, bq)
+		b.PlacePiece(rect.Coord{1, 5}, wn)
+		b.PlacePiece(rect.Coord{1, 4}, wk)
+		b.PlacePiece(rect.Coord{4, 2}, bn)
+		b.PlacePiece(rect.Coord{2, 4}, wr)
+
+		attacking := wk.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{1, 3}, rect.Coord{2, 3}, rect.Coord{2, 4},
+			rect.Coord{1, 5}, rect.Coord{2, 5},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{1, 5}, wk)).To(BeFalse(), "captured own piece and still in check")
+		Expect(b.MakeMove(rect.Coord{2, 4}, wk)).To(BeFalse(), "captured piece but still in check")
+		Expect(b.MakeMove(rect.Coord{2, 3}, wk)).To(BeFalse(), "king still in check (from bn)")
+
+		// successful capture releasing check
+		Expect(b.MakeMove(rect.Coord{2, 5}, wk)).To(BeTrue(), "can't capture releasing check")
+	})
+
+	It("attacks right cells, can release check by pinning another piece", func() {
+		wn, bq := piece.NewKnight(White), piece.NewQueen(Black)
+		wr, wk := piece.NewRook(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{2, 5}, bq)
+		b.PlacePiece(rect.Coord{1, 5}, wn)
+		b.PlacePiece(rect.Coord{1, 4}, wk)
+		b.PlacePiece(rect.Coord{2, 4}, wr)
+
+		attacking := wk.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{1, 3}, rect.Coord{2, 3}, rect.Coord{2, 4},
+			rect.Coord{1, 5}, rect.Coord{2, 5},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{1, 5}, wk)).To(BeFalse(), "captured own piece and still in check")
+		Expect(b.MakeMove(rect.Coord{2, 4}, wk)).To(BeFalse(), "captured piece but still in check")
+
+		// pin another piece (wr) and release check
+		Expect(b.MakeMove(rect.Coord{2, 3}, wk)).To(BeTrue(), "can't release check by pin")
+	})
+
 	It("makes legal moves", func() {
 		var wk, bk, br base.IPiece
 		testReset := func() {

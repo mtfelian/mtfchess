@@ -43,6 +43,32 @@ var _ = Describe("Queen test", func() {
 		}))).To(BeTrue())
 	})
 
+	It("attacks right cells", func() {
+		wq, bq := piece.NewQueen(White), piece.NewQueen(Black)
+		bn, wr, wk := piece.NewKnight(Black), piece.NewRook(White), piece.NewKing(White)
+		b.PlacePiece(rect.Coord{2, 5}, bq)
+		b.PlacePiece(rect.Coord{4, 3}, wq)
+		b.PlacePiece(rect.Coord{2, 3}, wk)
+		b.PlacePiece(rect.Coord{5, 1}, bn)
+		b.PlacePiece(rect.Coord{5, 4}, wr)
+
+		attacking := wq.Attacks(b)
+		sort.Sort(attacking)
+		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
+			rect.Coord{2, 1}, rect.Coord{4, 1}, rect.Coord{3, 2}, rect.Coord{4, 2},
+			rect.Coord{5, 2}, rect.Coord{2, 3}, rect.Coord{3, 3}, rect.Coord{5, 3},
+			rect.Coord{3, 4}, rect.Coord{4, 4}, rect.Coord{5, 4}, rect.Coord{2, 5},
+			rect.Coord{4, 5}, rect.Coord{4, 6},
+		}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{5, 4}, wq)).To(BeFalse(), "captured own piece, and king in check")
+		Expect(b.MakeMove(rect.Coord{3, 2}, wq)).To(BeFalse(), "king still in check")
+		Expect(b.MakeMove(rect.Coord{1, 6}, wq)).To(BeFalse(), "jumped over own piece, and check")
+
+		// successful capture releasing check
+		Expect(b.MakeMove(rect.Coord{2, 5}, wq)).To(BeTrue(), "can't capture releasing check")
+	})
+
 	It("makes legal moves", func() {
 		var wq, br, wr, bn base.IPiece
 		testReset := func() {
