@@ -33,19 +33,16 @@ var _ = Describe("Rook test", func() {
 		}))).To(BeTrue())
 	})
 
-	FIt("makes legal moves", func() {
+	It("makes legal moves", func() {
 		var wr, br base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wr, br = piece.NewRook(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 1}, wr)
 			b.PlacePiece(rect.Coord{4, 1}, br)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
-		boardCopy = b.Copy()
+
 		destinations := wr.Destinations(b)
 		sort.Sort(destinations)
 		Expect(destinations.Equals(rect.NewCoords([]base.ICoord{
@@ -80,18 +77,14 @@ var _ = Describe("Rook test", func() {
 
 	It("don't makes illegal moves", func() {
 		var wr, br base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wr, br = piece.NewRook(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 1}, wr)
 			b.PlacePiece(rect.Coord{4, 1}, br)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
 
-		boardCopy = b.Copy()
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{3, 2}, rect.Coord{5, 1}, wr.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wr.Coord()
@@ -100,11 +93,11 @@ var _ = Describe("Rook test", func() {
 			Expect(b.Piece(c)).To(Equal(wr))
 
 			// check that destination cell was not changed
-			p := boardCopy.Piece(d)
+			p := b.Piece(d)
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
-				Expect(b.Piece(d)).To(Equal(boardCopy.Piece(d)))
+				Expect(b.Piece(d)).To(Equal(b.Piece(d)))
 			}
 
 			// check another cell to contain another piece

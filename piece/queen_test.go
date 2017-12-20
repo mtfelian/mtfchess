@@ -47,20 +47,16 @@ var _ = Describe("Queen test", func() {
 
 	It("makes legal moves", func() {
 		var wq, br, wr, bn base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wq, br = piece.NewQueen(White), piece.NewRook(Black)
 			wr, bn = piece.NewRook(White), piece.NewKnight(Black)
 			b.PlacePiece(rect.Coord{4, 6}, wq)
 			b.PlacePiece(rect.Coord{1, 3}, br)
 			b.PlacePiece(rect.Coord{2, 4}, wr)
 			b.PlacePiece(rect.Coord{4, 4}, bn)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
-		boardCopy = b.Copy()
 		destinations := wq.Destinations(b)
 
 		wqCoord, bnCoord := wq.Coord().Copy(), bn.Coord().Copy()
@@ -92,21 +88,17 @@ var _ = Describe("Queen test", func() {
 
 	It("don't makes illegal moves", func() {
 		var wq, br, wr, bn base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wq, br = piece.NewQueen(White), piece.NewRook(Black)
 			wr, bn = piece.NewRook(White), piece.NewKnight(Black)
 			b.PlacePiece(rect.Coord{4, 6}, wq)
 			b.PlacePiece(rect.Coord{1, 3}, br)
 			b.PlacePiece(rect.Coord{2, 4}, wr)
 			b.PlacePiece(rect.Coord{4, 4}, bn)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
 
-		boardCopy = b.Copy()
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{2, 4}, rect.Coord{1, 3}, rect.Coord{4, 3}, wq.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wq.Coord()
@@ -115,11 +107,11 @@ var _ = Describe("Queen test", func() {
 			Expect(b.Piece(c)).To(Equal(wq))
 
 			// check that destination cell was not changed
-			p := boardCopy.Piece(d)
+			p := b.Piece(d)
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
-				Expect(b.Piece(d)).To(Equal(boardCopy.Piece(d)))
+				Expect(b.Piece(d)).To(Equal(b.Piece(d)))
 			}
 
 			// check another cell to contain another piece

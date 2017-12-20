@@ -42,17 +42,13 @@ var _ = Describe("Bishop test", func() {
 
 	It("makes legal moves", func() {
 		var wb, br base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wb, br = piece.NewBishop(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wb)
 			b.PlacePiece(rect.Coord{1, 2}, br)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
-		boardCopy = b.Copy()
 		destinations := wb.Destinations(b)
 
 		wbCoord, brCoord := wb.Coord().Copy(), br.Coord().Copy()
@@ -81,18 +77,14 @@ var _ = Describe("Bishop test", func() {
 
 	It("don't makes illegal moves", func() {
 		var wb, br base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wb, br = piece.NewBishop(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wb)
 			b.PlacePiece(rect.Coord{4, 5}, br)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
 
-		boardCopy = b.Copy()
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{5, 6}, rect.Coord{2, 2}, wb.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wb.Coord()
@@ -101,11 +93,11 @@ var _ = Describe("Bishop test", func() {
 			Expect(b.Piece(c)).To(Equal(wb))
 
 			// check that destination cell was not changed
-			p := boardCopy.Piece(d)
+			p := b.Piece(d)
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
-				Expect(b.Piece(d)).To(Equal(boardCopy.Piece(d)))
+				Expect(b.Piece(d)).To(Equal(b.Piece(d)))
 			}
 
 			// check another cell to contain another piece

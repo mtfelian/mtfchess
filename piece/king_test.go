@@ -10,7 +10,6 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"reflect"
 )
 
 var _ = Describe("King test", func() {
@@ -34,18 +33,14 @@ var _ = Describe("King test", func() {
 
 	It("makes legal moves", func() {
 		var wk, bk, br base.IPiece
-		var boardCopy base.IBoard
 		testReset := func() {
+			b = rect.NewEmptyBoard(w, h)
 			wk, bk, br = piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wk)
 			b.PlacePiece(rect.Coord{3, 4}, br)
 			b.PlacePiece(rect.Coord{4, 2}, bk)
-			if boardCopy != nil && !reflect.ValueOf(boardCopy).IsNil() {
-				b.Set(boardCopy)
-			}
 		}
 		testReset()
-		boardCopy = b.Copy()
 		destinations := wk.Destinations(b)
 
 		wkCoord, brCoord := wk.Coord().Copy(), br.Coord().Copy()
@@ -65,7 +60,7 @@ var _ = Describe("King test", func() {
 				// capturing piece's coords is destination
 				Expect(wk.Coord()).To(Equal(d))
 				// captured piece's coords is nil
-				//Expect(br.Coord()).To(BeNil()) todo fix
+				Expect(br.Coord()).To(BeNil()) //todo fix
 			}
 
 			testReset()
