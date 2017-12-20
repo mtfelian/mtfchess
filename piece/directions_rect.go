@@ -58,7 +58,7 @@ func leaper(m, n int, piece base.IPiece, board *rect.Board, moving bool, f int) 
 }
 
 // inManySteps returns legal moves for pieces which move in many steps, like rook and bishop
-func inManySteps(piece base.IPiece, board base.IBoard, moving bool, o []rect.Coord, max int) []base.ICoord {
+func inManySteps(piece base.IPiece, board *rect.Board, moving bool, o []rect.Coord, max int) []base.ICoord {
 	bW, pX := board.Dim().(rect.Coord).X, piece.Coord().(rect.Coord).X
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	// oX, oY - offsets, step - current step of a reader

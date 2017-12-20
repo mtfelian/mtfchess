@@ -13,14 +13,13 @@ type King struct{ *base.Piece }
 func NewKing(colour Colour) base.IPiece { return &King{Piece: base.NewPiece(colour, "king", "K♔♚")} }
 
 // dst returns a slice of destination cells coords, making it's legal moves
-// if excludeCheckExpose is false then pairs leading to check-exposing moves also included
-func (p *King) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
-	coords := king(p, board, excludeCheckExpose)
-	switch board.Dim().(type) {
-	case rect.Coord:
-		return rect.NewCoords(coords)
+// if moving is false then pairs leading to check-exposing moves also included
+func (p *King) dst(board base.IBoard, moving bool) base.ICoords {
+	switch b := board.(type) {
+	case *rect.Board:
+		return rect.NewCoords(append(leaper(1, 0, p, b, moving, 0), leaper(1, 1, p, b, moving, 0)...))
 	default:
-		panic("invalid coords type")
+		panic("invalid coord type")
 	}
 }
 

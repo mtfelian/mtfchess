@@ -15,14 +15,13 @@ func NewQueen(colour Colour) base.IPiece {
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves
-// if excludeCheckExpose is false then pairs leading to check-exposing moves also included
-func (p *Queen) dst(board base.IBoard, excludeCheckExpose bool) base.ICoords {
-	coords := queen(p, board, excludeCheckExpose)
-	switch board.Dim().(type) {
-	case rect.Coord:
-		return rect.NewCoords(coords)
+// if moving is false then pairs leading to check-exposing moves also included
+func (p *Queen) dst(board base.IBoard, moving bool) base.ICoords {
+	switch b := board.(type) {
+	case *rect.Board:
+		return rect.NewCoords(append(reader(1, 0, p, b, moving, 0, 0), reader(1, 1, p, b, moving, 0, 0)...))
 	default:
-		panic("invalid coords type")
+		panic("invalid coord type")
 	}
 }
 
