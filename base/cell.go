@@ -42,7 +42,6 @@ func (s *Cell) Copy(board IBoard) Cell {
 		board: board,
 		num:   s.num,
 		coord: s.coord.Copy(),
-		piece: nil,
 	}
 	if s.piece != nil {
 		newCell.piece = s.piece.Copy()

@@ -30,6 +30,12 @@ func (p *King) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
 // Destinations returns a slice of cells coords, making it's legal moves
 func (p *King) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
 
+// SetCoords sets piece's coords to
+func (p *King) SetCoords(board base.IBoard, to base.ICoord) {
+	p.Piece.SetCoords(board, to)
+	board.SetKing(p.Colour(), p)
+}
+
 // Project a copy of a piece to the specified coords on board, return a copy of a board
 func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
 	return b.Copy().Empty(p.Coord()).PlacePiece(to, p.Copy())

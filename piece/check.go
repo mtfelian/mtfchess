@@ -7,12 +7,6 @@ import (
 
 // InCheck returns true if there is a check on the board for colour, otherwise it returns false
 func InCheck(board base.IBoard, colour Colour) bool {
-	return len(board.FindPieces(base.PieceFilter{
-		Colours: []Colour{colour},
-		Names:   []string{NewKing(Transparent).Name()},
-		Condition: func(p base.IPiece) bool {
-			opponentPieces := base.PieceFilter{Colours: []Colour{colour.Invert()}}
-			return board.FindAttackedCellsBy(opponentPieces).Contains(p.Coord())
-		},
-	})) > 0
+	king := board.King(colour)
+	return king != nil && board.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }

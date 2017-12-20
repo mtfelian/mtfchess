@@ -21,7 +21,7 @@ type IPiece interface {
 	// Colour returns piece colour
 	Colour() Colour
 	// SetCoords sets the figure coords to
-	SetCoords(to ICoord)
+	SetCoords(board IBoard, to ICoord)
 	// Coord returns piece coords
 	Coord() ICoord
 	// Copy returns a deep copy of a piece

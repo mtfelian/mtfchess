@@ -1,5 +1,9 @@
 package base
 
+import (
+	. "github.com/mtfelian/mtfchess/colour"
+)
+
 // IBoard
 type IBoard interface {
 	Dim() ICoord
@@ -15,6 +19,9 @@ type IBoard interface {
 	Piece(at ICoord) IPiece
 	PlacePiece(to ICoord, p IPiece) IBoard
 	MakeMove(to ICoord, piece IPiece) bool
+
+	King(of Colour) IPiece
+	SetKing(of Colour, to IPiece)
 
 	FindPieces(f IPieceFilter) Pieces
 	FindAttackedCellsBy(f IPieceFilter) ICoords

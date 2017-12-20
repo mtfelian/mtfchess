@@ -44,7 +44,7 @@ var _ = Describe("Check test", func() {
 		b.PlacePiece(rect.Coord{4, 2}, wn)
 		b.PlacePiece(rect.Coord{5, 2}, wk)
 
-		d, c := rect.Coord{2, 1}, wn.Coord()
+		d, c := rect.Coord{2, 1}, wn.Coord().Copy()
 		Expect(b.MakeMove(d, wn)).To(BeFalse(), "check exposed!")
 		Expect(b.Piece(c)).To(Equal(wn))
 		Expect(b.Piece(d)).To(BeNil())

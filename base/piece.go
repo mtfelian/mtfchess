@@ -47,7 +47,7 @@ func (p *Piece) Colour() Colour {
 }
 
 // SetCoords sets piece's coords to
-func (p *Piece) SetCoords(to ICoord) {
+func (p *Piece) SetCoords(board IBoard, to ICoord) {
 	p.coord = to
 }
 
@@ -62,7 +62,6 @@ func (p *Piece) Copy() *Piece {
 		colour:   p.colour,
 		literals: p.literals,
 		name:     p.name,
-		coord:    nil,
 	}
 	if p.coord != nil {
 		newPiece.coord = p.coord.Copy()

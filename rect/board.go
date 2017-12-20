@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/colour"
 	. "github.com/mtfelian/utils"
 )
 
@@ -11,6 +12,7 @@ import (
 type Board struct {
 	cells         Cells
 	width, height int
+	king          map[Colour]base.IPiece
 }
 
 // X converts x1 to slice index
@@ -43,6 +45,19 @@ func (b Board) Dim() base.ICoord {
 // SetDim sets board dimensions to dim
 func (b *Board) SetDim(dim base.ICoord) {
 	b.width, b.height = dim.(Coord).X, dim.(Coord).Y
+}
+
+// initializeKing initializes board king
+func (b *Board) initializeKing() {
+	if b.king == nil {
+		b.king = map[Colour]base.IPiece{White: nil, Black: nil}
+	}
+}
+
+// SetKing sets a board king
+func (b *Board) SetKing(of Colour, to base.IPiece) {
+	b.initializeKing()
+	b.king[of] = to
 }
 
 // createCells returns a slice of Cell for the board
@@ -85,7 +100,7 @@ func (b *Board) Piece(at base.ICoord) base.IPiece {
 
 // PlacePiece places piece at coords (x, y)
 func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
-	p.SetCoords(to)
+	p.SetCoords(b, to)
 	b.Cell(to).SetPiece(p)
 	return b
 }
@@ -94,10 +109,27 @@ func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
 func (b *Board) Empty(at base.ICoord) base.IBoard {
 	piece := b.Cell(at).Piece()
 	if piece != nil {
-		piece.SetCoords(nil)
+		piece.SetCoords(b, nil)
 	}
 	b.Cell(at).Empty()
 	return b
+}
+
+// King returns a king of specified colour
+func (b *Board) King(of Colour) base.IPiece {
+	return b.king[of]
+}
+
+// copyKing returns a copy of a board king
+func (b *Board) copyKings() map[Colour]base.IPiece {
+	newKing := map[Colour]base.IPiece{}
+	for colour := range b.king {
+		king := b.King(colour)
+		if king != nil {
+			newKing[colour] = king.Copy()
+		}
+	}
+	return newKing
 }
 
 // Copy returns a pointer to a deep copy of a board
@@ -105,6 +137,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard := &Board{}
 	newBoard.SetCells(b.Cells().Copy(newBoard))
 	newBoard.SetDim(Coord{X: b.width, Y: b.height})
+	newBoard.king = b.copyKings()
 	return newBoard
 }
 
@@ -116,17 +149,17 @@ func (b *Board) Set(b1 base.IBoard) {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
-	destinations, wasPiece := piece.Destinations(b), b.Piece(to)
+	destinations, capturedPiece := piece.Destinations(b), b.Piece(to)
 	for destinations.HasNext() {
 		d := destinations.Next().(base.ICoord)
 		if !to.Equals(d) {
 			continue
 		}
-		if wasPiece != nil {
-			wasPiece.SetCoords(nil)
+		if capturedPiece != nil {
+			capturedPiece.SetCoords(b, nil)
 		}
 		b.Set(piece.Project(to, b))
-		piece.SetCoords(to)
+		piece.SetCoords(b, to)
 		return true
 	}
 	return false
@@ -201,6 +234,7 @@ func NewEmptyBoard(i, j int) *Board {
 	b := &Board{}
 	b.width, b.height = i, j
 	b.createCells()
+	b.initializeKing()
 	return b
 }
 
