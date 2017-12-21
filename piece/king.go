@@ -17,7 +17,7 @@ func NewKing(colour Colour) base.IPiece { return &King{Piece: base.NewPiece(colo
 func (p *King) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(append(leaper(1, 0, p, b, moving, 0), leaper(1, 1, p, b, moving, 0)...))
+		return rect.NewCoords(append(leaper(1, 0, p, b, moving, 0, moveAny), leaper(1, 1, p, b, moving, 0, moveAny)...))
 	default:
 		panic("invalid coord type")
 	}

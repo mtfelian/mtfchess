@@ -6,13 +6,19 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 )
 
+const (
+	moveAny        = iota // capture / non-capturing move
+	moveCapture           // only capture
+	moveNonCapture        // only non-capturing move
+)
+
 // leaper launches piece's beam like knight (+/- m/n, rot90, +/- n,m) on a board.
 // Set moving to true to exclude check exposing path and defending own piece path.
 // Set f (front) to 1 to allow movement only forward.
 // Set f to -1 to allow only backward movement.
 // Set f to 0 to allow both forward and backward piece movement.
 // Returns a slice of destination coords.
-func leaper(m, n int, piece base.IPiece, board *rect.Board, moving bool, f int) []base.ICoord {
+func leaper(m, n int, piece base.IPiece, board *rect.Board, moving bool, f int, moveType int) []base.ICoord {
 	if piece.Colour() == Black {
 		f *= -1
 	}
@@ -54,11 +60,11 @@ func leaper(m, n int, piece base.IPiece, board *rect.Board, moving bool, f int) 
 		iOffsets[i] = offsets[i]
 	}
 
-	return inOneStep(piece, board, moving, iOffsets)
+	return inOneStep(piece, board, moving, iOffsets, moveType)
 }
 
 // inManySteps returns legal moves for pieces which move in many steps, like rook and bishop
-func inManySteps(piece base.IPiece, board *rect.Board, moving bool, o []rect.Coord, max int) []base.ICoord {
+func inManySteps(piece base.IPiece, board *rect.Board, moving bool, o []rect.Coord, max int, moveType int) []base.ICoord {
 	bW, pX := board.Dim().(rect.Coord).X, piece.Coord().(rect.Coord).X
 	bH, pY := board.Dim().(rect.Coord).Y, piece.Coord().(rect.Coord).Y
 	// oX, oY - offsets, step - current step of a reader
@@ -73,7 +79,7 @@ directions:
 			if moving && InCheck(board.Project(piece, to), piece.Colour()) {
 				continue // should continue in same direction (may be further capture releases check?)
 			}
-			if stroke(to, moving, board, piece, &result) {
+			if stroke(to, moving, board, piece, &result, moveType) {
 				continue directions // capture occured, don't go further in that direction
 			}
 		}
@@ -89,7 +95,7 @@ directions:
 // Set f to -1 to allow only backward movement.
 // Set f to 0 to allow both forward and backward piece movement.
 // Returns a slice of destination coords.
-func reader(m, n int, piece base.IPiece, board *rect.Board, moving bool, max int, f int) []base.ICoord {
+func reader(m, n int, piece base.IPiece, board *rect.Board, moving bool, max int, f int, moveType int) []base.ICoord {
 	if piece.Colour() == Black {
 		f *= -1
 	}
@@ -127,5 +133,5 @@ func reader(m, n int, piece base.IPiece, board *rect.Board, moving bool, max int
 		panic("wrong front value")
 	}
 
-	return inManySteps(piece, board, moving, offsets, max)
+	return inManySteps(piece, board, moving, offsets, max, moveType)
 }

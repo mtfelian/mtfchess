@@ -17,7 +17,7 @@ func NewRook(colour Colour) base.IPiece { return &Rook{Piece: base.NewPiece(colo
 func (p *Rook) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(reader(1, 0, p, b, moving, 0, 0))
+		return rect.NewCoords(reader(1, 0, p, b, moving, 0, 0, moveAny))
 	default:
 		panic("invalid coord type")
 	}

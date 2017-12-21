@@ -19,7 +19,7 @@ func NewBishop(colour Colour) base.IPiece {
 func (p *Bishop) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(reader(1, 1, p, b, moving, 0, 0))
+		return rect.NewCoords(reader(1, 1, p, b, moving, 0, 0, moveAny))
 	default:
 		panic("invalid coord type")
 	}

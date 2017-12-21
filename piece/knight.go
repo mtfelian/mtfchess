@@ -19,7 +19,7 @@ func NewKnight(colour Colour) base.IPiece {
 func (p *Knight) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(leaper(1, 2, p, b, moving, 0))
+		return rect.NewCoords(leaper(1, 2, p, b, moving, 0, moveAny))
 	default:
 		panic("invalid coord type")
 	}

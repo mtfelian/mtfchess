@@ -19,7 +19,7 @@ func NewQueen(colour Colour) base.IPiece {
 func (p *Queen) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(append(reader(1, 0, p, b, moving, 0, 0), reader(1, 1, p, b, moving, 0, 0)...))
+		return rect.NewCoords(append(reader(1, 0, p, b, moving, 0, 0, moveAny), reader(1, 1, p, b, moving, 0, 0, moveAny)...))
 	default:
 		panic("invalid coord type")
 	}
