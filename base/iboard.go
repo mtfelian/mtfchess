@@ -20,6 +20,10 @@ type IBoard interface {
 	PlacePiece(to ICoord, p IPiece) IBoard
 	MakeMove(to ICoord, piece IPiece) bool
 
+	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
+	// this don't change coords of a piece
+	Project(piece IPiece, to ICoord) IBoard
+
 	King(of Colour) IPiece
 	SetKing(of Colour, to IPiece)
 

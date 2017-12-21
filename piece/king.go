@@ -35,10 +35,5 @@ func (p *King) SetCoords(board base.IBoard, to base.ICoord) {
 	board.SetKing(p.Colour(), p) // when king moves, set it to a board for faster check detection
 }
 
-// Project a copy of a piece to the specified coords on board, return a copy of a board
-func (p *King) Project(to base.ICoord, b base.IBoard) base.IBoard {
-	return b.Copy().Empty(p.Coord()).PlacePiece(to, p.Copy())
-}
-
 // Copy a piece
 func (p *King) Copy() base.IPiece { return &King{Piece: p.Piece.Copy()} }

@@ -12,7 +12,7 @@ func inOneStep(piece base.IPiece, board base.IBoard, moving bool, o []base.ICoor
 		if to.OutOf(board) {
 			continue
 		}
-		if moving && InCheck(piece.Project(to, board), piece.Colour()) {
+		if moving && InCheck(board.Project(piece, to), piece.Colour()) {
 			continue
 		}
 		stroke(to, moving, board, piece, &result) // here should not break even if true!

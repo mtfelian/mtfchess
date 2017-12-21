@@ -31,10 +31,5 @@ func (p *Queen) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
 // Destinations returns a slice of cells coords, making it's legal moves
 func (p *Queen) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
 
-// Project a copy of a piece to the specified coords on board, return a copy of a board
-func (p *Queen) Project(to base.ICoord, b base.IBoard) base.IBoard {
-	return b.Copy().Empty(p.Coord()).PlacePiece(to, p.Copy())
-}
-
 // Copy a piece
 func (p *Queen) Copy() base.IPiece { return &Queen{Piece: p.Piece.Copy()} }

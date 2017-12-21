@@ -165,7 +165,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if capturedPiece != nil {
 			capturedPiece.SetCoords(b, nil)
 		}
-		b.Set(piece.Project(to, b))
+		b.Set(b.Project(piece, to))
 		piece.SetCoords(b, to)
 		return true
 	}
@@ -236,6 +236,11 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 	return pairs
 }
 
+// Projects returns a copy of board with projected piece copy to given coords
+func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
+	return b.Copy().Empty(piece.Coord()).PlacePiece(to, piece.Copy())
+}
+
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
 func NewEmptyBoard(i, j int) *Board {
 	b := &Board{}
@@ -247,7 +252,6 @@ func NewEmptyBoard(i, j int) *Board {
 
 /*
 todo to implement:
-  - REFACTOR probably move Project() from piece to board;
   - allow leaper to capture differently from non-capturing moves: pawn piece (one cell front, capture by one front diag);
     leaper() - add flag 'capturing': 0, 1, 2; 0 - move/capture, 1- only non-capture move, 2 - only capture
   - archbishop piece;

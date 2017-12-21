@@ -26,7 +26,4 @@ type IPiece interface {
 	Coord() ICoord
 	// Copy returns a deep copy of a piece
 	Copy() IPiece
-	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
-	// this don't change coords of a piece
-	Project(to ICoord, b IBoard) IBoard
 }
