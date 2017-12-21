@@ -23,7 +23,8 @@ func inOneStep(piece base.IPiece, board base.IBoard, moving bool, o []base.ICoor
 // stroke returns true if mine imaginary beam strokes some piece on coords on board, memorizing it's path
 // it returns false if an imaginary beam is still going meats no barrier
 func stroke(to base.ICoord, moving bool, on base.IBoard, mine base.IPiece, path *[]base.ICoord, moveType int) bool {
-	if dstPiece := on.Cell(to).Piece(); dstPiece != nil {
+	if dstPiece := on.Cell(to).Piece(); dstPiece != nil { // destination cell contains another piece
+		// if we are only calculating attacking cells, or if can capture
 		if !moving || dstPiece.Colour() != mine.Colour() {
 			*path = append(*path, to)
 		}

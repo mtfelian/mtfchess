@@ -33,7 +33,7 @@ func leaper(m, n int, piece base.IPiece, board *rect.Board, moving bool, f int, 
 	case 1, -1: // only front or only back
 		switch {
 		case n == 0: // horizontally and vertically
-			offsets = []rect.Coord{{m, 0}, {-m, 0}, {0, f * m}}
+			offsets = []rect.Coord{{0, f * m}} // removed {{m, 0}, {-m, 0}}, it's side movements
 		case m == n: // diagonally
 			offsets = []rect.Coord{{m, f * m}, {-m, f * m}}
 		default: // m != n case
@@ -111,7 +111,7 @@ func reader(m, n int, piece base.IPiece, board *rect.Board, moving bool, max int
 	case 1, -1: // only front or only back
 		switch {
 		case n == 0: // horizontally and vertically
-			offsets = []rect.Coord{{m, 0}, {-m, 0}, {0, f * m}}
+			offsets = []rect.Coord{{0, f * m}} // removed {{m, 0}, {-m, 0}}, it's side movements
 		case m == n: // diagonally
 			offsets = []rect.Coord{{m, f * m}, {-m, f * m}}
 		default: // on a special offsets (see "nightreader" - (1,2)-reader)
