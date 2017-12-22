@@ -13,6 +13,7 @@ type Board struct {
 	cells         Cells
 	width, height int
 	king          map[Colour]base.IPiece
+	settings      Settings
 }
 
 // X converts x1 to slice index
@@ -241,12 +242,20 @@ func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
 	return b.Copy().Empty(piece.Coord()).PlacePiece(to, piece.Copy())
 }
 
+// NewTestBoard creates new empty board for tests
+func NewTestEmptyBoard() *Board {
+	return NewEmptyBoard(5, 6, Settings{
+		PawnLongModifier: 1,
+	})
+}
+
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
-func NewEmptyBoard(i, j int) *Board {
+func NewEmptyBoard(i, j int, settings Settings) *Board {
 	b := &Board{}
 	b.width, b.height = i, j
 	b.createCells()
 	b.initializeKing()
+	b.settings = settings
 	return b
 }
 

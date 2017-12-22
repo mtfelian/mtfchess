@@ -12,9 +12,8 @@ import (
 )
 
 var _ = Describe("Bishop test", func() {
-	w, h := 5, 6
 	var b base.IBoard
-	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
+	BeforeEach(func() { b = rect.NewTestEmptyBoard() })
 
 	It("generates moves", func() {
 		wb, wn, bb := piece.NewBishop(White), piece.NewKnight(White), piece.NewBishop(Black)
@@ -87,7 +86,7 @@ var _ = Describe("Bishop test", func() {
 	It("makes legal moves", func() {
 		var wb, br base.IPiece
 		testReset := func() {
-			b = rect.NewEmptyBoard(w, h)
+			b = rect.NewTestEmptyBoard()
 			wb, br = piece.NewBishop(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wb)
 			b.PlacePiece(rect.Coord{1, 2}, br)
@@ -121,7 +120,7 @@ var _ = Describe("Bishop test", func() {
 	It("don't makes illegal moves", func() {
 		var wb, br base.IPiece
 		testReset := func() {
-			b = rect.NewEmptyBoard(w, h)
+			b = rect.NewTestEmptyBoard()
 			wb, br = piece.NewBishop(White), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wb)
 			b.PlacePiece(rect.Coord{4, 5}, br)

@@ -12,9 +12,8 @@ import (
 )
 
 var _ = Describe("Pawn test", func() {
-	w, h := 5, 6
 	var b base.IBoard
-	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
+	BeforeEach(func() { b = rect.NewTestEmptyBoard() })
 
 	It("generates moves", func() {
 		wp, bn := piece.NewPawn(White), piece.NewKnight(Black)
