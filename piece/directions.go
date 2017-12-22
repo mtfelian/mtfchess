@@ -22,7 +22,13 @@ func inOneStep(piece base.IPiece, board base.IBoard, moving bool, o []base.ICoor
 }
 
 // stroke returns true if mine imaginary beam strokes some piece on coords on board, memorizing it's path
-// it returns false if an imaginary beam is still going meats no barrier
+// it returns false if an imaginary beam is still going meating no barrier
+// to is a destination cell coords
+// moving - set it to true if the func should return possible legal moves, set it to false to return attacked cells
+// on is a board on which piece is moving
+// mine is a moving piece
+// path is a pointer to a slice of coords to add
+// moveType is a type of move: only capturing, only non-capturing, or any
 func stroke(to base.ICoord, moving bool, on base.IBoard, mine base.IPiece, path *[]base.ICoord, moveType int) bool {
 	// destination cell contains another piece
 	if dstPiece := on.Cell(to).Piece(); dstPiece != nil && SliceContains(moveType, []int{moveAny, moveCapture}) {
@@ -33,7 +39,7 @@ func stroke(to base.ICoord, moving bool, on base.IBoard, mine base.IPiece, path 
 		return true
 	}
 	// dstPiece == nil, empty cell
-	if (moving && moveType != moveCapture) || moveType == moveAny {
+	if (moving && moveType != moveCapture) || moveType == moveAny || (!moving && moveType == moveCapture) {
 		*path = append(*path, to)
 	}
 	return false
