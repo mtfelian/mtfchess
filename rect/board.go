@@ -43,6 +43,16 @@ func (b Board) Dim() base.ICoord {
 	return Coord{X: b.width, Y: b.height}
 }
 
+// SetSettings of a board to s
+func (b *Board) SetSettings(s base.ISettings) {
+	b.settings = s.(Settings)
+}
+
+// Settings returns board settings
+func (b Board) Settings() Settings {
+	return b.settings
+}
+
 // SetDim sets board dimensions to dim
 func (b *Board) SetDim(dim base.ICoord) {
 	b.width, b.height = dim.(Coord).X, dim.(Coord).Y
@@ -245,7 +255,7 @@ func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
 // NewTestBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
 	return NewEmptyBoard(5, 6, Settings{
-		PawnLongModifier: 1,
+		PawnLongModifier: 0, // can't move to the front more than 1 cell
 	})
 }
 

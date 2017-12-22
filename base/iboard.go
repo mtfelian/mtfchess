@@ -16,6 +16,8 @@ type IBoard interface {
 	Copy() IBoard
 	Set(b1 IBoard)
 
+	SetSettings(s ISettings)
+
 	Piece(at ICoord) IPiece
 	PlacePiece(to ICoord, p IPiece) IBoard
 	MakeMove(to ICoord, piece IPiece) bool
