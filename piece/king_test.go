@@ -13,7 +13,8 @@ import (
 
 var _ = Describe("King test", func() {
 	var b base.IBoard
-	BeforeEach(func() { b = rect.NewTestEmptyBoard() })
+	resetBoard := func() { b = rect.NewTestEmptyBoard() }
+	BeforeEach(func() { resetBoard() })
 
 	It("generates moves", func() {
 		wk, wn, bn := piece.NewKing(White), piece.NewKnight(White), piece.NewKnight(Black)
@@ -78,7 +79,7 @@ var _ = Describe("King test", func() {
 	It("makes legal moves", func() {
 		var wk, bk, br base.IPiece
 		testReset := func() {
-			b = rect.NewTestEmptyBoard()
+			resetBoard()
 			wk, bk, br = piece.NewKing(White), piece.NewKing(Black), piece.NewRook(Black)
 			b.PlacePiece(rect.Coord{2, 3}, wk)
 			b.PlacePiece(rect.Coord{3, 4}, br)

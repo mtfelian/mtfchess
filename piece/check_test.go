@@ -11,7 +11,8 @@ import (
 
 var _ = Describe("Check test", func() {
 	var b base.IBoard
-	BeforeEach(func() { b = rect.NewTestEmptyBoard() })
+	resetBoard := func() { b = rect.NewTestEmptyBoard() }
+	BeforeEach(func() { resetBoard() })
 
 	It("is white in check", func() {
 		wn, bn := piece.NewKnight(White), piece.NewKnight(Black)

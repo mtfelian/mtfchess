@@ -13,13 +13,14 @@ import (
 
 var _ = Describe("Pawn test with 0-modifier", func() {
 	var b base.IBoard
-
-	BeforeEach(func() {
+	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
 		s.PawnLongModifier = 0
 		b.SetSettings(s)
-	})
+	}
+
+	BeforeEach(func() { resetBoard() })
 
 	It("generates moves", func() {
 		wp, bn := piece.NewPawn(White), piece.NewKnight(Black)
@@ -53,17 +54,52 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		// successful capture releasing check
 		Expect(b.MakeMove(rect.Coord{1, 3}, wp)).To(BeTrue(), "can't capture releasing check")
 	})
+
+	It("makes legal moves", func() {
+		var wp, bn base.IPiece
+		testReset := func() {
+			resetBoard()
+			wp, bn = piece.NewPawn(White), piece.NewKnight(Black)
+			b.PlacePiece(rect.Coord{2, 2}, wp)
+			b.PlacePiece(rect.Coord{1, 3}, bn)
+		}
+		testReset()
+		destinations := wp.Destinations(b)
+
+		wpCoord, bnCoord := wp.Coord().Copy(), bn.Coord().Copy()
+		Expect(destinations.Len()).To(Equal(2))
+		for destinations.HasNext() {
+			d := destinations.Next().(base.ICoord)
+			Expect(b.MakeMove(d, wp)).To(BeTrue(), "failed at destination %d", destinations.I())
+			// check source cell to be empty
+			Expect(b.Piece(wpCoord)).To(BeNil())
+			// check destination cell to contain new piece
+			Expect(b.Piece(d)).To(Equal(wp))
+			if !bnCoord.Equals(d) { // if not capture
+				// not captured piece still stands
+				Expect(b.Piece(bnCoord)).To(Equal(bn))
+			} else { // capture
+				// capturing piece's coords is destination
+				Expect(wp.Coord()).To(Equal(d))
+				// captured piece's coords is nil
+				Expect(bn.Coord()).To(BeNil())
+			}
+
+			testReset()
+		}
+	})
 })
 
-var _ = Describe("Pawn test with 0-modifier", func() {
+var _ = Describe("Pawn test with non-0-modifier", func() {
 	var b base.IBoard
-
-	BeforeEach(func() {
+	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
 		s.PawnLongModifier = 1
 		b.SetSettings(s)
-	})
+	}
+
+	BeforeEach(func() { resetBoard() })
 
 	It("generates moves", func() {
 		wp, bn := piece.NewPawn(White), piece.NewKnight(Black)
@@ -98,5 +134,39 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		Expect(b.MakeMove(rect.Coord{2, 3}, wp)).To(BeFalse(), "king still in check")
 		// successful capture releasing check
 		Expect(b.MakeMove(rect.Coord{1, 3}, wp)).To(BeTrue(), "can't capture releasing check")
+	})
+
+	It("makes legal moves", func() {
+		var wp, bn base.IPiece
+		testReset := func() {
+			resetBoard()
+			wp, bn = piece.NewPawn(White), piece.NewKnight(Black)
+			b.PlacePiece(rect.Coord{2, 2}, wp)
+			b.PlacePiece(rect.Coord{1, 3}, bn)
+		}
+		testReset()
+		destinations := wp.Destinations(b)
+
+		wpCoord, bnCoord := wp.Coord().Copy(), bn.Coord().Copy()
+		Expect(destinations.Len()).To(Equal(3))
+		for destinations.HasNext() {
+			d := destinations.Next().(base.ICoord)
+			Expect(b.MakeMove(d, wp)).To(BeTrue(), "failed at destination %d", destinations.I())
+			// check source cell to be empty
+			Expect(b.Piece(wpCoord)).To(BeNil())
+			// check destination cell to contain new piece
+			Expect(b.Piece(d)).To(Equal(wp))
+			if !bnCoord.Equals(d) { // if not capture
+				// not captured piece still stands
+				Expect(b.Piece(bnCoord)).To(Equal(bn))
+			} else { // capture
+				// capturing piece's coords is destination
+				Expect(wp.Coord()).To(Equal(d))
+				// captured piece's coords is nil
+				Expect(bn.Coord()).To(BeNil())
+			}
+
+			testReset()
+		}
 	})
 })
