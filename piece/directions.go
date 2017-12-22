@@ -33,7 +33,7 @@ func stroke(to base.ICoord, moving bool, on base.IBoard, mine base.IPiece, path 
 		return true
 	}
 	// dstPiece == nil, empty cell
-	if SliceContains(moveType, []int{moveAny, moveNonCapture}) {
+	if (moving && moveType != moveCapture) || moveType == moveAny {
 		*path = append(*path, to)
 	}
 	return false

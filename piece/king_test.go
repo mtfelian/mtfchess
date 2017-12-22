@@ -103,7 +103,7 @@ var _ = Describe("King test", func() {
 				// capturing piece's coords is destination
 				Expect(wk.Coord()).To(Equal(d))
 				// captured piece's coords is nil
-				Expect(br.Coord()).To(BeNil()) //todo fix
+				Expect(br.Coord()).To(BeNil())
 			}
 
 			testReset()

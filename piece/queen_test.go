@@ -99,7 +99,7 @@ var _ = Describe("Queen test", func() {
 				// capturing piece's coords is destination
 				Expect(wq.Coord()).To(Equal(d))
 				// captured piece's coords is nil
-				//Expect(bn.Coord()).To(BeNil()) todo fix
+				Expect(bn.Coord()).To(BeNil())
 			}
 
 			Expect(b.Piece(wr.Coord())).To(Equal(wr))
