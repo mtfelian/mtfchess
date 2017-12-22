@@ -106,16 +106,16 @@ var _ = Describe("Rook test", func() {
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{3, 2}, rect.Coord{5, 1}, wr.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wr.Coord()
+			dCellCopy := b.Cell(d).Copy(b)
 			Expect(b.MakeMove(d, wr)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
 			Expect(b.Piece(c)).To(Equal(wr))
 
 			// check that destination cell was not changed
-			p := b.Piece(d)
-			if p == nil {
+			if dCellCopy.Piece() == nil {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
-				Expect(b.Piece(d)).To(Equal(b.Piece(d)))
+				Expect(b.Piece(d)).To(Equal(dCellCopy.Piece()))
 			}
 
 			// check another cell to contain another piece

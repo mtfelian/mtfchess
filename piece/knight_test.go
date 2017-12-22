@@ -125,16 +125,16 @@ var _ = Describe("Knight test", func() {
 		destinations := rect.NewCoords([]base.ICoord{rect.Coord{5, 2}, rect.Coord{1, 4}, wn.Coord()})
 		for destinations.HasNext() {
 			d, c := destinations.Next().(rect.Coord), wn.Coord()
+			dCellCopy := b.Cell(d).Copy(b)
 			Expect(b.MakeMove(d, wn)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
 			Expect(b.Piece(c)).To(Equal(wn))
 
 			// check that destination cell was not changed
-			p := b.Piece(d)
-			if p == nil {
+			if dCellCopy.Piece() == nil {
 				Expect(b.Piece(d)).To(BeNil())
 			} else {
-				Expect(b.Piece(d)).To(Equal(b.Piece(d)))
+				Expect(b.Piece(d)).To(Equal(dCellCopy.Piece()))
 			}
 
 			// check another cell to contain another piece

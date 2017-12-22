@@ -88,6 +88,40 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 			testReset()
 		}
 	})
+
+	It("don't makes illegal moves", func() {
+		var wp, bn base.IPiece
+		testReset := func() {
+			resetBoard()
+			wp, bn = piece.NewPawn(White), piece.NewKnight(Black)
+			b.PlacePiece(rect.Coord{2, 2}, wp)
+			b.PlacePiece(rect.Coord{1, 3}, bn)
+		}
+		testReset()
+
+		destinations := rect.NewCoords([]base.ICoord{
+			rect.Coord{3, 3}, rect.Coord{2, 4}, wp.Coord(), rect.Coord{2, 1},
+		})
+		for destinations.HasNext() {
+			d, c := destinations.Next().(rect.Coord), wp.Coord()
+			dCellCopy := b.Cell(d).Copy(b)
+			Expect(b.MakeMove(d, wp)).To(BeFalse(), "failed at offset %d", destinations.I())
+			// check source cell to contain unmoved piece
+			Expect(b.Piece(c)).To(Equal(wp))
+
+			// check that destination cell was not changed
+			if dCellCopy.Piece() == nil {
+				Expect(b.Piece(d)).To(BeNil())
+			} else {
+				Expect(b.Piece(d)).To(Equal(dCellCopy.Piece()))
+			}
+
+			// check another cell to contain another piece
+			Expect(b.Piece(bn.Coord())).To(Equal(bn))
+
+			testReset()
+		}
+	})
 })
 
 var _ = Describe("Pawn test with non-0-modifier", func() {
@@ -165,6 +199,40 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 				// captured piece's coords is nil
 				Expect(bn.Coord()).To(BeNil())
 			}
+
+			testReset()
+		}
+	})
+
+	It("don't makes illegal moves", func() {
+		var wp, bn base.IPiece
+		testReset := func() {
+			resetBoard()
+			wp, bn = piece.NewPawn(White), piece.NewKnight(Black)
+			b.PlacePiece(rect.Coord{2, 2}, wp)
+			b.PlacePiece(rect.Coord{1, 3}, bn)
+		}
+		testReset()
+
+		destinations := rect.NewCoords([]base.ICoord{
+			rect.Coord{3, 3}, wp.Coord(), rect.Coord{2, 1},
+		})
+		for destinations.HasNext() {
+			d, c := destinations.Next().(rect.Coord), wp.Coord()
+			dCellCopy := b.Cell(d).Copy(b)
+			Expect(b.MakeMove(d, wp)).To(BeFalse(), "failed at offset %d", destinations.I())
+			// check source cell to contain unmoved piece
+			Expect(b.Piece(c)).To(Equal(wp))
+
+			// check that destination cell was not changed
+			if dCellCopy.Piece() == nil {
+				Expect(b.Piece(d)).To(BeNil())
+			} else {
+				Expect(b.Piece(d)).To(Equal(dCellCopy.Piece()))
+			}
+
+			// check another cell to contain another piece
+			Expect(b.Piece(bn.Coord())).To(Equal(bn))
 
 			testReset()
 		}
