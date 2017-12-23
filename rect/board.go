@@ -178,15 +178,19 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if !to.Equals(d) {
 			continue
 		}
-		if capturedPiece != nil {
-			capturedPiece.SetCoords(b, nil)
-		}
 
 		if piece.Promotion() != nil {
 			oldCoords := piece.Coord().Copy()
-			b.Empty(piece.Coord())
 			piece = piece.Promote()
+			if !SliceContains(piece.Name(), b.Settings().AllowedPromotions) {
+				return false
+			}
+			b.Empty(oldCoords)
 			piece.SetCoords(b, oldCoords)
+		}
+
+		if capturedPiece != nil {
+			capturedPiece.SetCoords(b, nil)
 		}
 
 		b.Set(b.Project(piece, to))
@@ -261,10 +265,31 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 	return pairs
 }
 
+// Equals returns true if two boards are equal
+func (b *Board) Equals(to base.IBoard) bool {
+	b1 := to.(*Board)
+	if b.width != b1.width || b.height != b1.height {
+		return false
+	}
+	for y := 1; y <= b.height; y++ {
+		for x := 1; x <= b.width; x++ {
+			p1, p2 := b.Cell(Coord{x, y}).Piece(), b1.Cell(Coord{x, y}).Piece()
+			if (p1 == nil && p2 != nil) || (p1 != nil && p2 == nil) {
+				return false
+			}
+			if p1 != nil && p2 != nil && !p1.Equals(p2) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // NewTestBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
 	return NewEmptyBoard(5, 6, Settings{
-		PawnLongModifier: 0, // can't move to the front more than 1 cell
+		PawnLongModifier:  0, // can't move to the front more than 1 cell
+		AllowedPromotions: []string{"knight", "bishop", "rook", "queen"},
 	})
 }
 

@@ -83,3 +83,8 @@ func (p *Piece) SetPromote(to IPiece) {
 func (p *Piece) Promotion() IPiece {
 	return p.promotion
 }
+
+// Equals returns true if two pieces are equal
+func (p *Piece) Equals(to IPiece) bool {
+	return p.Name() == to.Name() && p.Colour() == to.Colour() && p.Coord().Equals(to.Coord())
+}

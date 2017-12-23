@@ -271,7 +271,7 @@ var _ = Describe("Pawn promotion test", func() {
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}}))).To(BeTrue())
 
-		wp.SetPromote(piece.NewRook(White))
+		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{2, 6}, wp)).To(BeTrue())
 
 		Expect(piece.InCheck(b, Black)).To(BeTrue())
@@ -293,7 +293,7 @@ var _ = Describe("Pawn promotion test", func() {
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{3, 6}}))).To(BeTrue())
 
-		wp.SetPromote(piece.NewRook(White))
+		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
 
 		Expect(piece.InCheck(b, Black)).To(BeTrue())
@@ -318,9 +318,8 @@ var _ = Describe("Pawn promotion test", func() {
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 6}}))).To(BeTrue())
 
-		wp.SetPromote(piece.NewRook(White))
+		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeTrue())
-
 		Expect(piece.InCheck(b, White)).To(BeFalse())
 	})
 
@@ -343,9 +342,51 @@ var _ = Describe("Pawn promotion test", func() {
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 6}}))).To(BeTrue())
 
-		wp.SetPromote(piece.NewRook(White))
+		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
 
 		Expect(piece.InCheck(b, White)).To(BeFalse())
+	})
+
+	It("pawn tries to make an invalid promotion", func() {
+		s := b.(*rect.Board).Settings()
+		s.AllowedPromotions = []string{"knight", "bishop", "queen"} // exclude rook from promotion list
+		b.SetSettings(s)
+
+		wp, bk := piece.NewPawn(White), piece.NewKing(Black)
+		bq, wk, br := piece.NewQueen(Black), piece.NewKing(White), piece.NewRook(Black)
+		b.PlacePiece(rect.Coord{1, 6}, bq)
+		b.PlacePiece(rect.Coord{3, 5}, wp)
+		b.PlacePiece(rect.Coord{3, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 6}, br)
+		b.PlacePiece(rect.Coord{5, 6}, wk)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 6}}))).To(BeTrue())
+
+		wpCoords, bkCoords, bqCoords := wp.Coord().Copy(), bk.Coord().Copy(), bq.Coord().Copy()
+		wkCoords, brCoords := wk.Coord().Copy(), br.Coord().Copy()
+
+		boardCopy := b.Copy()
+		wp.SetPromote(piece.NewRook(wp.Colour()))
+		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeFalse())
+		Expect(piece.InCheck(b, White)).To(BeTrue())
+
+		// check thet board did not changed
+		Expect(b.Piece(wpCoords)).To(Equal(wp))
+		Expect(b.Piece(bkCoords)).To(Equal(bk))
+		Expect(b.Piece(bqCoords)).To(Equal(bq))
+		Expect(b.Piece(wkCoords)).To(Equal(wk))
+		Expect(b.Piece(brCoords)).To(Equal(br))
+		Expect(b.Piece(rect.Coord{3, 6})).To(BeNil())
+
+		Expect(b.Equals(boardCopy)).To(BeTrue())
 	})
 })

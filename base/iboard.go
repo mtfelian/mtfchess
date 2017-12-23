@@ -12,6 +12,8 @@ type IBoard interface {
 	Cell(c ICoord) *Cell
 	Cells() ICells
 
+	Equals(to IBoard) bool
+
 	Empty(at ICoord) IBoard
 	Copy() IBoard
 	Set(b1 IBoard)

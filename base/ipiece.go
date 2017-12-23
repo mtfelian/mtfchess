@@ -33,4 +33,7 @@ type IPiece interface {
 	SetPromote(to IPiece)
 	// Promotion returns a piece in which piece will be promoted
 	Promotion() IPiece
+
+	// Equals returns true if two pieces are equal
+	Equals(to IPiece) bool
 }
