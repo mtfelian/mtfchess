@@ -29,7 +29,8 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 
 		a := wp.Attacks(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
 		Expect(d.Len()).To(Equal(2))
@@ -47,7 +48,8 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 
 		a := wp.Attacks(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		Expect(b.MakeMove(rect.Coord{3, 3}, wp)).To(BeFalse(), "captured own piece, and king in check")
 		Expect(b.MakeMove(rect.Coord{2, 3}, wp)).To(BeFalse(), "king still in check")
@@ -142,7 +144,8 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 
 		a := wp.Attacks(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
 		Expect(d.Len()).To(Equal(3))
@@ -162,7 +165,8 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 
 		a := wp.Attacks(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		Expect(b.MakeMove(rect.Coord{3, 3}, wp)).To(BeFalse(), "captured own piece, and king in check")
 		Expect(b.MakeMove(rect.Coord{2, 3}, wp)).To(BeFalse(), "king still in check")
@@ -252,14 +256,15 @@ var _ = Describe("Pawn promotion test", func() {
 		resetBoard()
 	})
 
-	It("pawn promotes", func() {
+	It("pawn promotes by non-capturing move", func() {
 		wp, bk := piece.NewPawn(White), piece.NewKing(Black)
 		b.PlacePiece(rect.Coord{2, 5}, wp)
 		b.PlacePiece(rect.Coord{4, 6}, bk)
 
 		a := wp.Attacks(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 6}, rect.Coord{3, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
 		Expect(d.Len()).To(Equal(1))
@@ -267,8 +272,80 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}}))).To(BeTrue())
 
 		wp.SetPromote(piece.NewRook(White))
-		b.MakeMove(rect.Coord{2, 6}, wp)
+		Expect(b.MakeMove(rect.Coord{2, 6}, wp)).To(BeTrue())
 
 		Expect(piece.InCheck(b, Black)).To(BeTrue())
+	})
+
+	It("pawn promotes by capturing move", func() {
+		wp, bk, bn := piece.NewPawn(White), piece.NewKing(Black), piece.NewKnight(Black)
+		b.PlacePiece(rect.Coord{2, 5}, wp)
+		b.PlacePiece(rect.Coord{3, 6}, bn)
+		b.PlacePiece(rect.Coord{4, 6}, bk)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 6}, rect.Coord{3, 6}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(2))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{3, 6}}))).To(BeTrue())
+
+		wp.SetPromote(piece.NewRook(White))
+		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
+
+		Expect(piece.InCheck(b, Black)).To(BeTrue())
+	})
+
+	It("pawn promotes by capture releasing check", func() {
+		wp, bk := piece.NewPawn(White), piece.NewKing(Black)
+		bq, wk, br := piece.NewQueen(Black), piece.NewKing(White), piece.NewRook(Black)
+		b.PlacePiece(rect.Coord{1, 6}, bq)
+		b.PlacePiece(rect.Coord{3, 5}, wp)
+		b.PlacePiece(rect.Coord{3, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 6}, br)
+		b.PlacePiece(rect.Coord{5, 6}, wk)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 6}}))).To(BeTrue())
+
+		wp.SetPromote(piece.NewRook(White))
+		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeTrue())
+
+		Expect(piece.InCheck(b, White)).To(BeFalse())
+	})
+
+	It("pawn promotes releasing check", func() {
+		wp, bk := piece.NewPawn(White), piece.NewKing(Black)
+		bq, wk, br := piece.NewQueen(Black), piece.NewKing(White), piece.NewRook(Black)
+		b.PlacePiece(rect.Coord{1, 6}, bq)
+		b.PlacePiece(rect.Coord{3, 5}, wp)
+		b.PlacePiece(rect.Coord{3, 3}, bk)
+		b.PlacePiece(rect.Coord{4, 6}, br)
+		b.PlacePiece(rect.Coord{4, 6}, wk)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 6}}))).To(BeTrue())
+
+		wp.SetPromote(piece.NewRook(White))
+		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
+
+		Expect(piece.InCheck(b, White)).To(BeFalse())
 	})
 })
