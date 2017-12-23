@@ -286,7 +286,7 @@ func (b *Board) Equals(to base.IBoard) bool {
 	return true
 }
 
-// NewTestBoard creates new empty board for tests
+// NewTestEmptyBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
 	return NewEmptyBoard(5, 6, Settings{
 		PawnLongFunc:           NoPawnLongMoveFunc,
