@@ -16,7 +16,7 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongModifier = 0
+		s.PawnLongFunc = rect.NoPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -131,7 +131,7 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongModifier = 1
+		s.PawnLongFunc = rect.StandardPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -248,7 +248,7 @@ var _ = Describe("Pawn promotion test", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongModifier = 1
+		s.PawnLongFunc = rect.StandardPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -379,13 +379,41 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeFalse())
 		Expect(piece.InCheck(b, White)).To(BeTrue())
 
-		// check thet board did not changed
+		// check that board did not changed
 		Expect(b.Piece(wpCoords)).To(Equal(wp))
 		Expect(b.Piece(bkCoords)).To(Equal(bk))
 		Expect(b.Piece(bqCoords)).To(Equal(bq))
 		Expect(b.Piece(wkCoords)).To(Equal(wk))
 		Expect(b.Piece(brCoords)).To(Equal(br))
 		Expect(b.Piece(rect.Coord{3, 6})).To(BeNil())
+
+		Expect(b.Equals(boardCopy)).To(BeTrue())
+	})
+
+	It("pawn tries to make a promotion from invalid cell", func() {
+		wp, bq := piece.NewPawn(White), piece.NewQueen(Black)
+		b.PlacePiece(rect.Coord{1, 6}, bq)
+		b.PlacePiece(rect.Coord{3, 4}, wp)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}, rect.Coord{4, 5}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 5}}))).To(BeTrue())
+
+		wpCoords, bqCoords := wp.Coord().Copy(), bq.Coord().Copy()
+
+		boardCopy := b.Copy()
+		wp.SetPromote(piece.NewRook(wp.Colour()))
+		Expect(b.MakeMove(rect.Coord{3, 5}, wp)).To(BeFalse())
+
+		// check that board did not changed
+		Expect(b.Piece(wpCoords)).To(Equal(wp))
+		Expect(b.Piece(bqCoords)).To(Equal(bq))
 
 		Expect(b.Equals(boardCopy)).To(BeTrue())
 	})

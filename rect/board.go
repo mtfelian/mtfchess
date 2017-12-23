@@ -181,10 +181,11 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 		if piece.Promotion() != nil {
 			oldCoords := piece.Coord().Copy()
-			piece = piece.Promote()
-			if !SliceContains(piece.Name(), b.Settings().AllowedPromotions) {
+			newPiece := piece.Promote()
+			if !b.Settings().PromotionConditionFunc(b, piece, d, newPiece) {
 				return false
 			}
+			piece = newPiece
 			b.Empty(oldCoords)
 			piece.SetCoords(b, oldCoords)
 		}
@@ -288,8 +289,9 @@ func (b *Board) Equals(to base.IBoard) bool {
 // NewTestBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
 	return NewEmptyBoard(5, 6, Settings{
-		PawnLongModifier:  0, // can't move to the front more than 1 cell
-		AllowedPromotions: []string{"knight", "bishop", "rook", "queen"},
+		PawnLongFunc:           NoPawnLongMoveFunc,
+		AllowedPromotions:      StandardAllowedPromotions(),
+		PromotionConditionFunc: StandardPromotionConditionFunc,
 	})
 }
 

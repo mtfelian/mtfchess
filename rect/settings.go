@@ -1,12 +1,16 @@
 package rect
 
+import "github.com/mtfelian/mtfchess/base"
+
 // Settings is a game rectangular board settings
 type Settings struct {
-	// PawnLongModifier added to pawn's move vertical absolute offset (to the front)
-	// to allow pawn to move PawnLongModifier+1 squares to the front from
-	// 2nd horizontal for White and from (board.height-1)th horizontal for Black
-	PawnLongModifier int
+	// PawnLongFunc's return value added to pawn's move vertical absolute offset (to the front)
+	// to allow pawn to move that 1 + number of squares to the front according to this func's logic
+	PawnLongFunc func(board base.IBoard, piece base.IPiece) int
 
 	// AllowedPromotions is a list of string piece names to promote to
 	AllowedPromotions []string
+
+	// PromotionConditionFunc returns true if piece going to cell dst can be promoted to
+	PromotionConditionFunc func(board base.IBoard, piece base.IPiece, dst base.ICoord, to base.IPiece) bool
 }
