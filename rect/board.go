@@ -305,17 +305,13 @@ func NewEmptyBoard(i, j int, settings Settings) *Board {
 
 /*
 todo to implement:
-  - allow leaper to capture differently from non-capturing moves: pawn piece (one cell front, capture by one front diag);
-    leaper() - add flag 'capturing': 0, 1, 2; 0 - move/capture, 1- only non-capture move, 2 - only capture
   - archbishop piece;
   - chancellor piece;
   - with board options:
-    - pawn moving by two cells;
     - EP, when a pawn goes by two cells, if at end of that move there is an opponent's pawn(s) by the side of the
       destination cell, memorize side pawns' coords in board, and clean it at next move (can set again to different
       pawns at the end of the same move);
     - castling (some work with rooks memorizing like in EP and side cells check);
-    - pawn promotion (exchanging one piece with another) to one from the list of allowed pieces;
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
   - returning legal moves in algebraic notation;
