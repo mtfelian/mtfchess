@@ -33,3 +33,6 @@ func (p *Knight) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true
 
 // Copy a piece
 func (p *Knight) Copy() base.IPiece { return &Knight{Piece: p.Piece.Copy()} }
+
+// Promote returns a promoted piece
+func (p *Knight) Promote() base.IPiece { return p }

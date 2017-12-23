@@ -161,6 +161,11 @@ func (b *Board) Set(b1 base.IBoard) {
 	*b = *(b1.Copy().(*Board))
 }
 
+// Projects returns a copy of board with projected piece copy to given coords
+func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
+	return b.Copy().Empty(piece.Coord()).PlacePiece(to, piece.Copy())
+}
+
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
@@ -176,8 +181,17 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if capturedPiece != nil {
 			capturedPiece.SetCoords(b, nil)
 		}
+
+		if piece.Promotion() != nil {
+			oldCoords := piece.Coord().Copy()
+			b.Empty(piece.Coord())
+			piece = piece.Promote()
+			piece.SetCoords(b, oldCoords)
+		}
+
 		b.Set(b.Project(piece, to))
 		piece.SetCoords(b, to)
+
 		return true
 	}
 	return false
@@ -245,11 +259,6 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 		}
 	}
 	return pairs
-}
-
-// Projects returns a copy of board with projected piece copy to given coords
-func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
-	return b.Copy().Empty(piece.Coord()).PlacePiece(to, piece.Copy())
 }
 
 // NewTestBoard creates new empty board for tests

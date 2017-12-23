@@ -10,7 +10,9 @@ import (
 type Rook struct{ *base.Piece }
 
 // NewRook creates new rook with colour
-func NewRook(colour Colour) base.IPiece { return &Rook{Piece: base.NewPiece(colour, "rook", "R♖♜")} }
+func NewRook(colour Colour) base.IPiece {
+	return &Rook{Piece: base.NewPiece(colour, "rook", "R♖♜")}
+}
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
@@ -31,3 +33,6 @@ func (p *Rook) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) 
 
 // Copy a piece
 func (p *Rook) Copy() base.IPiece { return &Rook{Piece: p.Piece.Copy()} }
+
+// Promote returns a promoted piece
+func (p *Rook) Promote() base.IPiece { return p }

@@ -238,3 +238,37 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 		}
 	})
 })
+
+var _ = Describe("Pawn promotion test", func() {
+	var b base.IBoard
+	resetBoard := func() {
+		b = rect.NewTestEmptyBoard()
+		s := b.(*rect.Board).Settings()
+		s.PawnLongModifier = 1
+		b.SetSettings(s)
+	}
+
+	BeforeEach(func() {
+		resetBoard()
+	})
+
+	It("pawn promotes", func() {
+		wp, bk := piece.NewPawn(White), piece.NewKing(Black)
+		b.PlacePiece(rect.Coord{2, 5}, wp)
+		b.PlacePiece(rect.Coord{4, 6}, bk)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}})))
+
+		d := wp.Destinations(b)
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}}))).To(BeTrue())
+
+		wp.SetPromote(piece.NewRook(White))
+		b.MakeMove(rect.Coord{2, 6}, wp)
+
+		Expect(piece.InCheck(b, Black)).To(BeTrue())
+	})
+})

@@ -15,7 +15,7 @@ var _ = Describe("Board test", func() {
 	w, h := 5, 6
 	var b base.IBoard
 
-	BeforeEach(func() { b = rect.NewEmptyBoard(w, h) })
+	BeforeEach(func() { b = rect.NewEmptyBoard(w, h, rect.Settings{PawnLongModifier: 0}) })
 
 	It("checks board width and height", func() {
 		Expect(b.Dim().(rect.Coord).X).To(Equal(w))

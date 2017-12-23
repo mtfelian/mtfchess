@@ -33,3 +33,6 @@ func (p *Bishop) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true
 
 // Copy a piece
 func (p *Bishop) Copy() base.IPiece { return &Bishop{Piece: p.Piece.Copy()} }
+
+// Promote returns a promoted piece
+func (p *Bishop) Promote() base.IPiece { return p }

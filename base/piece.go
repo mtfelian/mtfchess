@@ -12,6 +12,8 @@ type Piece struct {
 	colour         Colour
 	coord          ICoord
 	name, literals string
+
+	promotion IPiece
 }
 
 // NewPiece creates new base piece with colour
@@ -66,5 +68,18 @@ func (p *Piece) Copy() *Piece {
 	if p.coord != nil {
 		newPiece.coord = p.coord.Copy()
 	}
+	if p.promotion != nil {
+		newPiece.promotion = p.promotion.Copy()
+	}
 	return newPiece
+}
+
+// SetPromote sets a piece to promote
+func (p *Piece) SetPromote(to IPiece) {
+	p.promotion = to
+}
+
+// Promotion returns a piece in which p piece will be promoted
+func (p *Piece) Promotion() IPiece {
+	return p.promotion
 }

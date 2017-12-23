@@ -10,7 +10,9 @@ import (
 type King struct{ *base.Piece }
 
 // NewKing creates new king with colour
-func NewKing(colour Colour) base.IPiece { return &King{Piece: base.NewPiece(colour, "king", "K♔♚")} }
+func NewKing(colour Colour) base.IPiece {
+	return &King{Piece: base.NewPiece(colour, "king", "K♔♚")}
+}
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
@@ -37,3 +39,6 @@ func (p *King) SetCoords(board base.IBoard, to base.ICoord) {
 
 // Copy a piece
 func (p *King) Copy() base.IPiece { return &King{Piece: p.Piece.Copy()} }
+
+// Promote returns a promoted piece
+func (p *King) Promote() base.IPiece { return p }

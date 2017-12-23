@@ -36,3 +36,12 @@ func (p *Pawn) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) 
 
 // Copy a piece
 func (p *Pawn) Copy() base.IPiece { return &Pawn{Piece: p.Piece.Copy()} }
+
+// Promote returns a promoted piece
+func (p *Pawn) Promote() base.IPiece {
+	promotion := p.Promotion()
+	if promotion == nil {
+		return p
+	}
+	return promotion.Copy()
+}

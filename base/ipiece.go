@@ -26,4 +26,11 @@ type IPiece interface {
 	Coord() ICoord
 	// Copy returns a deep copy of a piece
 	Copy() IPiece
+
+	// Promote returns a promoted piece
+	Promote() IPiece
+	// SetPromote sets a piece promote to
+	SetPromote(to IPiece)
+	// Promotion returns a piece in which piece will be promoted
+	Promotion() IPiece
 }
