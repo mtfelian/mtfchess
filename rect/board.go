@@ -44,8 +44,8 @@ func (b Board) Dim() base.ICoord {
 }
 
 // SetSettings of a board to s
-func (b *Board) SetSettings(s base.ISettings) {
-	b.settings = s.(base.Settings)
+func (b *Board) SetSettings(s base.Settings) {
+	b.settings = s
 }
 
 // Settings returns board settings
