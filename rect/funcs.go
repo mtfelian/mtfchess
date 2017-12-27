@@ -38,6 +38,10 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 	res, bh := base.Castling{Enabled: false}, board.Dim().(Coord).Y
 
 	king := board.King(colour)
+	if king == nil || king.WasMoved() {
+		return res
+	}
+
 	kC := king.Coord().(Coord)
 	rooks := board.FindPieces(base.PieceFilter{
 		Names:   []string{"rook"},
@@ -48,7 +52,7 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 		},
 	})
 
-	if king == nil || king.WasMoved() || rooks == nil || len(rooks) != 1 || rooks[0].WasMoved() {
+	if rooks == nil || len(rooks) != 1 || rooks[0].WasMoved() {
 		return res
 	}
 

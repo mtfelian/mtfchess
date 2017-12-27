@@ -318,13 +318,14 @@ func NewEmptyBoard(i, j int, settings base.Settings) *Board {
 
 /*
 todo to implement:
+  - tests and fixes to castling
+
   - archbishop piece;
   - chancellor piece;
   - with board options:
     - EP, when a pawn goes by two cells, if at end of that move there is an opponent's pawn(s) by the side of the
       destination cell, memorize side pawns' coords in board, and clean it at next move (can set again to different
       pawns at the end of the same move);
-    - castling (some work with rooks memorizing like in EP and side cells check);
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
   - returning legal moves in algebraic notation;
