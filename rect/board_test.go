@@ -16,7 +16,7 @@ var _ = Describe("Board test", func() {
 	var b base.IBoard
 
 	BeforeEach(func() {
-		b = rect.NewEmptyBoard(w, h, rect.Settings{PawnLongFunc: rect.NoPawnLongMoveFunc})
+		b = rect.NewEmptyBoard(w, h, base.Settings{PawnLongFunc: rect.NoPawnLongMoveFunc})
 	})
 
 	It("checks board width and height", func() {

@@ -31,3 +31,7 @@ func StandardPromotionConditionFunc(board base.IBoard, piece base.IPiece, dst ba
 		(piece.Colour() == White && fromY == bh-1 && dstY == bh || // for white from pre-last horizontal to the last
 			piece.Colour() == Black && fromY == 2 && dstY == 1) // for black from 2nd horizontal to the 1st
 }
+
+func StandardCastlingFunc(board base.IBoard) []base.Castling {
+	return []base.Castling{}
+}

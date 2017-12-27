@@ -13,7 +13,7 @@ type Board struct {
 	cells         Cells
 	width, height int
 	king          map[Colour]base.IPiece
-	settings      Settings
+	settings      base.Settings
 }
 
 // X converts x1 to slice index
@@ -45,11 +45,11 @@ func (b Board) Dim() base.ICoord {
 
 // SetSettings of a board to s
 func (b *Board) SetSettings(s base.ISettings) {
-	b.settings = s.(Settings)
+	b.settings = s.(base.Settings)
 }
 
 // Settings returns board settings
-func (b Board) Settings() Settings {
+func (b Board) Settings() base.Settings {
 	return b.settings
 }
 
@@ -288,7 +288,7 @@ func (b *Board) Equals(to base.IBoard) bool {
 
 // NewTestEmptyBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
-	return NewEmptyBoard(5, 6, Settings{
+	return NewEmptyBoard(5, 6, base.Settings{
 		PawnLongFunc:           NoPawnLongMoveFunc,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
@@ -296,7 +296,7 @@ func NewTestEmptyBoard() *Board {
 }
 
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
-func NewEmptyBoard(i, j int, settings Settings) *Board {
+func NewEmptyBoard(i, j int, settings base.Settings) *Board {
 	b := &Board{}
 	b.width, b.height = i, j
 	b.createCells()
