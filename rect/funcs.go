@@ -7,7 +7,7 @@ import (
 )
 
 // NoPawnLongMoveFunc always disable pawn long forward move
-func NoPawnLongMoveFunc(board base.IBoard, piece base.IPiece) int { return 0 }
+func NoPawnLongMoveFunc(_ base.IBoard, _ base.IPiece) int { return 0 }
 
 // StandardPawnLongMoveFunc is a condition for pawn long forward move for standard chess
 func StandardPawnLongMoveFunc(board base.IBoard, piece base.IPiece) int {
