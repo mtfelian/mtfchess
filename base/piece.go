@@ -14,6 +14,7 @@ type Piece struct {
 	name, literals string
 
 	promotion IPiece
+	moved     bool
 }
 
 // NewPiece creates new base piece with colour
@@ -30,9 +31,7 @@ func NewPiece(colour Colour, name, literals string) *Piece {
 }
 
 // Name returns the name of a piece
-func (p *Piece) Name() string {
-	return p.name
-}
+func (p *Piece) Name() string { return p.name }
 
 // String makes BasePiece to implement fmt.Stringer
 func (p *Piece) String() string {
@@ -44,19 +43,13 @@ func (p *Piece) String() string {
 }
 
 // Colour returns a colour of a piece
-func (p *Piece) Colour() Colour {
-	return p.colour
-}
+func (p *Piece) Colour() Colour { return p.colour }
 
 // SetCoords sets piece's coords to
-func (p *Piece) SetCoords(board IBoard, to ICoord) {
-	p.coord = to
-}
+func (p *Piece) SetCoords(board IBoard, to ICoord) { p.coord = to }
 
 // Coord return piece coords
-func (p *Piece) Coord() ICoord {
-	return p.coord
-}
+func (p *Piece) Coord() ICoord { return p.coord }
 
 // Copy returns a copy of a BasePiece
 func (p *Piece) Copy() *Piece {
@@ -75,14 +68,16 @@ func (p *Piece) Copy() *Piece {
 }
 
 // SetPromote sets a piece to promote
-func (p *Piece) SetPromote(to IPiece) {
-	p.promotion = to
-}
+func (p *Piece) SetPromote(to IPiece) { p.promotion = to }
 
 // Promotion returns a piece in which p piece will be promoted
-func (p *Piece) Promotion() IPiece {
-	return p.promotion
-}
+func (p *Piece) Promotion() IPiece { return p.promotion }
+
+// WasMoved returns true if a piece was moved from it's starting position
+func (p *Piece) WasMoved() bool { return p.moved }
+
+// MarkMoved marks piece as moved
+func (p *Piece) MarkMoved() { p.moved = true }
 
 // Equals returns true if two pieces are equal
 func (p *Piece) Equals(to IPiece) bool {

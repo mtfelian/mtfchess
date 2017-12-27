@@ -1,5 +1,9 @@
 package base
 
+import (
+	. "github.com/mtfelian/mtfchess/colour"
+)
+
 // Settings is a game rectangular board settings
 type Settings struct {
 	// PawnLongFunc's return value added to pawn's move vertical absolute offset (to the front)
@@ -12,6 +16,6 @@ type Settings struct {
 	// PromotionConditionFunc returns true if piece going to cell dst can be promoted to
 	PromotionConditionFunc func(board IBoard, piece IPiece, dst ICoord, to IPiece) bool
 
-	// CastlingsFunc returns available castlings
-	CastlingsFunc func(board IBoard) []Castling
+	// CastlingsFunc returns available castlings for the given colour
+	CastlingsFunc func(board IBoard, colour Colour) []Castling
 }

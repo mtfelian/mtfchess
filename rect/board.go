@@ -286,12 +286,23 @@ func (b *Board) Equals(to base.IBoard) bool {
 	return true
 }
 
+// NewStandardChessBoard creates new board for standard chess
+func NewStandardChessBoard() *Board {
+	return NewEmptyBoard(8, 8, base.Settings{
+		PawnLongFunc:           StandardPawnLongMoveFunc,
+		AllowedPromotions:      StandardAllowedPromotions(),
+		PromotionConditionFunc: StandardPromotionConditionFunc,
+		CastlingsFunc:          StandardCastlingFunc,
+	})
+}
+
 // NewTestEmptyBoard creates new empty board for tests
 func NewTestEmptyBoard() *Board {
 	return NewEmptyBoard(5, 6, base.Settings{
 		PawnLongFunc:           NoPawnLongMoveFunc,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
+		CastlingsFunc:          NoCastlingFunc,
 	})
 }
 

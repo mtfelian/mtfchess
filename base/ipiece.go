@@ -34,6 +34,11 @@ type IPiece interface {
 	// Promotion returns a piece in which piece will be promoted
 	Promotion() IPiece
 
+	// WasMoved returns true if a piece was moved from it's starting position
+	WasMoved() bool
+	// MarkMoved marks piece as moved
+	MarkMoved()
+
 	// Equals returns true if two pieces are equal
 	Equals(to IPiece) bool
 }

@@ -32,6 +32,61 @@ func StandardPromotionConditionFunc(board base.IBoard, piece base.IPiece, dst ba
 			piece.Colour() == Black && fromY == 2 && dstY == 1) // for black from 2nd horizontal to the 1st
 }
 
-func StandardCastlingFunc(board base.IBoard) []base.Castling {
-	return []base.Castling{}
+// standardCastling returns castling data for standard chess for given colour on a given board
+// set aSide to true to return a-side castling, otherwise to return h-side castling
+func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castling {
+	res, bh := base.Castling{Enabled: false}, board.Dim().(Coord).Y
+
+	king := board.King(colour)
+	kC := king.Coord().(Coord)
+	rooks := board.FindPieces(base.PieceFilter{
+		Names:   []string{"rook"},
+		Colours: []Colour{colour},
+		Condition: func(r base.IPiece) bool {
+			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
+			return ((rC.X < kC.X && aSide) || (rC.X > kC.X && !aSide)) && rC.Y == y[colour] && kC.Y == y[colour]
+		},
+	})
+
+	if king == nil || king.WasMoved() || rooks == nil || len(rooks) != 1 || rooks[0].WasMoved() {
+		return res
+	}
+
+	// king and rook destination coordinates after castling
+	kDstX, rDstX, xStep := 7, 6, 1
+	if aSide {
+		kDstX, rDstX, xStep = 3, 4, -1
+	}
+	kingDstCoord := map[Colour]Coord{White: {kDstX, 1}, Black: {kDstX, bh}}
+	rookDstCoord := map[Colour]Coord{White: {rDstX, 1}, Black: {rDstX, bh}}
+
+	// checking that king's path from source cell to destination cell is not attacked and free of pieces
+	attacked := board.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}})
+	for i := xStep; kC.X+xStep*i != kingDstCoord[colour].X; i += xStep {
+		shouldBeFree := Coord{kC.X + xStep*i, kC.Y}
+		if attacked.Contains(shouldBeFree) || board.Piece(shouldBeFree) != nil {
+			return res
+		}
+	}
+
+	return base.Castling{
+		Piece:   [2]base.IPiece{king, rooks[0]},
+		To:      [2]base.ICoord{kingDstCoord[colour], rookDstCoord[colour]},
+		Enabled: true,
+	}
 }
+
+// StandardCastlingFunc is a castling func for standard chess
+func StandardCastlingFunc(board base.IBoard, colour Colour) []base.Castling {
+	castlings := []base.Castling{standardCastling(board, colour, true), standardCastling(board, colour, false)}
+	res := []base.Castling{}
+	for i := range castlings {
+		if castlings[i].Enabled {
+			res = append(res, castlings[i])
+		}
+	}
+	return res
+}
+
+// NoCastlingFunc is a castling func which disables castling
+func NoCastlingFunc(_ base.IBoard, _ Colour) []base.Castling { return []base.Castling{} }
