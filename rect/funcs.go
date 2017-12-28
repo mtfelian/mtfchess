@@ -66,7 +66,7 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 
 	// checking that king's path from source cell to destination cell is not attacked and free of pieces
 	attacked := board.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}})
-	for i := xStep; kC.X+xStep*i != kingDstCoord[colour].X; i += xStep {
+	for i := xStep; kC.X+i != kingDstCoord[colour].X; i += xStep {
 		shouldBeFree := Coord{kC.X + xStep*i, kC.Y}
 		if attacked.Contains(shouldBeFree) || board.Piece(shouldBeFree) != nil {
 			return res

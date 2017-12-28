@@ -17,14 +17,10 @@ type Board struct {
 }
 
 // X converts x1 to slice index
-func (b Board) X(x int) int {
-	return x - 1
-}
+func (b Board) X(x int) int { return x - 1 }
 
 // Y convers y1 to slice index
-func (b Board) Y(y int) int {
-	return b.height - y
-}
+func (b Board) Y(y int) int { return b.height - y }
 
 // String makes Board to implement Stringer
 func (b Board) String() string {
@@ -39,24 +35,16 @@ func (b Board) String() string {
 }
 
 // Dim returns a board dimensions
-func (b Board) Dim() base.ICoord {
-	return Coord{X: b.width, Y: b.height}
-}
+func (b Board) Dim() base.ICoord { return Coord{X: b.width, Y: b.height} }
 
 // SetSettings of a board to s
-func (b *Board) SetSettings(s base.Settings) {
-	b.settings = s
-}
+func (b *Board) SetSettings(s base.Settings) { b.settings = s }
 
 // Settings returns board settings
-func (b Board) Settings() base.Settings {
-	return b.settings
-}
+func (b Board) Settings() base.Settings { return b.settings }
 
 // SetDim sets board dimensions to dim
-func (b *Board) SetDim(dim base.ICoord) {
-	b.width, b.height = dim.(Coord).X, dim.(Coord).Y
-}
+func (b *Board) SetDim(dim base.ICoord) { b.width, b.height = dim.(Coord).X, dim.(Coord).Y }
 
 // initializeKing initializes board king
 func (b *Board) initializeKing() {
@@ -95,19 +83,13 @@ func (b *Board) Cell(at base.ICoord) *base.Cell {
 }
 
 // Cells returns a cells slice
-func (b *Board) Cells() base.ICells {
-	return b.cells
-}
+func (b *Board) Cells() base.ICells { return b.cells }
 
 // SetCells sets cells to s
-func (b *Board) SetCells(s base.ICells) {
-	b.cells = s.(Cells)
-}
+func (b *Board) SetCells(s base.ICells) { b.cells = s.(Cells) }
 
 // Piece returns a piece at coords
-func (b *Board) Piece(at base.ICoord) base.IPiece {
-	return b.Cell(at).Piece()
-}
+func (b *Board) Piece(at base.ICoord) base.IPiece { return b.Cell(at).Piece() }
 
 // PlacePiece places piece at coords (x, y)
 func (b *Board) PlacePiece(to base.ICoord, p base.IPiece) base.IBoard {
@@ -131,9 +113,7 @@ func (b *Board) Empty(at base.ICoord) base.IBoard {
 }
 
 // King returns a king of specified colour
-func (b *Board) King(of Colour) base.IPiece {
-	return b.king[of]
-}
+func (b *Board) King(of Colour) base.IPiece { return b.king[of] }
 
 // copyKing returns a copy of a board king
 func (b *Board) copyKings() map[Colour]base.IPiece {
@@ -157,9 +137,7 @@ func (b *Board) Copy() base.IBoard {
 }
 
 // Set changes b to b1
-func (b *Board) Set(b1 base.IBoard) {
-	*b = *(b1.Copy().(*Board))
-}
+func (b *Board) Set(b1 base.IBoard) { *b = *(b1.Copy().(*Board)) }
 
 // Projects returns a copy of board with projected piece copy to given coords
 func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
@@ -285,6 +263,9 @@ func (b *Board) Equals(to base.IBoard) bool {
 	}
 	return true
 }
+
+// Castlings returns available castlings for colour
+func (b *Board) Castlings(colour Colour) []base.Castling { return b.Settings().CastlingsFunc(b, colour) }
 
 // NewStandardChessBoard creates new board for standard chess
 func NewStandardChessBoard() *Board {
