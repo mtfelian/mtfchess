@@ -60,4 +60,21 @@ var _ = Describe("Castling test", func() {
 		Expect(bcH.Piece[0].Name()).To(Equal("king"))
 		Expect(bcH.Piece[1].Name()).To(Equal("rook"))
 	})
+	/*
+		todo test cases:
+		only one castling is enabled due to second rook moved
+		only one castling is enabled due to second rook not in standard position
+		only one castling is enabled due to king's dst attacked
+		only one castling is enabled due to king's path attacked
+		only one castling is enabled due to opponent's piece at king's path
+		only one castling is enabled due to opponent's piece at king's dst
+		only one castling is enabled due to own piece at king's path
+		only one castling is enabled due to own piece at king's dst
+		two castlings enabled, but rook source cell attacked
+		no castlings if in check
+		no castlings if king moved
+		no castlings if king not in standard position
+		no castlings if both rooks moved
+		no castlings if both rooks not in standard position
+	*/
 })
