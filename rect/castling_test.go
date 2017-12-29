@@ -96,21 +96,122 @@ var _ = Describe("Castling test", func() {
 			checkBlackCastlingASideEnabled(bc[0])
 		})
 
-	})
+		It("checks that only one castling is enabled due to king's path attacked", func() {
+			setupPosition()
+			Expect(b.MakeMove(rect.Coord{6, 8}, br2)).To(BeTrue())
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingASideEnabled(bc[0])
+		})
 
-	/*
-		todo test cases:
-		only one castling is enabled due to king's dst attacked
-		only one castling is enabled due to king's path attacked
-		only one castling is enabled due to opponent's piece at king's path
-		only one castling is enabled due to opponent's piece at king's dst
-		only one castling is enabled due to own piece at king's path
-		only one castling is enabled due to own piece at king's dst
-		two castlings enabled, but rook source cell attacked
-		no castlings if in check
-		no castlings if king moved
-		no castlings if king not in standard position
-		no castlings if both rooks moved
-		no castlings if both rooks not in standard position
-	*/
+		It("checks that only one castling is enabled due to opponent's piece at king's path", func() {
+			setupPosition()
+			b.PlacePiece(rect.Coord{6, 1}, piece.NewKnight(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(2))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingASideEnabled(bc[0])
+			checkBlackCastlingHSideEnabled(bc[1])
+		})
+
+		It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
+			setupPosition()
+			b.PlacePiece(rect.Coord{7, 1}, piece.NewKnight(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(2))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingASideEnabled(bc[0])
+			checkBlackCastlingHSideEnabled(bc[1])
+		})
+
+		It("checks that only one castling is enabled due to opponent's piece at king's path", func() {
+			setupPosition()
+			b.PlacePiece(rect.Coord{4, 8}, piece.NewKnight(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+			checkBlackCastlingHSideEnabled(bc[0])
+		})
+
+		It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
+			setupPosition()
+			b.PlacePiece(rect.Coord{3, 8}, piece.NewKnight(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+			checkBlackCastlingHSideEnabled(bc[0])
+		})
+
+		It("checks that no castlings if in check", func() {
+			setupPosition()
+			b.PlacePiece(rect.Coord{4, 2}, piece.NewBishop(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(0))
+			Expect(bc).To(HaveLen(2))
+			checkBlackCastlingASideEnabled(bc[0])
+			checkBlackCastlingHSideEnabled(bc[1])
+		})
+
+		It("checks that no castlings if king moved", func() {
+			setupPosition()
+			b.King(Black).MarkMoved()
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(0))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+		})
+
+		It("checks that no castlings if king not in standard position", func() {
+			setupPosition()
+			b.MakeMove(rect.Coord{4, 8}, b.King(Black))
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(0))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+		})
+
+		It("checks that only one castling is enabled if one of rook moved", func() {
+			setupPosition()
+			br1.MarkMoved()
+			wr2.MarkMoved()
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingHSideEnabled(bc[0])
+		})
+
+		It("checks that no castlings if both rooks moved", func() {
+			setupPosition()
+			br1.MarkMoved()
+			br2.MarkMoved()
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(0))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+		})
+
+		It("checks that no castlings if both rooks not in standard position", func() {
+			setupPosition()
+			Expect(b.MakeMove(rect.Coord{1, 7}, br1)).To(BeTrue())
+			Expect(b.MakeMove(rect.Coord{8, 7}, br2)).To(BeTrue())
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(0))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+		})
+
+	})
 })
