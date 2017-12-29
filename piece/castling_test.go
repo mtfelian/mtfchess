@@ -42,29 +42,31 @@ var _ = Describe("Castling test", func() {
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{7, 8}, rect.Coord{6, 8}}))
 	}
 
-	It("checks that both castlings are enabled", func() {
-		wr1, wr2, wk := piece.NewRook(White), piece.NewRook(White), piece.NewKing(White)
-		br1, br2, bk := piece.NewRook(Black), piece.NewRook(Black), piece.NewKing(Black)
-		b.PlacePiece(rect.Coord{1, 1}, wr1)
-		b.PlacePiece(rect.Coord{8, 1}, wr2)
-		b.PlacePiece(rect.Coord{5, 1}, wk)
-		b.PlacePiece(rect.Coord{1, 8}, br1)
-		b.PlacePiece(rect.Coord{8, 8}, br2)
-		b.PlacePiece(rect.Coord{5, 8}, bk)
+	Context("4 rooks, 2 kings", func() {
+		var wr1, wr2, wk, br1, br2, bk base.IPiece
+		setupPosition := func() {
+			wr1, wr2, wk = piece.NewRook(White), piece.NewRook(White), piece.NewKing(White)
+			br1, br2, bk = piece.NewRook(Black), piece.NewRook(Black), piece.NewKing(Black)
+			b.PlacePiece(rect.Coord{1, 1}, wr1)
+			b.PlacePiece(rect.Coord{8, 1}, wr2)
+			b.PlacePiece(rect.Coord{5, 1}, wk)
+			b.PlacePiece(rect.Coord{1, 8}, br1)
+			b.PlacePiece(rect.Coord{8, 8}, br2)
+			b.PlacePiece(rect.Coord{5, 8}, bk)
+		}
 
-		wc, bc := b.Castlings(White), b.Castlings(Black)
-
-		Expect(wc).To(HaveLen(2))
-		Expect(bc).To(HaveLen(2))
-
-		wcA, wcH := wc[0], wc[1]
-		bcA, bcH := bc[0], bc[1]
-
-		checkWhiteCastlingASideEnabled(wcA)
-		checkWhiteCastlingHSideEnabled(wcH)
-		checkBlackCastlingASideEnabled(bcA)
-		checkBlackCastlingHSideEnabled(bcH)
+		It("checks that both castlings are enabled", func() {
+			setupPosition()
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(2))
+			Expect(bc).To(HaveLen(2))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkWhiteCastlingHSideEnabled(wc[1])
+			checkBlackCastlingASideEnabled(bc[0])
+			checkBlackCastlingHSideEnabled(bc[1])
+		})
 	})
+
 	/*
 		todo test cases:
 		only one castling is enabled due to second rook moved
