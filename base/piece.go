@@ -57,6 +57,7 @@ func (p *Piece) Copy() *Piece {
 		colour:   p.colour,
 		literals: p.literals,
 		name:     p.name,
+		moved:    p.moved,
 	}
 	if p.coord != nil {
 		newPiece.coord = p.coord.Copy()

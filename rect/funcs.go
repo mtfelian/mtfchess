@@ -1,6 +1,7 @@
 package rect
 
 import (
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	. "github.com/mtfelian/utils"
@@ -42,6 +43,10 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 		return res
 	}
 
+	if board.InCheck(colour) {
+		return res
+	}
+
 	kC := king.Coord().(Coord)
 	rooks := board.FindPieces(base.PieceFilter{
 		Names:   []string{"rook"},
@@ -66,9 +71,14 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 
 	// checking that king's path from source cell to destination cell is not attacked and free of pieces
 	attacked := board.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}})
-	for i := xStep; kC.X+i != kingDstCoord[colour].X; i += xStep {
-		shouldBeFree := Coord{kC.X + xStep*i, kC.Y}
+	//fmt.Println(colour.Invert(), attacked)
+	for i := xStep; kC.X+i != kingDstCoord[colour].X+xStep; i += xStep {
+		shouldBeFree := Coord{kC.X + i, kC.Y}
+		_ = fmt.Sprint("")
+		//fmt.Println(colour, i, shouldBeFree, attacked.Contains(shouldBeFree), board.Piece(shouldBeFree) != nil)
 		if attacked.Contains(shouldBeFree) || board.Piece(shouldBeFree) != nil {
+			//fmt.Println("!! xStep=", xStep, i, kC.X)
+			//fmt.Println(">>", colour, kingDstCoord[colour].X)
 			return res
 		}
 	}

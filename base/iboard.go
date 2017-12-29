@@ -25,6 +25,7 @@ type IBoard interface {
 	PlacePiece(to ICoord, p IPiece) IBoard
 	MakeMove(to ICoord, piece IPiece) bool
 
+	InCheck(colour Colour) bool
 	Castlings(colour Colour) []Castling
 
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality

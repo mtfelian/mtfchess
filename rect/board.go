@@ -167,13 +167,16 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 			piece = newPiece
 			b.Empty(oldCoords)
 			piece.SetCoords(b, oldCoords)
+			piece.MarkMoved()
 		}
 
 		if capturedPiece != nil {
 			capturedPiece.SetCoords(b, nil)
 		}
 
+		piece.MarkMoved()
 		b.Set(b.Project(piece, to))
+		// first project (and empty source piece square, and only then set coords)
 		piece.SetCoords(b, to)
 
 		return true
@@ -267,6 +270,12 @@ func (b *Board) Equals(to base.IBoard) bool {
 
 // Castlings returns available castlings for colour
 func (b *Board) Castlings(colour Colour) []base.Castling { return b.Settings().CastlingsFunc(b, colour) }
+
+// InChecks returns true if king of colour is in check
+func (b *Board) InCheck(colour Colour) bool {
+	king := b.King(colour)
+	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
+}
 
 // NewStandardChessBoard creates new board for standard chess
 func NewStandardChessBoard() *Board {

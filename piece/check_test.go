@@ -22,8 +22,8 @@ var _ = Describe("Check test", func() {
 		b.PlacePiece(rect.Coord{5, 4}, bk)
 		b.PlacePiece(rect.Coord{4, 4}, wn)
 
-		Expect(piece.InCheck(b, White)).To(BeTrue())
-		Expect(piece.InCheck(b, Black)).To(BeFalse())
+		Expect(b.InCheck(White)).To(BeTrue())
+		Expect(b.InCheck(Black)).To(BeFalse())
 	})
 
 	It("is black in check", func() {
@@ -34,8 +34,8 @@ var _ = Describe("Check test", func() {
 		b.PlacePiece(rect.Coord{5, 4}, wk)
 		b.PlacePiece(rect.Coord{4, 4}, bn)
 
-		Expect(piece.InCheck(b, White)).To(BeFalse())
-		Expect(piece.InCheck(b, Black)).To(BeTrue())
+		Expect(b.InCheck(White)).To(BeFalse())
+		Expect(b.InCheck(Black)).To(BeTrue())
 	})
 
 	It("can't expose check", func() {

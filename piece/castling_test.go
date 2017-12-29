@@ -1,6 +1,7 @@
 package piece_test
 
 import (
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -77,7 +78,7 @@ var _ = Describe("Castling test", func() {
 
 		It("checks that only one castling is enabled due to second rook not in standard position", func() {
 			setupPosition()
-			wr1.SetCoords(b, rect.Coord{1, 2})
+			Expect(b.MakeMove(rect.Coord{1, 2}, wr1)).To(BeTrue())
 			wc, bc := b.Castlings(White), b.Castlings(Black)
 			Expect(wc).To(HaveLen(1))
 			Expect(bc).To(HaveLen(2))
@@ -85,6 +86,19 @@ var _ = Describe("Castling test", func() {
 			checkBlackCastlingASideEnabled(bc[0])
 			checkBlackCastlingHSideEnabled(bc[1])
 		})
+
+		It("checks that only one castling is enabled due to king's dst attacked", func() {
+			setupPosition()
+			Expect(b.MakeMove(rect.Coord{7, 8}, br2)).To(BeTrue())
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			fmt.Println(wr1.WasMoved(), wr2.WasMoved(), wk.WasMoved(), br1.WasMoved(), br2.WasMoved(), bk.WasMoved())
+			fmt.Println(wc, bc)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingASideEnabled(bc[0])
+		})
+
 	})
 
 	/*

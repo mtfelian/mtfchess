@@ -76,7 +76,7 @@ directions:
 	for i := range o {
 		for oX, oY, step := o[i].X, o[i].Y, 0; notOut(oX, oY, step); oX, oY, step = oX+o[i].X, oY+o[i].Y, step+1 {
 			to := piece.Coord().Add(rect.Coord{oX, oY})
-			if moving && InCheck(board.Project(piece, to), piece.Colour()) {
+			if moving && board.Project(piece, to).InCheck(piece.Colour()) {
 				continue // should continue in same direction (may be further capture releases check?)
 			}
 			if stroke(to, moving, board, piece, &result, moveType) {
