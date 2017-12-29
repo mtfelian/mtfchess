@@ -324,8 +324,6 @@ func NewEmptyBoard(i, j int, settings base.Settings) *Board {
 
 /*
 todo to implement:
-  - tests and fixes to castling
-
   - archbishop piece;
   - chancellor piece;
   - with board options:
