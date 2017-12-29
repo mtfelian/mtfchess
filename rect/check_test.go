@@ -1,4 +1,4 @@
-package piece_test
+package rect_test
 
 import (
 	"github.com/mtfelian/mtfchess/base"

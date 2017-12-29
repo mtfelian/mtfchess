@@ -1,7 +1,6 @@
-package piece_test
+package rect_test
 
 import (
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -91,8 +90,6 @@ var _ = Describe("Castling test", func() {
 			setupPosition()
 			Expect(b.MakeMove(rect.Coord{7, 8}, br2)).To(BeTrue())
 			wc, bc := b.Castlings(White), b.Castlings(Black)
-			fmt.Println(wr1.WasMoved(), wr2.WasMoved(), wk.WasMoved(), br1.WasMoved(), br2.WasMoved(), bk.WasMoved())
-			fmt.Println(wc, bc)
 			Expect(wc).To(HaveLen(1))
 			Expect(bc).To(HaveLen(1))
 			checkWhiteCastlingASideEnabled(wc[0])
