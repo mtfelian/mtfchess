@@ -19,3 +19,12 @@ func (c Castling) Equal(castling Castling) bool {
 	eq = eq && c.To[1].Equals(castling.To[1])
 	return eq
 }
+
+// Copy returns a copy of c with pieces taken from board
+func (c Castling) Copy(board IBoard) Castling {
+	return Castling{
+		Piece:   [2]IPiece{board.Piece(c.Piece[0].Coord()), board.Piece(c.Piece[1].Coord())},
+		To:      [2]ICoord{c.To[0].Copy(), c.To[1].Copy()},
+		Enabled: c.Enabled,
+	}
+}

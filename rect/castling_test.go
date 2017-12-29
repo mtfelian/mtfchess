@@ -24,9 +24,7 @@ var _ = Describe("Castling test", func() {
 
 	checkMakeCastling := func(c base.Castling) {
 		boardCopy := b.Copy()
-		c.Piece[0] = boardCopy.Piece(c.Piece[0].Coord())
-		c.Piece[1] = boardCopy.Piece(c.Piece[1].Coord())
-		Expect(boardCopy.MakeCastling(c)).To(BeTrue())
+		Expect(boardCopy.MakeCastling(c.Copy(boardCopy))).To(BeTrue())
 	}
 
 	checkWhiteCastlingASideEnabled := func(c base.Castling) {
