@@ -133,6 +133,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetCells(b.Cells().Copy(newBoard))
 	newBoard.SetDim(Coord{X: b.width, Y: b.height})
 	newBoard.king = b.copyKings()
+	newBoard.SetSettings(b.Settings())
 	return newBoard
 }
 

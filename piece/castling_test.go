@@ -65,6 +65,15 @@ var _ = Describe("Castling test", func() {
 			checkBlackCastlingASideEnabled(bc[0])
 			checkBlackCastlingHSideEnabled(bc[1])
 		})
+
+		It("checks that only one castling is enabled due to second rook moved", func() {
+			setupPosition()
+			Expect(b.MakeMove(rect.Coord{8, 8}, wr2)).To(BeTrue())
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(0))
+			checkWhiteCastlingASideEnabled(wc[0])
+		})
 	})
 
 	/*
