@@ -212,6 +212,34 @@ var _ = Describe("Castling test", func() {
 			checkWhiteCastlingASideEnabled(wc[0])
 			checkWhiteCastlingHSideEnabled(wc[1])
 		})
+	})
 
+	Context("2 rooks, 2 kings", func() {
+		var wr, wk, br, bk base.IPiece
+		setupPosition := func() {
+			wr, wk = piece.NewRook(White), piece.NewKing(White)
+			br, bk = piece.NewRook(Black), piece.NewKing(Black)
+			b.PlacePiece(rect.Coord{1, 1}, wr)
+			b.PlacePiece(rect.Coord{5, 1}, wk)
+			b.PlacePiece(rect.Coord{8, 8}, br)
+			b.PlacePiece(rect.Coord{5, 8}, bk)
+		}
+
+		It("checks that only one castling for each side", func() {
+			setupPosition()
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(1))
+			checkWhiteCastlingASideEnabled(wc[0])
+			checkBlackCastlingHSideEnabled(bc[0])
+		})
+	})
+
+	Context("empty board", func() {
+		It("checks that no castlings", func() {
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(0))
+			Expect(bc).To(HaveLen(0))
+		})
 	})
 })
