@@ -74,12 +74,21 @@ var _ = Describe("Castling test", func() {
 			Expect(bc).To(HaveLen(0))
 			checkWhiteCastlingASideEnabled(wc[0])
 		})
+
+		It("checks that only one castling is enabled due to second rook not in standard position", func() {
+			setupPosition()
+			wr1.SetCoords(b, rect.Coord{1, 2})
+			wc, bc := b.Castlings(White), b.Castlings(Black)
+			Expect(wc).To(HaveLen(1))
+			Expect(bc).To(HaveLen(2))
+			checkWhiteCastlingHSideEnabled(wc[0])
+			checkBlackCastlingASideEnabled(bc[0])
+			checkBlackCastlingHSideEnabled(bc[1])
+		})
 	})
 
 	/*
 		todo test cases:
-		only one castling is enabled due to second rook moved
-		only one castling is enabled due to second rook not in standard position
 		only one castling is enabled due to king's dst attacked
 		only one castling is enabled due to king's path attacked
 		only one castling is enabled due to opponent's piece at king's path
