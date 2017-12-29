@@ -91,9 +91,9 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 }
 
 // StandardCastlingFunc is a castling func for standard chess
-func StandardCastlingFunc(board base.IBoard, colour Colour) []base.Castling {
-	castlings := []base.Castling{standardCastling(board, colour, true), standardCastling(board, colour, false)}
-	res := []base.Castling{}
+func StandardCastlingFunc(board base.IBoard, colour Colour) base.Castlings {
+	castlings := base.Castlings{standardCastling(board, colour, true), standardCastling(board, colour, false)}
+	res := base.Castlings{}
 	for i := range castlings {
 		if castlings[i].Enabled {
 			res = append(res, castlings[i])
@@ -103,4 +103,4 @@ func StandardCastlingFunc(board base.IBoard, colour Colour) []base.Castling {
 }
 
 // NoCastlingFunc is a castling func which disables castling
-func NoCastlingFunc(_ base.IBoard, _ Colour) []base.Castling { return []base.Castling{} }
+func NoCastlingFunc(_ base.IBoard, _ Colour) base.Castlings { return base.Castlings{} }

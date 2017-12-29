@@ -22,24 +22,35 @@ var _ = Describe("Castling test", func() {
 		Expect(c.Piece[1].Name()).To(Equal("rook"))
 	}
 
+	checkMakeCastling := func(c base.Castling) {
+		boardCopy := b.Copy()
+		c.Piece[0] = boardCopy.Piece(c.Piece[0].Coord())
+		c.Piece[1] = boardCopy.Piece(c.Piece[1].Coord())
+		Expect(boardCopy.MakeCastling(c)).To(BeTrue())
+	}
+
 	checkWhiteCastlingASideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{3, 1}, rect.Coord{4, 1}}))
+		checkMakeCastling(c)
 	}
 
 	checkWhiteCastlingHSideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{7, 1}, rect.Coord{6, 1}}))
+		checkMakeCastling(c)
 	}
 
 	checkBlackCastlingASideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{3, 8}, rect.Coord{4, 8}}))
+		checkMakeCastling(c)
 	}
 
 	checkBlackCastlingHSideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{7, 8}, rect.Coord{6, 8}}))
+		checkMakeCastling(c)
 	}
 
 	Context("4 rooks, 2 kings", func() {

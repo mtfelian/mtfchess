@@ -152,36 +152,51 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		return false
 	}
 	destinations, capturedPiece := piece.Destinations(b), b.Piece(to)
-	for destinations.HasNext() {
-		d := destinations.Next().(base.ICoord)
-		if !to.Equals(d) {
-			continue
-		}
 
-		if piece.Promotion() != nil {
-			oldCoords := piece.Coord().Copy()
-			newPiece := piece.Promote()
-			if !b.Settings().PromotionConditionFunc(b, piece, d, newPiece) {
-				return false
-			}
-			piece = newPiece
-			b.Empty(oldCoords)
-			piece.SetCoords(b, oldCoords)
-			piece.MarkMoved()
-		}
-
-		if capturedPiece != nil {
-			capturedPiece.SetCoords(b, nil)
-		}
-
-		piece.MarkMoved()
-		b.Set(b.Project(piece, to))
-		// first project (and empty source piece square, and only then set coords)
-		piece.SetCoords(b, to)
-
-		return true
+	if !destinations.Contains(to) {
+		return false
 	}
-	return false
+
+	if piece.Promotion() != nil {
+		oldCoords := piece.Coord().Copy()
+		newPiece := piece.Promote()
+		if !b.Settings().PromotionConditionFunc(b, piece, to, newPiece) {
+			return false
+		}
+		piece = newPiece
+		b.Empty(oldCoords)
+		piece.SetCoords(b, oldCoords)
+		piece.MarkMoved()
+	}
+
+	if capturedPiece != nil {
+		capturedPiece.SetCoords(b, nil)
+	}
+
+	piece.MarkMoved()
+	b.Set(b.Project(piece, to))
+	// first project (and empty source piece square, and only then set coords)
+	piece.SetCoords(b, to)
+
+	return true
+}
+
+// MakeCastling makes a castling.
+// It returns true if castling succesful (legal), otherwise it returns false.
+func (b *Board) MakeCastling(castling base.Castling) bool {
+	castlings := b.Castlings(castling.Piece[0].Colour())
+
+	if !castlings.Contains(castling) {
+		return false
+	}
+
+	castling.Piece[0].MarkMoved()
+	castling.Piece[1].MarkMoved()
+	b.Set(b.Project(castling.Piece[0], castling.To[0]).Project(castling.Piece[1], castling.To[1]))
+	castling.Piece[0].SetCoords(b, castling.To[0])
+	castling.Piece[1].SetCoords(b, castling.To[1])
+
+	return true
 }
 
 // baseFindPieces finds and returns pieces by base.PieceFilter
@@ -269,7 +284,7 @@ func (b *Board) Equals(to base.IBoard) bool {
 }
 
 // Castlings returns available castlings for colour
-func (b *Board) Castlings(colour Colour) []base.Castling { return b.Settings().CastlingsFunc(b, colour) }
+func (b *Board) Castlings(colour Colour) base.Castlings { return b.Settings().CastlingsFunc(b, colour) }
 
 // InChecks returns true if king of colour is in check
 func (b *Board) InCheck(colour Colour) bool {

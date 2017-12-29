@@ -17,5 +17,5 @@ type Settings struct {
 	PromotionConditionFunc func(board IBoard, piece IPiece, dst ICoord, to IPiece) bool
 
 	// CastlingsFunc returns available castlings for the given colour
-	CastlingsFunc func(board IBoard, colour Colour) []Castling
+	CastlingsFunc func(board IBoard, colour Colour) Castlings
 }
