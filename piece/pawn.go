@@ -24,12 +24,12 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 			leaper(1, 1, p, b, moving, 1, moveCapture)...,
 		))
 
-		if moving {
-			epCoords := board.Settings().EnPassantFunc(board, p)
-			for epCoords != nil && epCoords.HasNext() {
-				c := epCoords.Next()
-				step := map[Colour]int{White: 1, Black: -1}
-				if c.(rect.Coord).Y == p.Coord().(rect.Coord).Y+step[p.Colour()] {
+		epCoords := board.Settings().EnPassantFunc(board, p)
+		for epCoords != nil && epCoords.HasNext() {
+			c := epCoords.Next()
+			step := map[Colour]int{White: 1, Black: -1}
+			if c.(rect.Coord).Y == p.Coord().(rect.Coord).Y+step[p.Colour()] {
+				if !d.Contains(c.(rect.Coord)) {
 					d.Add(c)
 				}
 			}

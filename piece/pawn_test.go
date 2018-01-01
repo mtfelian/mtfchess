@@ -457,7 +457,7 @@ var _ = Describe("Pawn promotion test", func() {
 	})
 })
 
-var _ = FDescribe("En passant capturing test", func() {
+var _ = Describe("En passant capturing test", func() {
 	var b base.IBoard
 	resetBoard := func() { b = rect.NewStandardChessBoard() }
 	BeforeEach(func() { resetBoard() })
@@ -465,23 +465,54 @@ var _ = FDescribe("En passant capturing test", func() {
 	It("checks that en passant can't be done (not set in board)", func() {
 		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
 		b.PlacePiece(rect.Coord{2, 2}, wp)
-		b.PlacePiece(rect.Coord{3, 2}, bp)
+		b.PlacePiece(rect.Coord{3, 4}, bp)
+
+		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
+		b.SetCanCaptureEnPassant(nil)
 
 		a, d := wp.Attacks(b), wp.Destinations(b)
 		Expect(a.Len()).To(Equal(2))
-		Expect(d.Len()).To(Equal(2))
+		Expect(d.Len()).To(Equal(1))
 		sort.Sort(a)
 		sort.Sort(d)
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
-		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{2, 4}}))).To(BeTrue())
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}, rect.Coord{3, 5}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
 
 		a, d = bp.Attacks(b), bp.Destinations(b)
 		Expect(a.Len()).To(Equal(2))
 		Expect(d.Len()).To(Equal(1))
 		sort.Sort(a)
 		sort.Sort(d)
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 1}, rect.Coord{4, 1}}))).To(BeTrue())
-		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 1}}))).To(BeTrue())
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{4, 3}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 3}}))).To(BeTrue())
+	})
+
+	It("checks that en passant can be done (after making move)", func() {
+		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{2, 2}, wp)
+		b.PlacePiece(rect.Coord{3, 4}, bp)
+
+		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
+
+		a, d := wp.Attacks(b), wp.Destinations(b)
+		Expect(a.Len()).To(Equal(2))
+		Expect(d.Len()).To(Equal(1))
+		sort.Sort(a)
+		sort.Sort(d)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}, rect.Coord{3, 5}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
+
+		a, d = bp.Attacks(b), bp.Destinations(b)
+		Expect(a.Len()).To(Equal(2))
+		Expect(d.Len()).To(Equal(2))
+		sort.Sort(a)
+		sort.Sort(d)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{4, 3}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{2, 3}, bp)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{2, 4})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
 	})
 
 })

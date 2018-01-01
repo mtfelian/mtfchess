@@ -29,8 +29,8 @@ type IBoard interface {
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool
 
-	SetCanCaptureEnPassant(p IPiece)
-	CanCaptureEnPassant() IPiece
+	SetCanCaptureEnPassant(p *EPCapture)
+	CanCaptureEnPassant() *EPCapture
 
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
 	// this don't change coords of a piece

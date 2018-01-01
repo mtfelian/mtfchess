@@ -30,23 +30,23 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 		return nil
 	}
 
-	canEP := board.CanCaptureEnPassant()
-	if canEP == nil {
+	epData := board.CanCaptureEnPassant()
+	if epData == nil {
 		return nil
 	}
 
-	pX, canEPX := piece.Coord().(Coord).X, canEP.Coord().(Coord).X
-	if canEPX != pX+1 && canEPX != pX-1 {
+	pX, epAtX := piece.Coord().(Coord).X, epData.From.(Coord).X
+	if epAtX != pX+1 && epAtX != pX-1 {
 		return nil
 	}
 
-	longMove := board.Settings().PawnLongMoveFunc(board, piece) // here is checked also piece Y coord
+	longMove := board.Settings().PawnLongMoveFunc(board, epData.Piece) // here is checked also piece Y coord
 	if longMove == 0 {
 		return nil
 	}
 
 	bh := board.Dim().(Coord).Y
-	minYs := map[Colour]int{White: bh - 2 - longMove, Black: 4}
+	minYs := map[Colour]int{White: bh - 2 - longMove, Black: 3}
 	maxYs := map[Colour]int{White: bh - 3, Black: 3 + longMove}
 
 	step := 1
@@ -54,10 +54,10 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 		step *= -1
 	}
 
-	res := Coords{}
+	res := NewCoords([]base.ICoord{})
 	minY, maxY := minYs[piece.Colour()], maxYs[piece.Colour()]
 	for y := minY; y >= minY && y <= maxY; y = y + step {
-		res.Add(Coord{canEPX, y})
+		res.Add(Coord{epAtX, y})
 	}
 
 	return res

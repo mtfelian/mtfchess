@@ -13,7 +13,7 @@ type Board struct {
 	cells               Cells
 	width, height       int
 	king                map[Colour]base.IPiece
-	canCaptureEnPassant base.IPiece
+	canCaptureEnPassant *base.EPCapture
 	settings            base.Settings
 }
 
@@ -61,10 +61,10 @@ func (b *Board) SetKing(of Colour, to base.IPiece) {
 }
 
 // SetCanCaptureEnPassant sets a piece which can be captured en passant
-func (b *Board) SetCanCaptureEnPassant(p base.IPiece) { b.canCaptureEnPassant = p }
+func (b *Board) SetCanCaptureEnPassant(p *base.EPCapture) { b.canCaptureEnPassant = p }
 
 // CanCaptureEnPassant returns a piece which can be captured en passant
-func (b *Board) CanCaptureEnPassant() base.IPiece { return b.canCaptureEnPassant }
+func (b *Board) CanCaptureEnPassant() *base.EPCapture { return b.canCaptureEnPassant }
 
 // createCells returns a slice of Cell for the board
 func (b *Board) createCells() {
@@ -141,6 +141,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetDim(Coord{X: b.width, Y: b.height})
 	newBoard.king = b.copyKings()
 	newBoard.SetSettings(b.Settings())
+	newBoard.SetCanCaptureEnPassant(b.CanCaptureEnPassant())
 	return newBoard
 }
 
@@ -180,19 +181,24 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		capturedPiece.SetCoords(b, nil)
 	}
 
+	if piece.Name() == "pawn" {
+		canCaptureEnPassant := b.CanCaptureEnPassant()
+		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.Piece.Coord().(Coord).X {
+			b.Empty(canCaptureEnPassant.To)
+		}
+
+		b.SetCanCaptureEnPassant(nil)
+		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
+		diff := pY - toY
+		if diff != 1 && diff != -1 { // long pawn move
+			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to, Piece: piece.Copy()})
+		}
+	}
+
 	piece.MarkMoved()
 	b.Set(b.Project(piece, to))
 	// first project (and empty source piece square, and only then set piece)
 	piece.Set(b.Piece(to)) // set piece to copy of itself on the new board
-
-	b.SetCanCaptureEnPassant(nil)
-	if piece.Name() == "pawn" {
-		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
-		diff := pY - toY
-		if diff != 1 && diff != -1 {
-			b.SetCanCaptureEnPassant(piece)
-		}
-	}
 
 	return true
 }
