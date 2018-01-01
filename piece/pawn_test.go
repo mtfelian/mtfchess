@@ -464,26 +464,54 @@ var _ = Describe("En passant capturing test", func() {
 
 	It("checks that en passant can be done (after making move)", func() {
 		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
-		b.PlacePiece(rect.Coord{2, 2}, wp)
-		b.PlacePiece(rect.Coord{3, 4}, bp)
+		b.PlacePiece(rect.Coord{1, 2}, wp)
+		b.PlacePiece(rect.Coord{2, 4}, bp)
 
-		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
-
+		Expect(b.MakeMove(rect.Coord{1, 4}, wp)).To(BeTrue())
 		a, d := wp.Attacks(b), wp.Destinations(b)
 		sort.Sort(a)
 		sort.Sort(d)
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}, rect.Coord{3, 5}}))).To(BeTrue())
-		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}}))).To(BeTrue())
 
 		a, d = bp.Attacks(b), bp.Destinations(b)
 		sort.Sort(a)
 		sort.Sort(d)
-		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{4, 3}}))).To(BeTrue())
-		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{2, 3}}))).To(BeTrue())
 
-		Expect(b.MakeMove(rect.Coord{2, 3}, bp)).To(BeTrue())
+		Expect(b.MakeMove(rect.Coord{1, 3}, bp)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{1, 4})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
+	})
+
+	It("checks that two different en passants can be done", func() {
+		wp, bp1, bp2 := piece.NewPawn(White), piece.NewPawn(Black), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{2, 2}, wp)
+		b.PlacePiece(rect.Coord{3, 4}, bp1)
+		b.PlacePiece(rect.Coord{1, 4}, bp2)
+
+		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
+		boardCopy := b.Copy()
+		Expect(b.MakeMove(rect.Coord{2, 3}, bp1)).To(BeTrue())
+		b.Set(boardCopy)
+		Expect(b.MakeMove(rect.Coord{2, 3}, bp2)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{2, 3})).To(Equal(bp2))
 		Expect(b.Piece(rect.Coord{2, 4})).To(BeNil())
 		Expect(wp.Coord()).To(BeNil())
+	})
+
+	It("checks that invalid en passant can be done", func() {
+		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{1, 2}, wp)
+		b.PlacePiece(rect.Coord{3, 4}, bp)
+
+		Expect(b.MakeMove(rect.Coord{1, 4}, wp)).To(BeTrue())
+		boardCopy := b.Copy()
+		Expect(b.MakeMove(rect.Coord{2, 3}, bp)).To(BeFalse())
+		Expect(b.Equals(boardCopy)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{1, 4})).To(Equal(wp))
+		Expect(b.Piece(rect.Coord{3, 4})).To(Equal(bp))
 	})
 
 })
