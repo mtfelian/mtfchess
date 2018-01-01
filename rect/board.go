@@ -10,10 +10,11 @@ import (
 
 // Board is a game rectangular board
 type Board struct {
-	cells         Cells
-	width, height int
-	king          map[Colour]base.IPiece
-	settings      base.Settings
+	cells               Cells
+	width, height       int
+	king                map[Colour]base.IPiece
+	canCaptureEnPassant base.IPiece
+	settings            base.Settings
 }
 
 // X converts x1 to slice index
@@ -58,6 +59,12 @@ func (b *Board) SetKing(of Colour, to base.IPiece) {
 	b.initializeKing()
 	b.king[of] = to
 }
+
+// SetCanCaptureEnPassant sets a piece which can be captured en passant
+func (b *Board) SetCanCaptureEnPassant(p base.IPiece) { b.canCaptureEnPassant = p }
+
+// CanCaptureEnPassant returns a piece which can be captured en passant
+func (b *Board) CanCaptureEnPassant() base.IPiece { return b.canCaptureEnPassant }
 
 // createCells returns a slice of Cell for the board
 func (b *Board) createCells() {
@@ -299,6 +306,7 @@ func NewStandardChessBoard() *Board {
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          StandardCastlingFunc,
+		EnPassantFunc:          StandardEnPassantFunc,
 	})
 }
 

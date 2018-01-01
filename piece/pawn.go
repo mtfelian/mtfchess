@@ -19,10 +19,19 @@ func NewPawn(colour Colour) base.IPiece {
 func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
-		return rect.NewCoords(append(
+		d := rect.NewCoords(append(
 			reader(1, 0, p, b, moving, 1+b.Settings().PawnLongMoveFunc(b, p), 1, moveNonCapture),
 			leaper(1, 1, p, b, moving, 1, moveCapture)...,
 		))
+
+		if moving {
+			epCoords := board.Settings().EnPassantFunc(board, p)
+			for epCoords != nil && epCoords.HasNext() {
+				d.Add(epCoords.Next())
+			}
+		}
+
+		return d
 	default:
 		panic("invalid coord type")
 	}

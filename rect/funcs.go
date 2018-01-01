@@ -22,12 +22,45 @@ func StandardLongMoveFunc(board base.IBoard, piece base.IPiece) int {
 }
 
 // NoEnPassantFunc always disables en passant capturing
-func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
+func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoords { return nil }
 
-// StandardEnPassantFunc enables en passant capturing like instandard chess
-func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
-	//todo
-	return nil
+// StandardEnPassantFunc enables en passant capturing like in standard chess, returns coords to capture
+func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
+	if piece.Name() != "pawn" {
+		return nil
+	}
+
+	canEP := board.CanCaptureEnPassant()
+	if canEP == nil {
+		return nil
+	}
+
+	pX, canEPX := piece.Coord().(Coord).X, canEP.Coord().(Coord).X
+	if canEPX != pX+1 && canEPX != pX-1 {
+		return nil
+	}
+
+	longMove := board.Settings().PawnLongMoveFunc(board, piece) // here is checked also piece Y coord
+	if longMove == 0 {
+		return nil
+	}
+
+	bh := board.Dim().(Coord).Y
+	minYs := map[Colour]int{White: bh - 2 - longMove, Black: 4}
+	maxYs := map[Colour]int{White: bh - 3, Black: 3 + longMove}
+
+	step := 1
+	if piece.Colour() == Black {
+		step *= -1
+	}
+
+	res := Coords{}
+	minY, maxY := minYs[piece.Colour()], maxYs[piece.Colour()]
+	for y := minY; y >= minY && y <= maxY; y = y + step {
+		res.Add(Coord{canEPX, y})
+	}
+
+	return res
 }
 
 // StandardAllowedPromotions returns allowed pawn promotions pieces names list for standard chess
