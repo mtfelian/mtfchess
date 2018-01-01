@@ -3,7 +3,6 @@ package piece_test
 import (
 	"sort"
 
-	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -53,7 +52,6 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		fmt.Println(d)
 		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
@@ -73,7 +71,6 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		fmt.Println(d)
 		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
