@@ -23,7 +23,6 @@ var _ = Describe("Bishop test", func() {
 		b.PlacePiece(rect.Coord{1, 2}, bb)
 
 		wbDestinations := wb.Destinations(b)
-		Expect(wbDestinations.Len()).To(Equal(6))
 		sort.Sort(wbDestinations)
 		Expect(wbDestinations.Equals(rect.NewCoords([]base.ICoord{
 			rect.Coord{3, 1}, rect.Coord{5, 1}, rect.Coord{3, 3},
@@ -31,7 +30,6 @@ var _ = Describe("Bishop test", func() {
 		}))).To(BeTrue())
 
 		bbDestinations := bb.Destinations(b)
-		Expect(bbDestinations.Len()).To(Equal(4))
 		sort.Sort(bbDestinations)
 		Expect(bbDestinations.Equals(rect.NewCoords([]base.ICoord{
 			rect.Coord{2, 1}, rect.Coord{2, 3}, rect.Coord{3, 4}, rect.Coord{4, 5},

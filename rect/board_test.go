@@ -47,7 +47,6 @@ var _ = Describe("Board test", func() {
 				},
 			}
 			coords := b.FindPieces(filter)
-			Expect(coords).To(HaveLen(3))
 			Expect(coords).To(Equal(base.Pieces{wn3, wn2, wn1}))
 		})
 
@@ -65,7 +64,6 @@ var _ = Describe("Board test", func() {
 			}
 
 			pieces := b.FindPieces(filter)
-			Expect(pieces).To(HaveLen(2))
 			Expect(pieces).To(Equal(base.Pieces{wn3, bn3}))
 		})
 	})
@@ -82,7 +80,6 @@ var _ = Describe("Board test", func() {
 			attackedByWhite := b.FindAttackedCellsBy(rect.PieceFilter{
 				PieceFilter: base.PieceFilter{Colours: []Colour{White}},
 			})
-			Expect(attackedByWhite.Len()).To(Equal(10))
 			sort.Sort(attackedByWhite)
 			Expect(attackedByWhite.Equals(rect.NewCoords([]base.ICoord{
 				rect.Coord{1, 2}, rect.Coord{3, 2}, rect.Coord{4, 3},
@@ -93,7 +90,6 @@ var _ = Describe("Board test", func() {
 			attackedByBlack := b.FindAttackedCellsBy(rect.PieceFilter{
 				PieceFilter: base.PieceFilter{Colours: []Colour{Black}},
 			})
-			Expect(attackedByBlack.Len()).To(Equal(9))
 			sort.Sort(attackedByBlack)
 			Expect(attackedByBlack.Equals(rect.NewCoords([]base.ICoord{
 				rect.Coord{2, 1}, rect.Coord{1, 2}, rect.Coord{2, 2},

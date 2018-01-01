@@ -28,12 +28,10 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		b.PlacePiece(rect.Coord{1, 3}, bn)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{2, 3}}))).To(BeTrue())
 	})
@@ -47,12 +45,10 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		b.PlacePiece(rect.Coord{3, 3}, bp3)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 	})
@@ -66,12 +62,10 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		b.PlacePiece(rect.Coord{3, 3}, bp3)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 	})
@@ -85,7 +79,6 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		b.PlacePiece(rect.Coord{3, 3}, wp2)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
@@ -181,12 +174,10 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 		b.PlacePiece(rect.Coord{1, 3}, bn)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(3))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{
 			rect.Coord{1, 3}, rect.Coord{2, 3}, rect.Coord{2, 4},
@@ -300,12 +291,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{4, 6}, bk)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 6}, rect.Coord{3, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}}))).To(BeTrue())
 
@@ -322,12 +311,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{4, 6}, bk)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 6}, rect.Coord{3, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{3, 6}}))).To(BeTrue())
 
@@ -347,12 +334,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{5, 6}, wk)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 6}}))).To(BeTrue())
 
@@ -371,12 +356,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{4, 6}, wk)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 6}}))).To(BeTrue())
 
@@ -400,12 +383,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{5, 6}, wk)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 6}, rect.Coord{4, 6}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 6}}))).To(BeTrue())
 
@@ -434,12 +415,10 @@ var _ = Describe("Pawn promotion test", func() {
 		b.PlacePiece(rect.Coord{3, 4}, wp)
 
 		a := wp.Attacks(b)
-		Expect(a.Len()).To(Equal(2))
 		sort.Sort(a)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}, rect.Coord{4, 5}}))).To(BeTrue())
 
 		d := wp.Destinations(b)
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 5}}))).To(BeTrue())
 
@@ -471,16 +450,12 @@ var _ = Describe("En passant capturing test", func() {
 		b.SetCanCaptureEnPassant(nil)
 
 		a, d := wp.Attacks(b), wp.Destinations(b)
-		Expect(a.Len()).To(Equal(2))
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(a)
 		sort.Sort(d)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}, rect.Coord{3, 5}}))).To(BeTrue())
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
 
 		a, d = bp.Attacks(b), bp.Destinations(b)
-		Expect(a.Len()).To(Equal(2))
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(a)
 		sort.Sort(d)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{4, 3}}))).To(BeTrue())
@@ -495,16 +470,12 @@ var _ = Describe("En passant capturing test", func() {
 		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
 
 		a, d := wp.Attacks(b), wp.Destinations(b)
-		Expect(a.Len()).To(Equal(2))
-		Expect(d.Len()).To(Equal(1))
 		sort.Sort(a)
 		sort.Sort(d)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 5}, rect.Coord{3, 5}}))).To(BeTrue())
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 5}}))).To(BeTrue())
 
 		a, d = bp.Attacks(b), bp.Destinations(b)
-		Expect(a.Len()).To(Equal(2))
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(a)
 		sort.Sort(d)
 		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{2, 3}, rect.Coord{4, 3}}))).To(BeTrue())

@@ -23,7 +23,6 @@ var _ = Describe("Knight test", func() {
 		b.PlacePiece(rect.Coord{4, 2}, bn)
 
 		d := wn1.Destinations(b)
-		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{4, 2}, rect.Coord{1, 3}}))).To(BeTrue())
 	})
