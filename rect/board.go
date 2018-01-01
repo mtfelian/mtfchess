@@ -183,7 +183,18 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	piece.MarkMoved()
 	b.Set(b.Project(piece, to))
 	// first project (and empty source piece square, and only then set coords)
+
+	// todo needs analysis, probably this needed only for tests, because board already is set with copy
+	// of a piece projected, so may be we should also "set" a piece?
 	piece.SetCoords(b, to)
+
+	if piece.Name() == "pawn" {
+		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
+		diff := pY - toY
+		if diff != 1 && diff != -1 {
+			b.SetCanCaptureEnPassant(b.Piece(piece.Coord())) // todo the same problem as ^^
+		}
+	}
 
 	return true
 }

@@ -27,7 +27,11 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 		if moving {
 			epCoords := board.Settings().EnPassantFunc(board, p)
 			for epCoords != nil && epCoords.HasNext() {
-				d.Add(epCoords.Next())
+				c := epCoords.Next()
+				step := map[Colour]int{White: 1, Black: -1}
+				if c.(rect.Coord).Y == p.Coord().(rect.Coord).Y+step[p.Colour()] {
+					d.Add(c)
+				}
 			}
 		}
 
