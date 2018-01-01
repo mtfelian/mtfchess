@@ -209,8 +209,8 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 	castling.Piece[0].MarkMoved()
 	castling.Piece[1].MarkMoved()
 	b.Set(b.Project(castling.Piece[0], castling.To[0]).Project(castling.Piece[1], castling.To[1]))
-	castling.Piece[0].SetCoords(b, castling.To[0])
-	castling.Piece[1].SetCoords(b, castling.To[1])
+	castling.Piece[0].Set(b.Piece(castling.To[0]))
+	castling.Piece[1].Set(b.Piece(castling.To[1]))
 
 	return true
 }
