@@ -313,8 +313,8 @@ func (b *Board) InCheck(colour Colour) bool {
 	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }
 
-// NewStandardChessBoard creates new board for standard chess
-func NewStandardChessBoard() *Board {
+// NewEmptyStandardChessBoard creates new empty board for standard chess
+func NewEmptyStandardChessBoard() *Board {
 	return NewEmptyBoard(8, 8, base.Settings{
 		PawnLongMoveFunc:       StandardLongMoveFunc,
 		AllowedPromotions:      StandardAllowedPromotions(),
@@ -324,8 +324,8 @@ func NewStandardChessBoard() *Board {
 	})
 }
 
-// NewTestEmptyBoard creates new empty board for tests
-func NewTestEmptyBoard() *Board {
+// NewEmptyTestBoard creates new empty board for tests
+func NewEmptyTestBoard() *Board {
 	return NewEmptyBoard(5, 6, base.Settings{
 		PawnLongMoveFunc:       NoPawnLongMoveFunc,
 		AllowedPromotions:      StandardAllowedPromotions(),

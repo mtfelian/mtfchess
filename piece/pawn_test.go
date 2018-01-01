@@ -14,7 +14,7 @@ import (
 var _ = Describe("Pawn test with 0-modifier", func() {
 	var b base.IBoard
 	resetBoard := func() {
-		b = rect.NewTestEmptyBoard()
+		b = rect.NewEmptyTestBoard()
 		s := b.(*rect.Board).Settings()
 		s.PawnLongMoveFunc = rect.NoPawnLongMoveFunc
 		b.SetSettings(s)
@@ -160,7 +160,7 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 var _ = Describe("Pawn test with non-0-modifier", func() {
 	var b base.IBoard
 	resetBoard := func() {
-		b = rect.NewTestEmptyBoard()
+		b = rect.NewEmptyTestBoard()
 		s := b.(*rect.Board).Settings()
 		s.PawnLongMoveFunc = rect.StandardLongMoveFunc
 		b.SetSettings(s)
@@ -275,7 +275,7 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 var _ = Describe("Pawn promotion test", func() {
 	var b base.IBoard
 	resetBoard := func() {
-		b = rect.NewTestEmptyBoard()
+		b = rect.NewEmptyTestBoard()
 		s := b.(*rect.Board).Settings()
 		s.PawnLongMoveFunc = rect.StandardLongMoveFunc
 		b.SetSettings(s)
@@ -448,7 +448,7 @@ var _ = Describe("Pawn promotion test", func() {
 
 var _ = Describe("En passant capturing test", func() {
 	var b base.IBoard
-	resetBoard := func() { b = rect.NewStandardChessBoard() }
+	resetBoard := func() { b = rect.NewEmptyStandardChessBoard() }
 	BeforeEach(func() { resetBoard() })
 
 	It("checks that en passant can't be done (not set in board)", func() {

@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("Check test", func() {
 	var b base.IBoard
-	resetBoard := func() { b = rect.NewTestEmptyBoard() }
+	resetBoard := func() { b = rect.NewEmptyTestBoard() }
 	BeforeEach(func() { resetBoard() })
 
 	It("is white in check", func() {

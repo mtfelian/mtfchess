@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("Castling test", func() {
 	var b base.IBoard
-	resetBoard := func() { b = rect.NewStandardChessBoard() }
+	resetBoard := func() { b = rect.NewEmptyStandardChessBoard() }
 	BeforeEach(func() { resetBoard() })
 
 	checkCommonCastlingProperties := func(c base.Castling) {
