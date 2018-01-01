@@ -20,7 +20,7 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
 		return rect.NewCoords(append(
-			reader(1, 0, p, b, moving, 1+b.Settings().PawnLongFunc(b, p), 1, moveNonCapture),
+			reader(1, 0, p, b, moving, 1+b.Settings().PawnLongMoveFunc(b, p), 1, moveNonCapture),
 			leaper(1, 1, p, b, moving, 1, moveCapture)...,
 		))
 	default:

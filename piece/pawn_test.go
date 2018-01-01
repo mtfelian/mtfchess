@@ -16,7 +16,7 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongFunc = rect.NoPawnLongMoveFunc
+		s.PawnLongMoveFunc = rect.NoPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -131,7 +131,7 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongFunc = rect.StandardPawnLongMoveFunc
+		s.PawnLongMoveFunc = rect.StandardPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -248,7 +248,7 @@ var _ = Describe("Pawn promotion test", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongFunc = rect.StandardPawnLongMoveFunc
+		s.PawnLongMoveFunc = rect.StandardPawnLongMoveFunc
 		b.SetSettings(s)
 	}
 

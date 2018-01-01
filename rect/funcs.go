@@ -2,12 +2,13 @@ package rect
 
 import (
 	"fmt"
+
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	. "github.com/mtfelian/utils"
 )
 
-// NoPawnLongMoveFunc always disable pawn long forward move
+// NoPawnLongMoveFunc always disables pawn long forward move
 func NoPawnLongMoveFunc(_ base.IBoard, _ base.IPiece) int { return 0 }
 
 // StandardPawnLongMoveFunc is a condition for pawn long forward move for standard chess
@@ -19,6 +20,9 @@ func StandardPawnLongMoveFunc(board base.IBoard, piece base.IPiece) int {
 	}
 	return 0
 }
+
+// NoEnPassantFunc always disables en passant capturing
+func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
 
 // StandardAllowedPromotions returns allowed pawn promotions pieces names list for standard chess
 func StandardAllowedPromotions() []string { return []string{"knight", "bishop", "rook", "queen"} }
