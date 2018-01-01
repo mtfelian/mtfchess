@@ -302,6 +302,8 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(b.MakeMove(rect.Coord{2, 6}, wp)).To(BeTrue())
 
 		Expect(b.InCheck(Black)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{2, 5})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
 	})
 
 	It("pawn promotes by capturing move", func() {
@@ -322,6 +324,8 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
 
 		Expect(b.InCheck(Black)).To(BeTrue())
+		Expect(b.Piece(rect.Coord{2, 5})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
 	})
 
 	It("pawn promotes by capture releasing check", func() {
@@ -344,6 +348,8 @@ var _ = Describe("Pawn promotion test", func() {
 		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeTrue())
 		Expect(b.InCheck(White)).To(BeFalse())
+		Expect(b.Piece(rect.Coord{3, 5})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
 	})
 
 	It("pawn promotes releasing check", func() {
@@ -367,6 +373,8 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(b.MakeMove(rect.Coord{3, 6}, wp)).To(BeTrue())
 
 		Expect(b.InCheck(White)).To(BeFalse())
+		Expect(b.Piece(rect.Coord{3, 5})).To(BeNil())
+		Expect(wp.Coord()).To(BeNil())
 	})
 
 	It("pawn tries to make an invalid promotion", func() {
@@ -397,6 +405,7 @@ var _ = Describe("Pawn promotion test", func() {
 		wp.SetPromote(piece.NewRook(wp.Colour()))
 		Expect(b.MakeMove(rect.Coord{4, 6}, wp)).To(BeFalse())
 		Expect(b.InCheck(White)).To(BeTrue())
+		Expect(wp.Coord()).To(Equal(rect.Coord{3, 5}))
 
 		// check that board did not changed
 		Expect(b.Piece(wpCoords)).To(Equal(wp))
@@ -433,6 +442,7 @@ var _ = Describe("Pawn promotion test", func() {
 		Expect(b.Piece(bqCoords)).To(Equal(bq))
 
 		Expect(b.Equals(boardCopy)).To(BeTrue())
+		Expect(wp.Coord()).To(Equal(rect.Coord{3, 4}))
 	})
 })
 

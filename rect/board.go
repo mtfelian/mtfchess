@@ -174,7 +174,6 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		piece = newPiece
 		b.Empty(oldCoords)
 		piece.SetCoords(b, oldCoords)
-		piece.MarkMoved()
 	}
 
 	if capturedPiece != nil {
