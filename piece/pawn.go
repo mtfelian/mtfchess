@@ -58,3 +58,6 @@ func (p *Pawn) Promote() base.IPiece {
 	}
 	return promotion.Copy()
 }
+
+// Set sets a piece to p1
+func (p *Pawn) Set(p1 base.IPiece) { *p = *(p1.(*Pawn)) }

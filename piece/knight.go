@@ -36,3 +36,6 @@ func (p *Knight) Copy() base.IPiece { return &Knight{Piece: p.Piece.Copy()} }
 
 // Promote returns a promoted piece
 func (p *Knight) Promote() base.IPiece { return p }
+
+// Set sets a piece to p1
+func (p *Knight) Set(p1 base.IPiece) { *p = *(p1.(*Knight)) }

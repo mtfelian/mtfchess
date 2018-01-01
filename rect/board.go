@@ -145,7 +145,7 @@ func (b *Board) Copy() base.IBoard {
 }
 
 // Set changes b to b1
-func (b *Board) Set(b1 base.IBoard) { *b = *(b1.Copy().(*Board)) }
+func (b *Board) Set(b1 base.IBoard) { *b = *(b1.(*Board)) }
 
 // Projects returns a copy of board with projected piece copy to given coords
 func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
@@ -182,17 +182,14 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	piece.MarkMoved()
 	b.Set(b.Project(piece, to))
-	// first project (and empty source piece square, and only then set coords)
-
-	// todo needs analysis, probably this needed only for tests, because board already is set with copy
-	// of a piece projected, so may be we should also "set" a piece?
-	piece.SetCoords(b, to)
+	// first project (and empty source piece square, and only then set piece)
+	piece.Set(b.Piece(to)) // set piece to copy of itself on the new board
 
 	if piece.Name() == "pawn" {
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
 		if diff != 1 && diff != -1 {
-			b.SetCanCaptureEnPassant(b.Piece(piece.Coord())) // todo the same problem as ^^
+			b.SetCanCaptureEnPassant(piece)
 		}
 	}
 

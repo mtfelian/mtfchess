@@ -36,3 +36,6 @@ func (p *Rook) Copy() base.IPiece { return &Rook{Piece: p.Piece.Copy()} }
 
 // Promote returns a promoted piece
 func (p *Rook) Promote() base.IPiece { return p }
+
+// Set sets a piece to p1
+func (p *Rook) Set(p1 base.IPiece) { *p = *(p1.(*Rook)) }
