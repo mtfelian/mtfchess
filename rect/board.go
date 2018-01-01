@@ -295,7 +295,7 @@ func (b *Board) InCheck(colour Colour) bool {
 // NewStandardChessBoard creates new board for standard chess
 func NewStandardChessBoard() *Board {
 	return NewEmptyBoard(8, 8, base.Settings{
-		PawnLongMoveFunc:       StandardPawnLongMoveFunc,
+		PawnLongMoveFunc:       StandardLongMoveFunc,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          StandardCastlingFunc,
@@ -309,6 +309,7 @@ func NewTestEmptyBoard() *Board {
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          NoCastlingFunc,
+		EnPassantFunc:          NoEnPassantFunc,
 	})
 }
 

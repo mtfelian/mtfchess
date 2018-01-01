@@ -11,8 +11,8 @@ import (
 // NoPawnLongMoveFunc always disables pawn long forward move
 func NoPawnLongMoveFunc(_ base.IBoard, _ base.IPiece) int { return 0 }
 
-// StandardPawnLongMoveFunc is a condition for pawn long forward move for standard chess
-func StandardPawnLongMoveFunc(board base.IBoard, piece base.IPiece) int {
+// StandardLongMoveFunc is a condition for pawn long forward move for standard chess
+func StandardLongMoveFunc(board base.IBoard, piece base.IPiece) int {
 	bh := board.Dim().(Coord).Y
 	if (piece.Colour() == White && piece.Coord().(Coord).Y == 2) ||
 		(piece.Colour() == Black && piece.Coord().(Coord).Y == bh-1) {
@@ -23,6 +23,12 @@ func StandardPawnLongMoveFunc(board base.IBoard, piece base.IPiece) int {
 
 // NoEnPassantFunc always disables en passant capturing
 func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
+
+// StandardEnPassantFunc enables en passant capturing like instandard chess
+func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
+	//todo
+	return nil
+}
 
 // StandardAllowedPromotions returns allowed pawn promotions pieces names list for standard chess
 func StandardAllowedPromotions() []string { return []string{"knight", "bishop", "rook", "queen"} }

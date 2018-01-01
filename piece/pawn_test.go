@@ -3,6 +3,7 @@ package piece_test
 import (
 	"sort"
 
+	"fmt"
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
@@ -22,7 +23,7 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 
 	BeforeEach(func() { resetBoard() })
 
-	It("generates moves", func() {
+	It("generates moves 1", func() {
 		wp, bn := piece.NewPawn(White), piece.NewKnight(Black)
 		b.PlacePiece(rect.Coord{2, 2}, wp)
 		b.PlacePiece(rect.Coord{1, 3}, bn)
@@ -36,6 +37,46 @@ var _ = Describe("Pawn test with 0-modifier", func() {
 		Expect(d.Len()).To(Equal(2))
 		sort.Sort(d)
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{2, 3}}))).To(BeTrue())
+	})
+
+	It("generates moves 2", func() {
+		wp, bp1 := piece.NewPawn(White), piece.NewPawn(Black)
+		bp2, bp3 := piece.NewPawn(Black), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{2, 2}, wp)
+		b.PlacePiece(rect.Coord{1, 3}, bp1)
+		b.PlacePiece(rect.Coord{2, 3}, bp2)
+		b.PlacePiece(rect.Coord{3, 3}, bp3)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		fmt.Println(d)
+		Expect(d.Len()).To(Equal(2))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+	})
+
+	It("generates moves 3", func() {
+		wp, bp1 := piece.NewPawn(White), piece.NewPawn(Black)
+		wn, bp3 := piece.NewKnight(White), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{2, 2}, wp)
+		b.PlacePiece(rect.Coord{1, 3}, bp1)
+		b.PlacePiece(rect.Coord{2, 3}, wn)
+		b.PlacePiece(rect.Coord{3, 3}, bp3)
+
+		a := wp.Attacks(b)
+		Expect(a.Len()).To(Equal(2))
+		sort.Sort(a)
+		Expect(a.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
+
+		d := wp.Destinations(b)
+		fmt.Println(d)
+		Expect(d.Len()).To(Equal(2))
+		sort.Sort(d)
+		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{1, 3}, rect.Coord{3, 3}}))).To(BeTrue())
 	})
 
 	It("attacks right cells, can release check by capture", func() {
@@ -131,7 +172,7 @@ var _ = Describe("Pawn test with non-0-modifier", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongMoveFunc = rect.StandardPawnLongMoveFunc
+		s.PawnLongMoveFunc = rect.StandardLongMoveFunc
 		b.SetSettings(s)
 	}
 
@@ -248,7 +289,7 @@ var _ = Describe("Pawn promotion test", func() {
 	resetBoard := func() {
 		b = rect.NewTestEmptyBoard()
 		s := b.(*rect.Board).Settings()
-		s.PawnLongMoveFunc = rect.StandardPawnLongMoveFunc
+		s.PawnLongMoveFunc = rect.StandardLongMoveFunc
 		b.SetSettings(s)
 	}
 

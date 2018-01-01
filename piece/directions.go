@@ -30,16 +30,18 @@ func inOneStep(piece base.IPiece, board base.IBoard, moving bool, o []base.ICoor
 // path is a pointer to a slice of coords to add
 // moveType is a type of move: only capturing, only non-capturing, or any
 func stroke(to base.ICoord, moving bool, on base.IBoard, mine base.IPiece, path *[]base.ICoord, moveType int) bool {
+	dstPiece := on.Cell(to).Piece()
 	// destination cell contains another piece
-	if dstPiece := on.Cell(to).Piece(); dstPiece != nil && SliceContains(moveType, []int{moveAny, moveCapture}) {
+	if dstPiece != nil {
 		// if we are only calculating attacking cells, or if can capture
-		if !moving || dstPiece.Colour() != mine.Colour() {
+		if SliceContains(moveType, []int{moveAny, moveCapture}) && (!moving || dstPiece.Colour() != mine.Colour()) {
 			*path = append(*path, to)
 		}
 		return true
 	}
+
 	// dstPiece == nil, empty cell
-	if (moving && moveType != moveCapture) || moveType == moveAny || (!moving && moveType == moveCapture) {
+	if moveType == moveAny || (moving && moveType == moveNonCapture) || (!moving && moveType == moveCapture) {
 		*path = append(*path, to)
 	}
 	return false
