@@ -183,7 +183,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	if piece.Name() == "pawn" {
 		canCaptureEnPassant := b.CanCaptureEnPassant()
-		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.Piece.Coord().(Coord).X {
+		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.PieceCopy.Coord().(Coord).X {
 			b.Empty(canCaptureEnPassant.To)
 		}
 
@@ -191,7 +191,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
 		if diff != 1 && diff != -1 { // long pawn move
-			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to, Piece: piece.Copy()})
+			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to, PieceCopy: piece.Copy()})
 		}
 	}
 
@@ -351,7 +351,6 @@ todo to implement:
   - archbishop piece;
   - chancellor piece;
   - with board options:
-    - EP tests and fixes
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
   - returning legal moves in algebraic notation;

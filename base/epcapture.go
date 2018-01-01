@@ -2,11 +2,13 @@ package base
 
 // EPCapture
 type EPCapture struct {
+	// From and To is a source and dst coords of a piece which can be captured by EP
 	From, To ICoord
-	Piece    IPiece
+	// PieceCopy should contain A COPY of a piece which can be captured with EP
+	PieceCopy IPiece
 }
 
 // Copy returns a copy of c with pieces taken from board
 func (c EPCapture) Copy(board IBoard) EPCapture {
-	return EPCapture{From: c.From.Copy(), To: c.To.Copy(), Piece: c.Piece.Copy()}
+	return EPCapture{From: c.From.Copy(), To: c.To.Copy(), PieceCopy: c.PieceCopy.Copy()}
 }

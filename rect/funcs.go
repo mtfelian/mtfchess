@@ -1,8 +1,6 @@
 package rect
 
 import (
-	"fmt"
-
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	. "github.com/mtfelian/utils"
@@ -40,7 +38,7 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 		return nil
 	}
 
-	longMove := board.Settings().PawnLongMoveFunc(board, epData.Piece) // here is checked also piece Y coord
+	longMove := board.Settings().PawnLongMoveFunc(board, epData.PieceCopy) // here is checked also piece Y coord
 	if longMove == 0 {
 		return nil
 	}
@@ -117,7 +115,6 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 	//fmt.Println(colour.Invert(), attacked)
 	for i := xStep; kC.X+i != kingDstCoord[colour].X+xStep; i += xStep {
 		shouldBeFree := Coord{kC.X + i, kC.Y}
-		_ = fmt.Sprint("")
 		//fmt.Println(colour, i, shouldBeFree, attacked.Contains(shouldBeFree), board.Piece(shouldBeFree) != nil)
 		if attacked.Contains(shouldBeFree) || board.Piece(shouldBeFree) != nil {
 			//fmt.Println("!! xStep=", xStep, i, kC.X)
