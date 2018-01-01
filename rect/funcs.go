@@ -6,6 +6,28 @@ import (
 	. "github.com/mtfelian/utils"
 )
 
+// StandardChessBoardSettings returns a set of settings for standard chess
+func StandardChessBoardSettings() base.Settings {
+	return base.Settings{
+		PawnLongMoveFunc:       StandardLongMoveFunc,
+		AllowedPromotions:      StandardAllowedPromotions(),
+		PromotionConditionFunc: StandardPromotionConditionFunc,
+		CastlingsFunc:          StandardCastlingFunc,
+		EnPassantFunc:          StandardEnPassantFunc,
+	}
+}
+
+// testBoardSettings returns a set of settings for tests
+func testBoardSettings() base.Settings {
+	return base.Settings{
+		PawnLongMoveFunc:       NoPawnLongMoveFunc,
+		AllowedPromotions:      StandardAllowedPromotions(),
+		PromotionConditionFunc: StandardPromotionConditionFunc,
+		CastlingsFunc:          NoCastlingFunc,
+		EnPassantFunc:          NoEnPassantFunc,
+	}
+}
+
 // NoPawnLongMoveFunc always disables pawn long forward move
 func NoPawnLongMoveFunc(_ base.IBoard, _ base.IPiece) int { return 0 }
 

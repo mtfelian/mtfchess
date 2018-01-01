@@ -314,26 +314,10 @@ func (b *Board) InCheck(colour Colour) bool {
 }
 
 // NewEmptyStandardChessBoard creates new empty board for standard chess
-func NewEmptyStandardChessBoard() *Board {
-	return NewEmptyBoard(8, 8, base.Settings{
-		PawnLongMoveFunc:       StandardLongMoveFunc,
-		AllowedPromotions:      StandardAllowedPromotions(),
-		PromotionConditionFunc: StandardPromotionConditionFunc,
-		CastlingsFunc:          StandardCastlingFunc,
-		EnPassantFunc:          StandardEnPassantFunc,
-	})
-}
+func NewEmptyStandardChessBoard() *Board { return NewEmptyBoard(8, 8, StandardChessBoardSettings()) }
 
 // NewEmptyTestBoard creates new empty board for tests
-func NewEmptyTestBoard() *Board {
-	return NewEmptyBoard(5, 6, base.Settings{
-		PawnLongMoveFunc:       NoPawnLongMoveFunc,
-		AllowedPromotions:      StandardAllowedPromotions(),
-		PromotionConditionFunc: StandardPromotionConditionFunc,
-		CastlingsFunc:          NoCastlingFunc,
-		EnPassantFunc:          NoEnPassantFunc,
-	})
-}
+func NewEmptyTestBoard() *Board { return NewEmptyBoard(5, 6, testBoardSettings()) }
 
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
 func NewEmptyBoard(i, j int, settings base.Settings) *Board {
@@ -355,4 +339,5 @@ todo to implement:
   - returning legal moves in algebraic notation;
   - stalemate detection (no check and no legal moves);
   - checkmate detection (check and no legal moves);
+  - fix castling func it order to make it work with starting positions where both rooks located on one side of the king
 */
