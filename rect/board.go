@@ -185,6 +185,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	// first project (and empty source piece square, and only then set piece)
 	piece.Set(b.Piece(to)) // set piece to copy of itself on the new board
 
+	b.SetCanCaptureEnPassant(nil)
 	if piece.Name() == "pawn" {
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
