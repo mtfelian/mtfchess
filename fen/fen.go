@@ -18,7 +18,7 @@ type StandardFEN struct {
 	Board      base.IBoard              // position
 	SideToMove Colour                   // side to move
 	Castlings  map[Colour]base.Castling // allowed castlings
-	EnPassant  base.EPCapture
+	EnPassant  *base.EPCapture
 	// HalfMovesCount is a number of halfmoves since the last capture or pawn advance, to detect
 	// 3-fold repetition or 50 moves draw rule
 	HalfMovesCount uint
@@ -32,20 +32,17 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 		return nil, fmt.Errorf("invalid fen length")
 	}
 
-	sPos, sSideToMove, sAllowedCastling := fenParts[0], fenParts[1], fenParts[2]
-	sEnPassant, sHalfMovesCount, sMoveNumber := fenParts[3], fenParts[4], fenParts[5]
-
-	halfMovesCount, err := StringToUint(sHalfMovesCount)
+	halfMovesCount, err := StringToUint(fenParts[4])
 	if err != nil {
 		return nil, err
 	}
 
-	moveNumber, err := StringToUint(sMoveNumber)
+	moveNumber, err := StringToUint(fenParts[5])
 	if err != nil {
 		return nil, err
 	}
 
-	posLines := strings.Split(sPos, "/")
+	posLines := strings.Split(fenParts[0], "/")
 	bh := len(posLines)
 	if bh < 3 {
 		return nil, fmt.Errorf("bh is too small")
@@ -131,19 +128,60 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
+	sideToMove := func(sym string) Colour { return map[string]Colour{"w": White, "b": Black}[strings.ToLower(sym)] }
+
+	parseEP := func(sym string, bh int, board *rect.Board) (*base.EPCapture, error) {
+		if sym == "-" {
+			return nil, nil
+		}
+
+		epCoord, err := rect.FromAlgebraic(sym)
+		if err != nil {
+			return nil, err
+		}
+
+		epPieceColour := sideToMove(fenParts[1]).Invert()
+
+		step, fromY, limY := 1, 2, bh-1
+		if epPieceColour == Black {
+			step, fromY, limY = -1, bh-1, 2
+		}
+
+		epCoordX := epCoord.(rect.Coord).X
+		epCapture := &base.EPCapture{From: rect.Coord{epCoordX, fromY}}
+		for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
+			coord := rect.Coord{epCoordX, y}
+			p := board.Piece(coord)
+			if p != nil && p.Name() == "pawn" {
+				epCapture.To = coord
+				epCapture.PieceCopy = p.Copy()
+				epCapture.PieceCopy.SetCoords(board, epCapture.From)
+				return epCapture, nil
+			}
+		}
+
+		return nil, fmt.Errorf("piece which can be EP-captured not found on board")
+	}
+
+	ep, err := parseEP(fenParts[3], bh, b)
+	if err != nil {
+		return nil, err
+	}
+	b.SetCanCaptureEnPassant(ep)
+
 	s := StandardFEN{
 		Board:          b,
-		SideToMove:     map[string]Colour{"w": White, "b": Black}[strings.ToLower(sSideToMove)],
+		EnPassant:      ep,
+		SideToMove:     sideToMove(fenParts[1]),
 		HalfMovesCount: halfMovesCount,
 		MoveNumber:     moveNumber,
 	}
 
-	// todo: castling, enpassant parsing, side to move not implemented in board yet, tests on it
+	// todo: castling, side to move not implemented in board yet, tests on it
 	// no need to return s, simply write all needed data to board
 
 	_ = s
-	_ = sAllowedCastling
-	_ = sEnPassant
+	//todo fenParts[2], allowedCastling
 
 	return b, nil
 }
