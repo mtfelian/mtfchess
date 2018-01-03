@@ -13,6 +13,117 @@ import (
 	. "github.com/mtfelian/utils"
 )
 
+// parsePosLines parses lines containing FEN position parts (between '/' splitters) into pieces on a board
+// this func changes board parameter
+func parsePosLines(lines []string, board *rect.Board) error {
+	for y, line := range lines {
+		tokens := []string{}
+		firstDigit := true
+		for _, rune := range line {
+			if !unicode.IsDigit(rune) {
+				tokens = append(tokens, string(rune))
+				firstDigit = true
+				continue
+			}
+
+			// if unicode.IsDigit(rune)
+			if firstDigit {
+				tokens = append(tokens, string(rune))
+				firstDigit = false
+				continue
+			}
+
+			// if unicode.IsDigit(rune) && !firstDigit
+			tokens[len(tokens)-1] += string(rune)
+		}
+
+		x := 1
+		for _, token := range tokens {
+			i, err := strconv.Atoi(token)
+			if err == nil { // token is a number
+				x += i
+				continue
+			}
+
+			c := rect.Coord{x, board.Dim().(rect.Coord).Y - y}
+			switch token {
+			case "P":
+				board.PlacePiece(c, piece.NewPawn(White))
+			case "N":
+				board.PlacePiece(c, piece.NewKnight(White))
+			case "B":
+				board.PlacePiece(c, piece.NewBishop(White))
+			case "R":
+				board.PlacePiece(c, piece.NewRook(White))
+			case "Q":
+				board.PlacePiece(c, piece.NewQueen(White))
+			case "A": // todo board.PlacePiece(c, piece.NewArchbishop(White))
+			case "C": // todo board.PlacePiece(c, piece.NewChancellor(White))
+			case "K":
+				board.PlacePiece(c, piece.NewKing(White))
+			case "p":
+				board.PlacePiece(c, piece.NewPawn(Black))
+			case "n":
+				board.PlacePiece(c, piece.NewKnight(Black))
+			case "b":
+				board.PlacePiece(c, piece.NewBishop(Black))
+			case "r":
+				board.PlacePiece(c, piece.NewRook(Black))
+			case "q":
+				board.PlacePiece(c, piece.NewQueen(Black))
+			case "a": // todo board.PlacePiece(c, piece.NewArchbishop(Black))
+			case "c": // todo board.PlacePiece(c, piece.NewChancellor(Black))
+			case "k":
+				board.PlacePiece(c, piece.NewKing(Black))
+			default:
+				return fmt.Errorf("invalid piece token: %s", token)
+			}
+			x++
+		}
+	}
+	return nil
+}
+
+// parseSideToMove parses line into side to move colour
+func parseSideToMove(line string) Colour {
+	return map[string]Colour{"w": White, "b": Black}[strings.ToLower(line)]
+}
+
+// parseEP parses line into EP capture struct in board, with specified sideToMove
+// this func changes board parameter
+func parseEP(line string, sideToMove Colour, board *rect.Board) (*base.EPCapture, error) {
+	if line == "-" {
+		return nil, nil
+	}
+
+	epCoord, err := rect.FromAlgebraic(line)
+	if err != nil {
+		return nil, err
+	}
+
+	epPieceColour, bh := sideToMove.Invert(), board.Dim().(rect.Coord).Y
+	step, fromY, limY := 1, 2, bh-1
+	if epPieceColour == Black {
+		step, fromY, limY = -1, bh-1, 2
+	}
+
+	epCoordX := epCoord.(rect.Coord).X
+	epCapture := &base.EPCapture{From: rect.Coord{epCoordX, fromY}}
+	for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
+		coord := rect.Coord{epCoordX, y}
+		p := board.Piece(coord)
+		if p != nil && p.Name() == "pawn" {
+			epCapture.To = coord
+			epCapture.PieceCopy = p.Copy()
+			epCapture.PieceCopy.SetCoords(board, epCapture.From)
+			board.SetCanCaptureEnPassant(epCapture)
+			return epCapture, nil
+		}
+	}
+
+	return nil, fmt.Errorf("piece which can be EP-captured not found on board")
+}
+
 // StandardFEN represents a parsed standard FEN data
 type StandardFEN struct {
 	Board      base.IBoard              // position
@@ -54,132 +165,27 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 
 	b := rect.NewEmptyBoard(bw, bh, rect.StandardChessBoardSettings())
 
-	parsePosLines := func(lines []string, board *rect.Board) error {
-		for y, line := range lines {
-			tokens := []string{}
-			firstDigit := true
-			for _, rune := range line {
-				if !unicode.IsDigit(rune) {
-					tokens = append(tokens, string(rune))
-					firstDigit = true
-					continue
-				}
-
-				// if unicode.IsDigit(rune)
-				if firstDigit {
-					tokens = append(tokens, string(rune))
-					firstDigit = false
-					continue
-				}
-
-				// if unicode.IsDigit(rune) && !firstDigit
-				tokens[len(tokens)-1] += string(rune)
-			}
-
-			x := 1
-			for _, token := range tokens {
-				i, err := strconv.Atoi(token)
-				if err == nil { // token is a numbr
-					x += i
-					continue
-				}
-
-				c := rect.Coord{x, bh - y}
-				switch token {
-				case "P":
-					board.PlacePiece(c, piece.NewPawn(White))
-				case "N":
-					board.PlacePiece(c, piece.NewKnight(White))
-				case "B":
-					board.PlacePiece(c, piece.NewBishop(White))
-				case "R":
-					board.PlacePiece(c, piece.NewRook(White))
-				case "Q":
-					board.PlacePiece(c, piece.NewQueen(White))
-				case "A": // todo board.PlacePiece(c, piece.NewArchbishop(White))
-				case "C": // todo board.PlacePiece(c, piece.NewChancellor(White))
-				case "K":
-					board.PlacePiece(c, piece.NewKing(White))
-				case "p":
-					board.PlacePiece(c, piece.NewPawn(Black))
-				case "n":
-					board.PlacePiece(c, piece.NewKnight(Black))
-				case "b":
-					board.PlacePiece(c, piece.NewBishop(Black))
-				case "r":
-					board.PlacePiece(c, piece.NewRook(Black))
-				case "q":
-					board.PlacePiece(c, piece.NewQueen(Black))
-				case "a": // todo board.PlacePiece(c, piece.NewArchbishop(Black))
-				case "c": // todo board.PlacePiece(c, piece.NewChancellor(Black))
-				case "k":
-					board.PlacePiece(c, piece.NewKing(Black))
-				default:
-					return fmt.Errorf("invalid piece token: %s", token)
-				}
-				x++
-			}
-		}
-
-		return nil
-	}
-
 	if err := parsePosLines(posLines, b); err != nil {
 		return nil, err
 	}
 
-	sideToMove := func(sym string) Colour { return map[string]Colour{"w": White, "b": Black}[strings.ToLower(sym)] }
+	sideToMove := parseSideToMove(fenParts[1])
 
-	parseEP := func(sym string, bh int, board *rect.Board) (*base.EPCapture, error) {
-		if sym == "-" {
-			return nil, nil
-		}
-
-		epCoord, err := rect.FromAlgebraic(sym)
-		if err != nil {
-			return nil, err
-		}
-
-		epPieceColour := sideToMove(fenParts[1]).Invert()
-
-		step, fromY, limY := 1, 2, bh-1
-		if epPieceColour == Black {
-			step, fromY, limY = -1, bh-1, 2
-		}
-
-		epCoordX := epCoord.(rect.Coord).X
-		epCapture := &base.EPCapture{From: rect.Coord{epCoordX, fromY}}
-		for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
-			coord := rect.Coord{epCoordX, y}
-			p := board.Piece(coord)
-			if p != nil && p.Name() == "pawn" {
-				epCapture.To = coord
-				epCapture.PieceCopy = p.Copy()
-				epCapture.PieceCopy.SetCoords(board, epCapture.From)
-				return epCapture, nil
-			}
-		}
-
-		return nil, fmt.Errorf("piece which can be EP-captured not found on board")
-	}
-
-	ep, err := parseEP(fenParts[3], bh, b)
+	ep, err := parseEP(fenParts[3], sideToMove, b)
 	if err != nil {
 		return nil, err
 	}
-	b.SetCanCaptureEnPassant(ep)
 
 	s := StandardFEN{
 		Board:          b,
 		EnPassant:      ep,
-		SideToMove:     sideToMove(fenParts[1]),
+		SideToMove:     sideToMove,
 		HalfMovesCount: halfMovesCount,
 		MoveNumber:     moveNumber,
 	}
 
 	// todo: castling, side to move not implemented in board yet, tests on it
 	// no need to return s, simply write all needed data to board
-
 	_ = s
 	//todo fenParts[2], allowedCastling
 
