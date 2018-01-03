@@ -32,11 +32,11 @@ const NoPawnLongMove int = 0
 const StandardPawnLongMove int = 1
 
 // NoEnPassantFunc always disables en passant capturing
-func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoords { return nil }
+func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
 
 // StandardEnPassantFunc enables en passant capturing like in standard chess, returns coords to capture
 // piece is a capturing piece
-func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
+func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
 	if piece.Name() != "pawn" {
 		return nil
 	}
@@ -48,7 +48,7 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 	}
 
 	pX, epAtX := piece.Coord().(Coord).X, epData.From.(Coord).X
-	if epAtX != pX+1 && epAtX != pX-1 {
+	if epAtX != pX+1 && epAtX != pX-1 { // here we check X
 		return nil
 	}
 
@@ -66,13 +66,14 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 		step *= -1
 	}
 
-	res := NewCoords([]base.ICoord{})
 	minY, maxY := minYs[piece.Colour()], maxYs[piece.Colour()]
-	for y := minY; y >= minY && y <= maxY; y = y + step {
-		res.Add(Coord{epAtX, y})
+	for y := minY; y >= minY && y <= maxY; y = y + step { // here we check Y
+		if y == piece.Coord().(Coord).Y+step {
+			return Coord{epAtX, y}
+		}
 	}
 
-	return res
+	return nil
 }
 
 // StandardAllowedPromotions returns allowed pawn promotions pieces names list for standard chess

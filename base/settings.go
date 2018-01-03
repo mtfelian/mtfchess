@@ -17,7 +17,7 @@ type Settings struct {
 	PromotionConditionFunc func(board IBoard, piece IPiece, dst ICoord, to IPiece) bool
 
 	// EnPassantFunc returns coords on which a piece can do en passant capturing
-	EnPassantFunc func(board IBoard, piece IPiece) ICoords
+	EnPassantFunc func(board IBoard, piece IPiece) ICoord
 
 	// CastlingsFunc returns available castlings for the given colour
 	CastlingsFunc func(board IBoard, colour Colour) Castlings

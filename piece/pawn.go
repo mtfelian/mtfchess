@@ -29,15 +29,11 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 			leaper(1, 1, p, b, moving, 1, moveCapture)...,
 		))
 
-		// search through the possible en passant capturing coords and add if appropriate coords is found
-		epCoords := board.Settings().EnPassantFunc(board, p)
-		for epCoords != nil && epCoords.HasNext() {
-			c := epCoords.Next()
-			step := map[Colour]int{White: 1, Black: -1}
-			if c.(rect.Coord).Y == p.Coord().(rect.Coord).Y+step[p.Colour()] {
-				if !d.Contains(c.(rect.Coord)) {
-					d.Add(c)
-				}
+		if moving {
+			// search through the possible en passant capturing coords and add if appropriate coords is found
+			epCoord := board.Settings().EnPassantFunc(board, p)
+			if epCoord != nil {
+				d.Add(epCoord)
 			}
 		}
 
