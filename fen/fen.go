@@ -2,6 +2,7 @@ package fen
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/mtfelian/utils"
-	"strconv"
 )
 
 // StandardFEN represents a parsed standard FEN data
