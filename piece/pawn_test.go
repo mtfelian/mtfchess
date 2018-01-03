@@ -479,6 +479,17 @@ var _ = Describe("En passant capturing test", func() {
 
 		Expect(b.MakeMove(rect.Coord{1, 4}, wp)).To(BeTrue())
 
+		Expect(b.MakeMove(rect.Coord{3, 3}, bp)).To(BeFalse())
+		Expect(b.Piece(rect.Coord{1, 4})).To(Equal(wp))
+	})
+
+	It("checks that an invalid row en passant can't be done (after making move)", func() {
+		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{1, 2}, wp)
+		b.PlacePiece(rect.Coord{2, 6}, bp)
+
+		Expect(b.MakeMove(rect.Coord{1, 4}, wp)).To(BeTrue())
+
 		Expect(b.MakeMove(rect.Coord{1, 5}, bp)).To(BeFalse())
 		Expect(b.Piece(rect.Coord{1, 4})).To(Equal(wp))
 	})

@@ -58,8 +58,9 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
 	}
 
 	bh := board.Dim().(Coord).Y
+	// maps colour of a capturing piece to Y of the piece to capture
 	minYs := map[Colour]int{White: bh - 2 - longMove, Black: 3}
-	maxYs := map[Colour]int{White: bh - 3, Black: 3 + longMove}
+	maxYs := map[Colour]int{White: bh - 3, Black: 2 + longMove}
 
 	step := 1
 	if piece.Colour() == Black {
