@@ -9,7 +9,7 @@ import (
 // StandardChessBoardSettings returns a set of settings for standard chess
 func StandardChessBoardSettings() base.Settings {
 	return base.Settings{
-		PawnLongMoveFunc:       StandardLongMoveFunc,
+		PawnLongMoveModifier:   StandardPawnLongMove,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          StandardCastlingFunc,
@@ -20,7 +20,7 @@ func StandardChessBoardSettings() base.Settings {
 // testBoardSettings returns a set of settings for tests
 func testBoardSettings() base.Settings {
 	return base.Settings{
-		PawnLongMoveFunc:       NoPawnLongMoveFunc,
+		PawnLongMoveModifier:   NoPawnLongMove,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          NoCastlingFunc,
@@ -28,28 +28,20 @@ func testBoardSettings() base.Settings {
 	}
 }
 
-// NoPawnLongMoveFunc always disables pawn long forward move
-func NoPawnLongMoveFunc(_ base.IBoard, _ base.IPiece) int { return 0 }
-
-// StandardLongMoveFunc is a condition for pawn long forward move for standard chess
-func StandardLongMoveFunc(board base.IBoard, piece base.IPiece) int {
-	bh := board.Dim().(Coord).Y
-	if (piece.Colour() == White && piece.Coord().(Coord).Y == 2) ||
-		(piece.Colour() == Black && piece.Coord().(Coord).Y == bh-1) {
-		return 1
-	}
-	return 0
-}
+const NoPawnLongMove int = 0
+const StandardPawnLongMove int = 1
 
 // NoEnPassantFunc always disables en passant capturing
 func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoords { return nil }
 
 // StandardEnPassantFunc enables en passant capturing like in standard chess, returns coords to capture
+// piece is a capturing piece
 func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 	if piece.Name() != "pawn" {
 		return nil
 	}
 
+	// epData contains data about a cell to which a piece can capture en passant
 	epData := board.CanCaptureEnPassant()
 	if epData == nil {
 		return nil
@@ -60,7 +52,7 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoords {
 		return nil
 	}
 
-	longMove := board.Settings().PawnLongMoveFunc(board, epData.PieceCopy) // here is checked also piece Y coord
+	longMove := board.Settings().PawnLongMoveModifier // here is checked also piece Y coord
 	if longMove == 0 {
 		return nil
 	}

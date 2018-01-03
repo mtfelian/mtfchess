@@ -182,7 +182,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	if piece.Name() == "pawn" {
 		canCaptureEnPassant := b.CanCaptureEnPassant()
-		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.PieceCopy.Coord().(Coord).X {
+		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.To.(Coord).X {
 			b.Empty(canCaptureEnPassant.To)
 		}
 
@@ -190,7 +190,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
 		if diff != 1 && diff != -1 { // long pawn move
-			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to, PieceCopy: piece.Copy()})
+			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to})
 		}
 	}
 

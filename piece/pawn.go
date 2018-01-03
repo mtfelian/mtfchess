@@ -19,8 +19,13 @@ func NewPawn(colour Colour) base.IPiece {
 func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
+		long, pY := 0, p.Coord().(rect.Coord).Y
+		if (p.Colour() == White && pY == 2) || (p.Colour() == Black && pY == board.Dim().(rect.Coord).Y-1) {
+			long = b.Settings().PawnLongMoveModifier
+		}
+
 		d := rect.NewCoords(append(
-			reader(1, 0, p, b, moving, 1+b.Settings().PawnLongMoveFunc(b, p), 1, moveNonCapture),
+			reader(1, 0, p, b, moving, 1+long, 1, moveNonCapture),
 			leaper(1, 1, p, b, moving, 1, moveCapture)...,
 		))
 

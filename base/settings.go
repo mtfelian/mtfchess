@@ -6,9 +6,9 @@ import (
 
 // Settings is a game rectangular board settings
 type Settings struct {
-	// PawnLongMoveFunc's return value added to pawn's move vertical absolute offset (to the front)
+	// PawnLongMoveModifier's added to pawn's move vertical absolute offset (to the front)
 	// to allow pawn to move that 1 + number of squares to the front according to this func's logic
-	PawnLongMoveFunc func(board IBoard, piece IPiece) int
+	PawnLongMoveModifier int
 
 	// AllowedPromotions is a list of string piece names to promote to
 	AllowedPromotions []string

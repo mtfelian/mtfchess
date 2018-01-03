@@ -114,8 +114,6 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (*base.EPCapture
 		p := board.Piece(coord)
 		if p != nil && p.Name() == "pawn" {
 			epCapture.To = coord
-			epCapture.PieceCopy = p.Copy()
-			epCapture.PieceCopy.SetCoords(board, epCapture.From)
 			board.SetCanCaptureEnPassant(epCapture)
 			return epCapture, nil
 		}
