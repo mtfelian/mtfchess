@@ -472,6 +472,17 @@ var _ = Describe("En passant capturing test", func() {
 		Expect(d.Equals(rect.NewCoords([]base.ICoord{rect.Coord{3, 3}}))).To(BeTrue())
 	})
 
+	It("checks that an invalid side en passant can't be done (after making move)", func() {
+		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
+		b.PlacePiece(rect.Coord{1, 2}, wp)
+		b.PlacePiece(rect.Coord{2, 4}, bp)
+
+		Expect(b.MakeMove(rect.Coord{1, 4}, wp)).To(BeTrue())
+
+		Expect(b.MakeMove(rect.Coord{1, 5}, bp)).To(BeFalse())
+		Expect(b.Piece(rect.Coord{1, 4})).To(Equal(wp))
+	})
+
 	It("checks that en passant can be done (after making move)", func() {
 		wp, bp := piece.NewPawn(White), piece.NewPawn(Black)
 		b.PlacePiece(rect.Coord{1, 2}, wp)
