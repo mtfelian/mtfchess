@@ -10,11 +10,11 @@ import (
 
 // Board is a game rectangular board
 type Board struct {
-	cells               Cells
-	width, height       int
-	king                map[Colour]base.IPiece
-	canCaptureEnPassant *base.EPCapture
-	settings            base.Settings
+	cells                 Cells
+	width, height         int
+	king                  map[Colour]base.IPiece
+	canCaptureEnPassantAt base.ICoord
+	settings              base.Settings
 }
 
 // X converts x1 to slice index
@@ -60,11 +60,11 @@ func (b *Board) SetKing(of Colour, to base.IPiece) {
 	b.king[of] = to
 }
 
-// SetCanCaptureEnPassant sets a piece which can be captured en passant
-func (b *Board) SetCanCaptureEnPassant(p *base.EPCapture) { b.canCaptureEnPassant = p }
+// SetCanCaptureEnPassantAt sets a piece dst coords which can be captured en passant
+func (b *Board) SetCanCaptureEnPassantAt(dst base.ICoord) { b.canCaptureEnPassantAt = dst }
 
-// CanCaptureEnPassant returns a piece which can be captured en passant
-func (b *Board) CanCaptureEnPassant() *base.EPCapture { return b.canCaptureEnPassant }
+// CanCaptureEnPassantAt returns a piece dst coords which can be captured en passant
+func (b *Board) CanCaptureEnPassantAt() base.ICoord { return b.canCaptureEnPassantAt }
 
 // createCells returns a slice of Cell for the board
 func (b *Board) createCells() {
@@ -141,7 +141,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetDim(Coord{X: b.width, Y: b.height})
 	newBoard.king = b.copyKings()
 	newBoard.SetSettings(b.Settings())
-	newBoard.SetCanCaptureEnPassant(b.CanCaptureEnPassant())
+	newBoard.SetCanCaptureEnPassantAt(b.CanCaptureEnPassantAt())
 	return newBoard
 }
 
@@ -181,16 +181,16 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	}
 
 	if piece.Name() == "pawn" {
-		canCaptureEnPassant := b.CanCaptureEnPassant()
-		if canCaptureEnPassant != nil && to.(Coord).X == canCaptureEnPassant.To.(Coord).X {
-			b.Empty(canCaptureEnPassant.To)
+		epCaptureAt := b.CanCaptureEnPassantAt()
+		if epCaptureAt != nil && to.(Coord).X == epCaptureAt.(Coord).X {
+			b.Empty(epCaptureAt)
 		}
 
-		b.SetCanCaptureEnPassant(nil)
+		b.SetCanCaptureEnPassantAt(nil)
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
 		if diff != 1 && diff != -1 { // long pawn move
-			b.SetCanCaptureEnPassant(&base.EPCapture{From: piece.Coord(), To: to})
+			b.SetCanCaptureEnPassantAt(to)
 		}
 	}
 

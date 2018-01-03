@@ -457,7 +457,7 @@ var _ = Describe("En passant capturing test", func() {
 		b.PlacePiece(rect.Coord{3, 4}, bp)
 
 		Expect(b.MakeMove(rect.Coord{2, 4}, wp)).To(BeTrue())
-		b.SetCanCaptureEnPassant(nil)
+		b.SetCanCaptureEnPassantAt(nil)
 
 		a, d := wp.Attacks(b), wp.Destinations(b)
 		sort.Sort(a)

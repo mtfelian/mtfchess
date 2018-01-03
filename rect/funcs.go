@@ -41,13 +41,13 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
 		return nil
 	}
 
-	// epData contains data about a cell to which a piece can capture en passant
-	epData := board.CanCaptureEnPassant()
-	if epData == nil {
+	// pieceAt is a coord of a piece which can be captured en passant
+	pieceAt := board.CanCaptureEnPassantAt()
+	if pieceAt == nil {
 		return nil
 	}
 
-	pX, epAtX := piece.Coord().(Coord).X, epData.From.(Coord).X
+	pX, epAtX := piece.Coord().(Coord).X, pieceAt.(Coord).X
 	if epAtX != pX+1 && epAtX != pX-1 { // here we check X
 		return nil
 	}

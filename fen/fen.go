@@ -89,9 +89,9 @@ func parseSideToMove(line string) Colour {
 	return map[string]Colour{"w": White, "b": Black}[strings.ToLower(line)]
 }
 
-// parseEP parses line into EP capture struct in board, with specified sideToMove
+// parseEP parses line into dst coords of a piece which can be EP-captured in board, with specified sideToMove
 // this func changes board parameter
-func parseEP(line string, sideToMove Colour, board *rect.Board) (*base.EPCapture, error) {
+func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, error) {
 	if line == "-" {
 		return nil, nil
 	}
@@ -102,20 +102,18 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (*base.EPCapture
 	}
 
 	epPieceColour, bh := sideToMove.Invert(), board.Dim().(rect.Coord).Y
-	step, fromY, limY := 1, 2, bh-1
+	step, limY := 1, bh-1
 	if epPieceColour == Black {
-		step, fromY, limY = -1, bh-1, 2
+		step, limY = -1, 2
 	}
 
 	epCoordX := epCoord.(rect.Coord).X
-	epCapture := &base.EPCapture{From: rect.Coord{epCoordX, fromY}}
 	for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
 		coord := rect.Coord{epCoordX, y}
 		p := board.Piece(coord)
 		if p != nil && p.Name() == "pawn" {
-			epCapture.To = coord
-			board.SetCanCaptureEnPassant(epCapture)
-			return epCapture, nil
+			board.SetCanCaptureEnPassantAt(coord)
+			return coord, nil
 		}
 	}
 
@@ -124,10 +122,10 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (*base.EPCapture
 
 // StandardFEN represents a parsed standard FEN data
 type StandardFEN struct {
-	Board      base.IBoard              // position
-	SideToMove Colour                   // side to move
-	Castlings  map[Colour]base.Castling // allowed castlings
-	EnPassant  *base.EPCapture
+	Board              base.IBoard              // position
+	SideToMove         Colour                   // side to move
+	Castlings          map[Colour]base.Castling // allowed castlings
+	EnPassantCaptureAt base.ICoord
 	// HalfMovesCount is a number of halfmoves since the last capture or pawn advance, to detect
 	// 3-fold repetition or 50 moves draw rule
 	HalfMovesCount uint
@@ -175,11 +173,11 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 	}
 
 	s := StandardFEN{
-		Board:          b,
-		EnPassant:      ep,
-		SideToMove:     sideToMove,
-		HalfMovesCount: halfMovesCount,
-		MoveNumber:     moveNumber,
+		Board:              b,
+		EnPassantCaptureAt: ep,
+		SideToMove:         sideToMove,
+		HalfMovesCount:     halfMovesCount,
+		MoveNumber:         moveNumber,
 	}
 
 	// todo: castling, side to move not implemented in board yet, tests on it
