@@ -9,6 +9,11 @@ import (
 	"github.com/mtfelian/mtfchess/base"
 )
 
+// FromLetter returns x coord from the given letter
+func FromLetter(letter rune) int {
+	return int(letter - 'a' + 1)
+}
+
 // FromAlgebraic makes (x,y) coords from algebraic form.
 // coord is case-insensitive
 func FromAlgebraic(coord string) (base.ICoord, error) {
@@ -23,7 +28,7 @@ func FromAlgebraic(coord string) (base.ICoord, error) {
 		return nil, fmt.Errorf("wrong coord format: %s", coord)
 	}
 
-	x := int(parts[1][0] - 'a' + 1)
+	x := FromLetter([]rune(parts[1])[0])
 	y, err := strconv.Atoi(parts[2])
 	if err != nil {
 		return nil, err
