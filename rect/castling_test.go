@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Castling test", func() {
+var _ = Describe("Castling test for standard position", func() {
 	var b base.IBoard
 	resetBoard := func() {
 		b = rect.NewEmptyStandardChessBoard()
@@ -40,7 +40,7 @@ var _ = Describe("Castling test", func() {
 		checkMakeCastling(c)
 	}
 
-	checkWhiteCastlingHSideEnabled := func(c base.Castling) {
+	checkWhiteCastlingZSideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{7, 1}, rect.Coord{6, 1}}))
 		checkMakeCastling(c)
@@ -52,7 +52,7 @@ var _ = Describe("Castling test", func() {
 		checkMakeCastling(c)
 	}
 
-	checkBlackCastlingHSideEnabled := func(c base.Castling) {
+	checkBlackCastlingZSideEnabled := func(c base.Castling) {
 		checkCommonCastlingProperties(c)
 		Expect(c.To).To(Equal([2]base.ICoord{rect.Coord{7, 8}, rect.Coord{6, 8}}))
 		checkMakeCastling(c)
@@ -77,9 +77,9 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(2))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
+			checkWhiteCastlingZSideEnabled(wc[1])
 			checkBlackCastlingASideEnabled(bc[0])
-			checkBlackCastlingHSideEnabled(bc[1])
+			checkBlackCastlingZSideEnabled(bc[1])
 		})
 
 		It("checks that only one castling is enabled due to second rook moved", func() {
@@ -97,9 +97,9 @@ var _ = Describe("Castling test", func() {
 			wc, bc := b.Castlings(White), b.Castlings(Black)
 			Expect(wc).To(HaveLen(1))
 			Expect(bc).To(HaveLen(2))
-			checkWhiteCastlingHSideEnabled(wc[0])
+			checkWhiteCastlingZSideEnabled(wc[0])
 			checkBlackCastlingASideEnabled(bc[0])
-			checkBlackCastlingHSideEnabled(bc[1])
+			checkBlackCastlingZSideEnabled(bc[1])
 		})
 
 		It("checks that only one castling is enabled due to king's dst attacked", func() {
@@ -130,7 +130,7 @@ var _ = Describe("Castling test", func() {
 			Expect(bc).To(HaveLen(2))
 			checkWhiteCastlingASideEnabled(wc[0])
 			checkBlackCastlingASideEnabled(bc[0])
-			checkBlackCastlingHSideEnabled(bc[1])
+			checkBlackCastlingZSideEnabled(bc[1])
 		})
 
 		It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
@@ -141,7 +141,7 @@ var _ = Describe("Castling test", func() {
 			Expect(bc).To(HaveLen(2))
 			checkWhiteCastlingASideEnabled(wc[0])
 			checkBlackCastlingASideEnabled(bc[0])
-			checkBlackCastlingHSideEnabled(bc[1])
+			checkBlackCastlingZSideEnabled(bc[1])
 		})
 
 		It("checks that only one castling is enabled due to opponent's piece at king's path", func() {
@@ -151,8 +151,8 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(1))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
-			checkBlackCastlingHSideEnabled(bc[0])
+			checkWhiteCastlingZSideEnabled(wc[1])
+			checkBlackCastlingZSideEnabled(bc[0])
 		})
 
 		It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
@@ -162,8 +162,8 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(1))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
-			checkBlackCastlingHSideEnabled(bc[0])
+			checkWhiteCastlingZSideEnabled(wc[1])
+			checkBlackCastlingZSideEnabled(bc[0])
 		})
 
 		It("checks that no castlings if in check", func() {
@@ -173,7 +173,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(0))
 			Expect(bc).To(HaveLen(2))
 			checkBlackCastlingASideEnabled(bc[0])
-			checkBlackCastlingHSideEnabled(bc[1])
+			checkBlackCastlingZSideEnabled(bc[1])
 		})
 
 		It("checks that no castlings if king moved", func() {
@@ -183,7 +183,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(0))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
+			checkWhiteCastlingZSideEnabled(wc[1])
 		})
 
 		It("checks that no castlings if king not in standard position", func() {
@@ -193,7 +193,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(0))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
+			checkWhiteCastlingZSideEnabled(wc[1])
 		})
 
 		It("checks that only one castling is enabled if one of rook moved", func() {
@@ -204,7 +204,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(1))
 			Expect(bc).To(HaveLen(1))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkBlackCastlingHSideEnabled(bc[0])
+			checkBlackCastlingZSideEnabled(bc[0])
 		})
 
 		It("checks that no castlings if both rooks moved", func() {
@@ -215,7 +215,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(0))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
+			checkWhiteCastlingZSideEnabled(wc[1])
 		})
 
 		It("checks that no castlings if both rooks not in standard position", func() {
@@ -226,7 +226,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(2))
 			Expect(bc).To(HaveLen(0))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkWhiteCastlingHSideEnabled(wc[1])
+			checkWhiteCastlingZSideEnabled(wc[1])
 		})
 	})
 
@@ -247,7 +247,7 @@ var _ = Describe("Castling test", func() {
 			Expect(wc).To(HaveLen(1))
 			Expect(bc).To(HaveLen(1))
 			checkWhiteCastlingASideEnabled(wc[0])
-			checkBlackCastlingHSideEnabled(bc[0])
+			checkBlackCastlingZSideEnabled(bc[0])
 		})
 	})
 
