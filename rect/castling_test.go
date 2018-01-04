@@ -265,7 +265,7 @@ var _ = Describe("Castling test", func() {
 		})
 	})
 
-	FContext("for chess960 specially crafted position", func() {
+	Context("for chess960 specially crafted position", func() {
 		BeforeEach(func() {
 			resetBoard = func() {
 				b = rect.NewEmptyStandardChessBoard()

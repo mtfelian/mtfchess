@@ -381,5 +381,4 @@ todo to implement:
   - returning legal moves in algebraic notation;
   - stalemate detection (no check and no legal moves);
   - checkmate detection (check and no legal moves);
-  - fix castling func it order to make it work with starting positions where both rooks located on one side of the king
 */
