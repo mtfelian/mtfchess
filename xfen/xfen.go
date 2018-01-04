@@ -115,14 +115,14 @@ func parseSideToMove(line string) Colour {
 
 // parseEP parses line into dst coords of a piece which can be EP-captured in board, with specified sideToMove
 // this func changes board parameter
-func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, error) {
+func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 	if line == "-" {
-		return nil, nil
+		return nil
 	}
 
 	epCoord, err := rect.FromAlgebraic(line)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	epPieceColour, bh := sideToMove.Invert(), board.Dim().(rect.Coord).Y
@@ -139,25 +139,21 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, er
 		p := board.Piece(coord)
 		if p != nil && p.Name() == "pawn" {
 			board.SetCanCaptureEnPassantAt(coord)
-			return coord, nil
+			return nil
 		}
 	}
 
-	return nil, fmt.Errorf("piece which can be EP-captured not found on board")
+	return fmt.Errorf("piece which can be EP-captured not found on board")
 }
 
-// parseCastling line about allowed castlings
+// parseCastling parses line about allowed castlings
 // this func changes board parameter
 func parseCastling(line string, board *rect.Board) error {
 	bC := board.Dim().(rect.Coord)
 	// findRook finds rook of colour.
-	// Set border to true to find rook nearest board border, otherwise set it to false.
-	findRook := func(colour Colour, border, leftMost bool) *piece.Rook {
-		king := board.King(colour)
-		if king == nil {
-			panic("king is not set while parseCastling() in XFEN")
-		}
-
+	// Set i to 0 for aSide rook finding, set i to 1 for zSide rook finding
+	// Set outer to true to find outer rook (closer to board border), otherwise inner rook (closer to king)
+	findRook := func(colour Colour, i int, outer bool) *piece.Rook {
 		rooks := board.FindPieces(base.PieceFilter{
 			Names:   []string{"rook"},
 			Colours: []Colour{colour},
@@ -178,76 +174,49 @@ func parseCastling(line string, board *rect.Board) error {
 			panic("found more then two rooks on starting horizontal")
 		}
 
-		isBorder := make([]bool, len(rooks))
-		for i := range rooks {
-			isBorder[i] = true
-			c := rooks[i].Coord().(rect.Coord)
-			if leftMost {
-				for x := c.X - 1; x >= 1; x-- {
-					pieceAt := board.Piece(rect.Coord{x, c.Y})
-					if pieceAt != nil && (pieceAt.Name() == "rook" || pieceAt.Name() == "king") {
-						isBorder[i] = false
-					}
-				}
-			} else {
-				for x := c.X + 1; x <= bC.X; x++ {
-					pieceAt := board.Piece(rect.Coord{x, c.Y})
-					if pieceAt != nil && (pieceAt.Name() == "rook" || pieceAt.Name() == "king") {
-						isBorder[i] = false
-					}
-				}
+		minRookX, maxRookX := bC.X+1, 0
+		var aRook, zRook base.IPiece
+		for j := range rooks {
+			c := rooks[j].Coord().(rect.Coord)
+			if c.X < minRookX {
+				minRookX, aRook = c.X, rooks[j]
 			}
-			if isBorder[i] == border {
-				return rooks[i].(*piece.Rook)
+			if c.X > maxRookX {
+				maxRookX, zRook = c.X, rooks[j]
 			}
 		}
+		if outer && i == 1 || !outer && i == 0 {
+			return zRook.(*piece.Rook)
+		}
+		// if (outer && i == 0) || (!outer && i == 1)
+		return aRook.(*piece.Rook)
+	}
 
-		return rooks[0].(*piece.Rook)
-	}
-
-	if strings.Contains(line, "K") {
-		r := findRook(White, true)
-		if r == nil {
-			panic("wrong FEN, K-castling specified, but rook not found")
+	for _, token := range []rune(line) {
+		colour := White
+		if unicode.IsLower(token) {
+			colour = Black
 		}
-		board.SetRookInitialCoords(White, 1, r.Coord())
-	}
-	if strings.Contains(line, "k") {
-		r := findRook(Black, true)
-		if r == nil {
-			panic("wrong FEN, k-castling specified, but rook not found")
+		king := board.King(colour)
+		if king == nil {
+			return fmt.Errorf("king is not set while parseCastling() in XFEN")
 		}
-		board.SetRookInitialCoords(Black, 1, r.Coord())
-	}
-	if strings.Contains(line, "Q") {
-		r := findRook(White, true)
-		if r == nil {
-			panic("wrong FEN, Q-castling specified, but rook not found")
+		outer := strings.Contains(string(token), "KkQq")
+		kC := king.Coord().(rect.Coord)
+		i := 0
+		if strings.Contains(string(token), "Kk") || (!outer && rect.FromLetter(token) > kC.X) {
+			i = 1
 		}
-		board.SetRookInitialCoords(Black, 0, r.Coord())
-	}
-	if strings.Contains(line, "q") {
-		r := findRook(Black, true)
+		r := findRook(colour, i, outer)
 		if r == nil {
-			panic("wrong FEN, q-castling specified, but rook not found")
+			return fmt.Errorf("wrong FEN, %s-castling specified, but rook not found", string(token))
 		}
-		board.SetRookInitialCoords(Black, 0, r.Coord())
+		board.SetRookInitialCoords(colour, i, r.Coord())
 	}
+	return nil
 }
 
-// StandardXFEN represents a parsed standard FEN data
-type StandardXFEN struct {
-	Board              base.IBoard     // position
-	SideToMove         Colour          // side to move
-	RookCoords         base.RookCoords // rook coords
-	EnPassantCaptureAt base.ICoord
-	// HalfMovesCount is a number of halfmoves since the last capture or pawn advance, to detect
-	// 3-fold repetition or 50 moves draw rule
-	HalfMovesCount uint
-	MoveNumber     uint // moves counter
-}
-
-// NewFromStandardXFEN creates new chess board with pieces from standard FEN
+// NewFromStandardXFEN creates new chess board with pieces from standard XFEN
 func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 	xfenParts := strings.Split(fen, " ")
 	if len(xfenParts) != 6 {
@@ -282,23 +251,16 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 
 	sideToMove := parseSideToMove(xfenParts[1])
 
-	ep, err := parseEP(xfenParts[3], sideToMove, b)
-	if err != nil {
+	if err := parseEP(xfenParts[3], sideToMove, b); err != nil {
 		return nil, err
 	}
 
-	s := StandardXFEN{
-		Board:              b,
-		EnPassantCaptureAt: ep,
-		SideToMove:         sideToMove,
-		HalfMovesCount:     halfMovesCount,
-		MoveNumber:         moveNumber,
+	if err := parseCastling(xfenParts[2], b); err != nil {
+		return nil, err
 	}
 
-	// todo: castling, side to move not implemented in board yet, tests on it
-	// no need to return s, simply write all needed data to board
-	_ = s
-	//todo xfenParts[2], allowedCastling
+	_, _, _ = sideToMove, halfMovesCount, moveNumber
 
+	// todo: side to move not implemented in board yet, tests on it, especially on castling parsing
 	return b, nil
 }
