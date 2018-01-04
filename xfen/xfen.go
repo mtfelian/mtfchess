@@ -1,4 +1,4 @@
-package fen
+package xfen
 
 import (
 	"fmt"
@@ -122,8 +122,8 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, er
 	return nil, fmt.Errorf("piece which can be EP-captured not found on board")
 }
 
-// StandardFEN represents a parsed standard FEN data
-type StandardFEN struct {
+// StandardXFEN represents a parsed standard FEN data
+type StandardXFEN struct {
 	Board              base.IBoard              // position
 	SideToMove         Colour                   // side to move
 	Castlings          map[Colour]base.Castling // allowed castlings
@@ -134,24 +134,24 @@ type StandardFEN struct {
 	MoveNumber     uint // moves counter
 }
 
-// NewFromStandardFEN creates new chess board with pieces from standard FEN
-func NewFromStandardFEN(fen string) (*rect.Board, error) {
-	fenParts := strings.Split(fen, " ")
-	if len(fenParts) != 6 {
-		return nil, fmt.Errorf("invalid fen length")
+// NewFromStandardXFEN creates new chess board with pieces from standard FEN
+func NewFromStandardXFEN(fen string) (*rect.Board, error) {
+	xfenParts := strings.Split(fen, " ")
+	if len(xfenParts) != 6 {
+		return nil, fmt.Errorf("invalid xfen length")
 	}
 
-	halfMovesCount, err := StringToUint(fenParts[4])
+	halfMovesCount, err := StringToUint(xfenParts[4])
 	if err != nil {
 		return nil, err
 	}
 
-	moveNumber, err := StringToUint(fenParts[5])
+	moveNumber, err := StringToUint(xfenParts[5])
 	if err != nil {
 		return nil, err
 	}
 
-	posLines := strings.Split(fenParts[0], "/")
+	posLines := strings.Split(xfenParts[0], "/")
 	bh := len(posLines)
 	if bh < 3 {
 		return nil, fmt.Errorf("bh is too small")
@@ -167,14 +167,14 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
-	sideToMove := parseSideToMove(fenParts[1])
+	sideToMove := parseSideToMove(xfenParts[1])
 
-	ep, err := parseEP(fenParts[3], sideToMove, b)
+	ep, err := parseEP(xfenParts[3], sideToMove, b)
 	if err != nil {
 		return nil, err
 	}
 
-	s := StandardFEN{
+	s := StandardXFEN{
 		Board:              b,
 		EnPassantCaptureAt: ep,
 		SideToMove:         sideToMove,
@@ -185,7 +185,7 @@ func NewFromStandardFEN(fen string) (*rect.Board, error) {
 	// todo: castling, side to move not implemented in board yet, tests on it
 	// no need to return s, simply write all needed data to board
 	_ = s
-	//todo fenParts[2], allowedCastling
+	//todo xfenParts[2], allowedCastling
 
 	return b, nil
 }

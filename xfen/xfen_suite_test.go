@@ -1,4 +1,4 @@
-package fen_test
+package xfen_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestFEN(t *testing.T) {
+func TestXFEN(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "FEN Suite")
+	RunSpecs(t, "XFEN Suite")
 }
