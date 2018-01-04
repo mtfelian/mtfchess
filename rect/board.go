@@ -249,7 +249,12 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 
 	castling.Piece[0].MarkMoved()
 	castling.Piece[1].MarkMoved()
-	b.Set(b.Project(castling.Piece[0], castling.To[0]).Project(castling.Piece[1], castling.To[1]))
+
+	kingCopy, rookCopy := b.Piece(castling.Piece[0].Coord()).Copy(), b.Piece(castling.Piece[1].Coord()).Copy()
+	b.Empty(kingCopy.Coord())
+	b.Empty(rookCopy.Coord())
+	b.PlacePiece(castling.To[0], kingCopy)
+	b.PlacePiece(castling.To[1], rookCopy)
 	castling.Piece[0].Set(b.Piece(castling.To[0]))
 	castling.Piece[1].Set(b.Piece(castling.To[1]))
 
