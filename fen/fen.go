@@ -107,6 +107,8 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, er
 		step, limY = -1, 2
 	}
 
+	// FEN has 'EP capture dst cell' coords while the board keeps 'piece to capture' coords
+
 	epCoordX := epCoord.(rect.Coord).X
 	for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
 		coord := rect.Coord{epCoordX, y}
