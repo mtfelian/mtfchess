@@ -152,12 +152,11 @@ func parseCastling(line string, board *rect.Board) error {
 	bC := board.Dim().(rect.Coord)
 	// findRook finds rook of colour.
 	// Set border to true to find rook nearest board border, otherwise set it to false.
-	findRook := func(colour Colour, leftmost, border bool) *piece.Rook {
+	findRook := func(colour Colour, border, leftMost bool) *piece.Rook {
 		king := board.King(colour)
 		if king == nil {
 			panic("king is not set while parseCastling() in XFEN")
 		}
-		kC := king.Coord().(rect.Coord)
 
 		rooks := board.FindPieces(base.PieceFilter{
 			Names:   []string{"rook"},
@@ -179,15 +178,60 @@ func parseCastling(line string, board *rect.Board) error {
 			panic("found more then two rooks on starting horizontal")
 		}
 
-		/*step := 1
-
-		isBorder := true*/
+		isBorder := make([]bool, len(rooks))
+		for i := range rooks {
+			isBorder[i] = true
+			c := rooks[i].Coord().(rect.Coord)
+			if leftMost {
+				for x := c.X - 1; x >= 1; x-- {
+					pieceAt := board.Piece(rect.Coord{x, c.Y})
+					if pieceAt != nil && (pieceAt.Name() == "rook" || pieceAt.Name() == "king") {
+						isBorder[i] = false
+					}
+				}
+			} else {
+				for x := c.X + 1; x <= bC.X; x++ {
+					pieceAt := board.Piece(rect.Coord{x, c.Y})
+					if pieceAt != nil && (pieceAt.Name() == "rook" || pieceAt.Name() == "king") {
+						isBorder[i] = false
+					}
+				}
+			}
+			if isBorder[i] == border {
+				return rooks[i].(*piece.Rook)
+			}
+		}
 
 		return rooks[0].(*piece.Rook)
 	}
 
 	if strings.Contains(line, "K") {
-		//r := findRook(White, true)
+		r := findRook(White, true)
+		if r == nil {
+			panic("wrong FEN, K-castling specified, but rook not found")
+		}
+		board.SetRookInitialCoords(White, 1, r.Coord())
+	}
+	if strings.Contains(line, "k") {
+		r := findRook(Black, true)
+		if r == nil {
+			panic("wrong FEN, k-castling specified, but rook not found")
+		}
+		board.SetRookInitialCoords(Black, 1, r.Coord())
+	}
+	if strings.Contains(line, "Q") {
+		r := findRook(White, true)
+		if r == nil {
+			panic("wrong FEN, Q-castling specified, but rook not found")
+		}
+		board.SetRookInitialCoords(Black, 0, r.Coord())
+	}
+	if strings.Contains(line, "q") {
+		r := findRook(Black, true)
+		if r == nil {
+			panic("wrong FEN, q-castling specified, but rook not found")
+		}
+		board.SetRookInitialCoords(Black, 0, r.Coord())
 	}
 }
 
