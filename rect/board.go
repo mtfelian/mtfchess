@@ -14,6 +14,7 @@ type Board struct {
 	width, height         int
 	king                  map[Colour]base.IPiece
 	canCaptureEnPassantAt base.ICoord
+	castlingState         base.CastlingState
 	settings              base.Settings
 }
 
@@ -54,6 +55,13 @@ func (b *Board) initializeKing() {
 	}
 }
 
+// initializeCastlingStates initializes board castling states
+func (b *Board) initializeCastlingStates() {
+	if b.castlingState == nil {
+		b.castlingState = base.CastlingState{White: [2]bool{true, true}, Black: [2]bool{true, true}}
+	}
+}
+
 // SetKing sets a board king
 func (b *Board) SetKing(of Colour, to base.IPiece) {
 	b.initializeKing()
@@ -65,6 +73,18 @@ func (b *Board) SetCanCaptureEnPassantAt(dst base.ICoord) { b.canCaptureEnPassan
 
 // CanCaptureEnPassantAt returns a piece dst coords which can be captured en passant
 func (b *Board) CanCaptureEnPassantAt() base.ICoord { return b.canCaptureEnPassantAt }
+
+// SetCastlingState enables or disables board castlings
+// parameter n should be equal to 0 for aSide castling, or to 1 for zSide castling
+func (b *Board) SetCastlingState(colour Colour, n int, state bool) {
+	arr := b.castlingState[colour]
+	arr[n] = state
+	b.castlingState[colour] = arr
+}
+
+// CastlingEnabled returns board castling states
+// parameter n should be equal to 0 for aSide castling, or to 1 for zSide castling
+func (b *Board) CastlingEnabled(colour Colour, n int) bool { return b.castlingState[colour][n] }
 
 // createCells returns a slice of Cell for the board
 func (b *Board) createCells() {
@@ -140,6 +160,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetCells(b.Cells().Copy(newBoard))
 	newBoard.SetDim(Coord{X: b.width, Y: b.height})
 	newBoard.king = b.copyKings()
+	newBoard.castlingState = b.castlingState.Copy()
 	newBoard.SetSettings(b.Settings())
 	newBoard.SetCanCaptureEnPassantAt(b.CanCaptureEnPassantAt())
 	return newBoard
@@ -325,6 +346,7 @@ func NewEmptyBoard(i, j int, settings base.Settings) *Board {
 	b.width, b.height = i, j
 	b.createCells()
 	b.initializeKing()
+	b.initializeCastlingStates()
 	b.settings = settings
 	return b
 }

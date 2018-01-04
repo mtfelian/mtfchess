@@ -91,9 +91,13 @@ func StandardPromotionConditionFunc(board base.IBoard, piece base.IPiece, dst ba
 }
 
 // standardCastling returns castling data for standard chess for given colour on a given board
-// set aSide to true to return a-side castling, otherwise to return h-side castling
-func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castling {
+// set n to 0 to return a-side castling, set n to 1 to return z-side castling
+func standardCastling(board base.IBoard, colour Colour, n int) base.Castling {
 	res, bh := base.Castling{Enabled: false}, board.Dim().(Coord).Y
+
+	if !board.CastlingEnabled(colour, n) {
+		return res
+	}
 
 	king := board.King(colour)
 	if king == nil || king.WasMoved() {
@@ -110,7 +114,7 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 		Colours: []Colour{colour},
 		Condition: func(r base.IPiece) bool {
 			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
-			return ((rC.X < kC.X && aSide) || (rC.X > kC.X && !aSide)) && rC.Y == y[colour] && kC.Y == y[colour]
+			return ((rC.X < kC.X && n == 0) || (rC.X > kC.X && n == 1)) && rC.Y == y[colour] && kC.Y == y[colour]
 		},
 	})
 
@@ -120,7 +124,7 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 
 	// king and rook destination coordinates after castling
 	kDstX, rDstX, xStep := 7, 6, 1
-	if aSide {
+	if n == 0 {
 		kDstX, rDstX, xStep = 3, 4, -1
 	}
 	kingDstCoord := map[Colour]Coord{White: {kDstX, 1}, Black: {kDstX, bh}}
@@ -148,7 +152,7 @@ func standardCastling(board base.IBoard, colour Colour, aSide bool) base.Castlin
 
 // StandardCastlingFunc is a castling func for standard chess
 func StandardCastlingFunc(board base.IBoard, colour Colour) base.Castlings {
-	castlings := base.Castlings{standardCastling(board, colour, true), standardCastling(board, colour, false)}
+	castlings := base.Castlings{standardCastling(board, colour, 0), standardCastling(board, colour, 1)}
 	res := base.Castlings{}
 	for i := range castlings {
 		if castlings[i].Enabled {
