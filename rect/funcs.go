@@ -142,7 +142,9 @@ func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.C
 	for i := xStep; kC.X+i != kingDstCoord[colour].X+xStep; i += xStep {
 		shouldBeFree := Coord{kC.X + i, kC.Y}
 		//fmt.Println(colour, i, shouldBeFree, attacked.Contains(shouldBeFree), board.Piece(shouldBeFree) != nil)
-		if attacked.Contains(shouldBeFree) || board.Piece(shouldBeFree) != nil {
+		// can castle if it's the same rook on the path (condition after ||)
+		if attacked.Contains(shouldBeFree) ||
+			(board.Piece(shouldBeFree) != nil && !board.Piece(shouldBeFree).Coord().Equals(rook.Coord())) {
 			//fmt.Println("!! xStep=", xStep, i, kC.X)
 			//fmt.Println(">>", colour, kingDstCoord[colour].X)
 			return res
