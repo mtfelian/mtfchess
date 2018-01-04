@@ -11,7 +11,14 @@ import (
 
 var _ = Describe("Castling test", func() {
 	var b base.IBoard
-	resetBoard := func() { b = rect.NewEmptyStandardChessBoard() }
+	resetBoard := func() {
+		b = rect.NewEmptyStandardChessBoard()
+		// set rook initial coords to enable castling
+		b.SetRookInitialCoords(White, 0, rect.Coord{1, 1})
+		b.SetRookInitialCoords(White, 1, rect.Coord{8, 1})
+		b.SetRookInitialCoords(Black, 0, rect.Coord{1, 8})
+		b.SetRookInitialCoords(Black, 1, rect.Coord{8, 8})
+	}
 	BeforeEach(func() { resetBoard() })
 
 	checkCommonCastlingProperties := func(c base.Castling) {

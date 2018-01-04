@@ -91,13 +91,9 @@ func StandardPromotionConditionFunc(board base.IBoard, piece base.IPiece, dst ba
 }
 
 // standardCastling returns castling data for standard chess for given colour on a given board
-// set n to 0 to return a-side castling, set n to 1 to return z-side castling
-func standardCastling(board base.IBoard, colour Colour, n int) base.Castling {
+// parameter x is a rook coord
+func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.Castling {
 	res, bh := base.Castling{Enabled: false}, board.Dim().(Coord).Y
-
-	if !board.CastlingEnabled(colour, n) {
-		return res
-	}
 
 	king := board.King(colour)
 	if king == nil || king.WasMoved() {
@@ -108,25 +104,35 @@ func standardCastling(board base.IBoard, colour Colour, n int) base.Castling {
 		return res
 	}
 
-	kC := king.Coord().(Coord)
-	rooks := board.FindPieces(base.PieceFilter{
-		Names:   []string{"rook"},
-		Colours: []Colour{colour},
-		Condition: func(r base.IPiece) bool {
-			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
-			return ((rC.X < kC.X && n == 0) || (rC.X > kC.X && n == 1)) && rC.Y == y[colour] && kC.Y == y[colour]
-		},
-	})
-
-	if rooks == nil || len(rooks) != 1 || rooks[0].WasMoved() {
+	// detect, whether it aSide or zSide castling
+	rooksCoords, n, x := board.RookInitialCoords(colour), -1, rook.Coord().(Coord).X
+	if len(rooksCoords) != 2 {
+		panic("rookCoords should have len 2")
+	}
+	for i := range rooksCoords {
+		if rooksCoords[i] == nil {
+			continue
+		}
+		if rooksCoords[i].(Coord).X == x {
+			n = i
+			break
+		}
+	}
+	if n == -1 { // rook not found
 		return res
 	}
 
-	// king and rook destination coordinates after castling
-	kDstX, rDstX, xStep := 7, 6, 1
-	if n == 0 {
-		kDstX, rDstX, xStep = 3, 4, -1
+	// kDstX and rDstX is a king and rook destination X after castling
+	kDstX, rDstX := 3, 4 // aSide castling
+	if n == 1 {
+		kDstX, rDstX = 7, 6 // zSide castling
 	}
+
+	kC, xStep := king.Coord().(Coord), 1 // go right if king now is to the left from the rook
+	if kC.X > x {                        // go left if king now is to the right from rook
+		xStep = -1
+	}
+
 	kingDstCoord := map[Colour]Coord{White: {kDstX, 1}, Black: {kDstX, bh}}
 	rookDstCoord := map[Colour]Coord{White: {rDstX, 1}, Black: {rDstX, bh}}
 
@@ -144,7 +150,7 @@ func standardCastling(board base.IBoard, colour Colour, n int) base.Castling {
 	}
 
 	return base.Castling{
-		Piece:   [2]base.IPiece{king, rooks[0]},
+		Piece:   [2]base.IPiece{king, rook},
 		To:      [2]base.ICoord{kingDstCoord[colour], rookDstCoord[colour]},
 		Enabled: true,
 	}
@@ -152,7 +158,27 @@ func standardCastling(board base.IBoard, colour Colour, n int) base.Castling {
 
 // StandardCastlingFunc is a castling func for standard chess
 func StandardCastlingFunc(board base.IBoard, colour Colour) base.Castlings {
-	castlings := base.Castlings{standardCastling(board, colour, 0), standardCastling(board, colour, 1)}
+	bh := board.Dim().(Coord).Y
+	rooks := board.FindPieces(base.PieceFilter{
+		Names:   []string{"rook"},
+		Colours: []Colour{colour},
+		Condition: func(r base.IPiece) bool {
+			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
+			rCoords, boardAllowed := board.RookInitialCoords(colour), false
+			for i := range rCoords {
+				if rCoords[i].Equals(r.Coord()) {
+					boardAllowed = true
+					break
+				}
+			}
+			return rC.Y == y[colour] && boardAllowed && !r.WasMoved()
+		},
+	})
+
+	castlings := base.Castlings{}
+	for i := range rooks {
+		castlings = append(castlings, standardCastling(board, colour, rooks[i]))
+	}
 	res := base.Castlings{}
 	for i := range castlings {
 		if castlings[i].Enabled {

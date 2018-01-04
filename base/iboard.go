@@ -32,8 +32,9 @@ type IBoard interface {
 	SetCanCaptureEnPassantAt(dst ICoord)
 	CanCaptureEnPassantAt() ICoord
 
-	SetCastlingState(colour Colour, n int, state bool)
-	CastlingEnabled(colour Colour, n int) bool
+	SetRookInitialCoords(colour Colour, i int, coord ICoord)
+	RookCanCastle(colour Colour, i int) bool
+	RookInitialCoords(colour Colour) [2]ICoord
 
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
 	// this don't change coords of a piece
