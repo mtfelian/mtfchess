@@ -58,7 +58,7 @@ func (b *Board) initializeKing() {
 // initializeRookCoords initializes board rook coords
 func (b *Board) initializeRookCoords() {
 	if b.rookCoords == nil {
-		b.rookCoords = base.RookCoords{White: [2]base.ICoord{}, Black: [2]base.ICoord{}}
+		b.rookCoords = base.NewRookCoords()
 	}
 }
 
@@ -345,7 +345,7 @@ func (b *Board) Equals(to base.IBoard) bool {
 	return true
 }
 
-// Castlings returns available castlings for colour
+// RookCoords returns available castlings for colour
 func (b *Board) Castlings(colour Colour) base.Castlings { return b.Settings().CastlingsFunc(b, colour) }
 
 // InChecks returns true if king of colour is in check

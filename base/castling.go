@@ -13,10 +13,8 @@ type Castling struct {
 // Equal returns true if c equals to castling
 func (c Castling) Equal(castling Castling) bool {
 	return c.Enabled == castling.Enabled &&
-		c.Piece[0].Equals(castling.Piece[0]) &&
-		c.Piece[1].Equals(castling.Piece[1]) &&
-		c.To[0].Equals(castling.To[0]) &&
-		c.To[1].Equals(castling.To[1])
+		c.Piece[0].Equals(castling.Piece[0]) && c.Piece[1].Equals(castling.Piece[1]) &&
+		c.To[0].Equals(castling.To[0]) && c.To[1].Equals(castling.To[1])
 }
 
 // Copy returns a copy of c with pieces taken from board

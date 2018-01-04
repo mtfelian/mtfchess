@@ -1,6 +1,6 @@
 package base
 
-// Castlings is a slice of castlings
+// RookCoords is a slice of castlings
 type Castlings []Castling
 
 // Contains returns true if c contains castling

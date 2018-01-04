@@ -46,39 +46,63 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			}
 
 			c := rect.Coord{x, board.Dim().(rect.Coord).Y - y}
-			switch token {
-			case "P":
+			runeToken := []rune(token)[0]
+			switch runeToken {
+			case 'P':
 				board.PlacePiece(c, piece.NewPawn(White))
-			case "N":
+			case 'N':
 				board.PlacePiece(c, piece.NewKnight(White))
-			case "B":
+			case 'B':
 				board.PlacePiece(c, piece.NewBishop(White))
-			case "R":
+			case 'R':
 				board.PlacePiece(c, piece.NewRook(White))
-			case "Q":
+			case 'Q':
 				board.PlacePiece(c, piece.NewQueen(White))
-			case "A": // todo board.PlacePiece(c, piece.NewArchbishop(White))
-			case "C": // todo board.PlacePiece(c, piece.NewChancellor(White))
-			case "K":
+			case 'A': // todo board.PlacePiece(c, piece.NewArchbishop(White))
+			case 'C': // todo board.PlacePiece(c, piece.NewChancellor(White))
+			case 'K':
 				board.PlacePiece(c, piece.NewKing(White))
-			case "p":
+				board.SetKing(White, board.Piece(c))
+			case 'p':
 				board.PlacePiece(c, piece.NewPawn(Black))
-			case "n":
+			case 'n':
 				board.PlacePiece(c, piece.NewKnight(Black))
-			case "b":
+			case 'b':
 				board.PlacePiece(c, piece.NewBishop(Black))
-			case "r":
+			case 'r':
 				board.PlacePiece(c, piece.NewRook(Black))
-			case "q":
+			case 'q':
 				board.PlacePiece(c, piece.NewQueen(Black))
-			case "a": // todo board.PlacePiece(c, piece.NewArchbishop(Black))
-			case "c": // todo board.PlacePiece(c, piece.NewChancellor(Black))
-			case "k":
+			case 'a': // todo board.PlacePiece(c, piece.NewArchbishop(Black))
+			case 'c': // todo board.PlacePiece(c, piece.NewChancellor(Black))
+			case 'k':
 				board.PlacePiece(c, piece.NewKing(Black))
+				board.SetKing(Black, board.Piece(c))
 			default:
 				return fmt.Errorf("invalid piece token: %s", token)
 			}
 			x++
+
+			// marking pieces moved as long as possible to detect it
+			bh := board.Dim().(rect.Coord).Y
+			switch runeToken {
+			case 'p':
+				if c.Y != bh-1 {
+					board.Piece(c).MarkMoved()
+				}
+			case 'P':
+				if c.Y != 2 {
+					board.Piece(c).MarkMoved()
+				}
+			default:
+				if unicode.IsUpper(runeToken) && c.Y != 1 {
+					board.Piece(c).MarkMoved()
+				}
+				if unicode.IsLower(runeToken) && c.Y != bh {
+					board.Piece(c).MarkMoved()
+				}
+			}
+
 		}
 	}
 	return nil
@@ -122,11 +146,56 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) (base.ICoord, er
 	return nil, fmt.Errorf("piece which can be EP-captured not found on board")
 }
 
+// parseCastling line about allowed castlings
+// this func changes board parameter
+func parseCastling(line string, board *rect.Board) error {
+	bC := board.Dim().(rect.Coord)
+	// findRook finds rook of colour.
+	// Set border to true to find rook nearest board border, otherwise set it to false.
+	findRook := func(colour Colour, leftmost, border bool) *piece.Rook {
+		king := board.King(colour)
+		if king == nil {
+			panic("king is not set while parseCastling() in XFEN")
+		}
+		kC := king.Coord().(rect.Coord)
+
+		rooks := board.FindPieces(base.PieceFilter{
+			Names:   []string{"rook"},
+			Colours: []Colour{colour},
+			Condition: func(r base.IPiece) bool {
+				rC, y := r.Coord().(rect.Coord), map[Colour]int{White: 1, Black: bC.Y}
+				return rC.Y == y[colour]
+			},
+		})
+		if rooks == nil || len(rooks) == 0 {
+			return nil
+		}
+
+		if len(rooks) == 1 {
+			return rooks[0].(*piece.Rook)
+		}
+
+		if len(rooks) > 2 {
+			panic("found more then two rooks on starting horizontal")
+		}
+
+		/*step := 1
+
+		isBorder := true*/
+
+		return rooks[0].(*piece.Rook)
+	}
+
+	if strings.Contains(line, "K") {
+		//r := findRook(White, true)
+	}
+}
+
 // StandardXFEN represents a parsed standard FEN data
 type StandardXFEN struct {
-	Board              base.IBoard              // position
-	SideToMove         Colour                   // side to move
-	Castlings          map[Colour]base.Castling // allowed castlings
+	Board              base.IBoard     // position
+	SideToMove         Colour          // side to move
+	RookCoords         base.RookCoords // rook coords
 	EnPassantCaptureAt base.ICoord
 	// HalfMovesCount is a number of halfmoves since the last capture or pawn advance, to detect
 	// 3-fold repetition or 50 moves draw rule
