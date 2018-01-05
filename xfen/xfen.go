@@ -62,7 +62,6 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			case 'C': // todo board.PlacePiece(c, piece.NewChancellor(White))
 			case 'K':
 				board.PlacePiece(c, piece.NewKing(White))
-				board.SetKing(White, board.Piece(c))
 			case 'p':
 				board.PlacePiece(c, piece.NewPawn(Black))
 			case 'n':
@@ -77,7 +76,6 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			case 'c': // todo board.PlacePiece(c, piece.NewChancellor(Black))
 			case 'k':
 				board.PlacePiece(c, piece.NewKing(Black))
-				board.SetKing(Black, board.Piece(c))
 			default:
 				return fmt.Errorf("invalid piece token: %s", token)
 			}
@@ -109,8 +107,20 @@ func parsePosLines(lines []string, board *rect.Board) error {
 }
 
 // parseSideToMove parses line into side to move colour
-func parseSideToMove(line string) Colour {
-	return map[string]Colour{"w": White, "b": Black}[strings.ToLower(line)]
+// this func changes board parameter
+func parseSideToMove(line string, board *rect.Board) error {
+	if len(line) != 1 {
+		return fmt.Errorf("invalid side to move: %s", line)
+	}
+	switch []rune(strings.ToLower(line))[0] {
+	case 'w':
+		board.SetSideToMove(White)
+	case 'b':
+		board.SetSideToMove(Black)
+	default:
+		return fmt.Errorf("invalid side to move token: %s", line)
+	}
+	return nil
 }
 
 // parseEP parses line into dst coords of a piece which can be EP-captured in board, with specified sideToMove
@@ -248,9 +258,11 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
-	sideToMove := parseSideToMove(xfenParts[1])
+	if err := parseSideToMove(xfenParts[1], b); err != nil {
+		return nil, err
+	}
 
-	if err := parseEP(xfenParts[3], sideToMove, b); err != nil {
+	if err := parseEP(xfenParts[3], b.SideToMove(), b); err != nil {
 		return nil, err
 	}
 
@@ -258,8 +270,8 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
-	_, _, _ = sideToMove, halfMovesCount, moveNumber
+	_, _ = halfMovesCount, moveNumber
 
-	// todo: side to move not implemented in board yet, tests on it, especially on castling parsing
+	// todo: moves counters, tests on it, especially on castling parsing
 	return b, nil
 }

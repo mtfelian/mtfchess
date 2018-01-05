@@ -15,17 +15,18 @@ type Board struct {
 	king                  map[Colour]base.IPiece
 	canCaptureEnPassantAt base.ICoord
 	rookCoords            base.RookCoords
-	settings              base.Settings
+	settings              *base.Settings
+	sideToMove            Colour
 }
 
 // X converts x1 to slice index
-func (b Board) X(x int) int { return x - 1 }
+func (b *Board) X(x int) int { return x - 1 }
 
 // Y convers y1 to slice index
-func (b Board) Y(y int) int { return b.height - y }
+func (b *Board) Y(y int) int { return b.height - y }
 
 // String makes Board to implement Stringer
-func (b Board) String() string {
+func (b *Board) String() string {
 	var s string
 	for i := range b.cells {
 		for j := range b.cells[i] {
@@ -37,13 +38,13 @@ func (b Board) String() string {
 }
 
 // Dim returns a board dimensions
-func (b Board) Dim() base.ICoord { return Coord{X: b.width, Y: b.height} }
+func (b *Board) Dim() base.ICoord { return Coord{X: b.width, Y: b.height} }
 
 // SetSettings of a board to s
-func (b *Board) SetSettings(s base.Settings) { b.settings = s }
+func (b *Board) SetSettings(s *base.Settings) { b.settings = s }
 
 // Settings returns board settings
-func (b Board) Settings() base.Settings { return b.settings }
+func (b *Board) Settings() *base.Settings { return b.settings }
 
 // SetDim sets board dimensions to dim
 func (b *Board) SetDim(dim base.ICoord) { b.width, b.height = dim.(Coord).X, dim.(Coord).Y }
@@ -178,6 +179,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.rookCoords = b.rookCoords.Copy()
 	newBoard.SetSettings(b.Settings())
 	newBoard.SetCanCaptureEnPassantAt(b.CanCaptureEnPassantAt())
+	newBoard.SetSideToMove(b.SideToMove())
 	return newBoard
 }
 
@@ -192,9 +194,10 @@ func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
-	if to.OutOf(b) {
+	if b.Settings().MoveOrder && b.SideToMove() != piece.Colour() || to.OutOf(b) {
 		return false
 	}
+
 	destinations, capturedPiece := piece.Destinations(b), b.Piece(to)
 
 	if !destinations.Contains(to) {
@@ -235,14 +238,18 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	// first project (and empty source piece square, and only then set piece)
 	piece.Set(b.Piece(to)) // set piece to copy of itself on the new board
 
+	b.SetSideToMove(b.SideToMove().Invert())
 	return true
 }
 
 // MakeCastling makes a castling.
 // It returns true if castling succesful (legal), otherwise it returns false.
 func (b *Board) MakeCastling(castling base.Castling) bool {
-	castlings := b.Castlings(castling.Piece[0].Colour())
+	if b.Settings().MoveOrder && b.SideToMove() != castling.Piece[0].Colour() {
+		return false
+	}
 
+	castlings := b.Castlings(castling.Piece[0].Colour())
 	if !castlings.Contains(castling) {
 		return false
 	}
@@ -258,6 +265,7 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 	castling.Piece[0].Set(b.Piece(castling.To[0]))
 	castling.Piece[1].Set(b.Piece(castling.To[1]))
 
+	b.SetSideToMove(b.SideToMove().Invert())
 	return true
 }
 
@@ -328,7 +336,7 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 // Equals returns true if two boards are equal
 func (b *Board) Equals(to base.IBoard) bool {
 	b1 := to.(*Board)
-	if b.width != b1.width || b.height != b1.height {
+	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove {
 		return false
 	}
 	for y := 1; y <= b.height; y++ {
@@ -354,6 +362,12 @@ func (b *Board) InCheck(colour Colour) bool {
 	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }
 
+// SideToMove returns colour of side to move
+func (b *Board) SideToMove() Colour { return b.sideToMove }
+
+// SetSideToMove to colour
+func (b *Board) SetSideToMove(to Colour) { b.sideToMove = to }
+
 // NewEmptyStandardChessBoard creates new empty board for standard chess
 func NewEmptyStandardChessBoard() *Board { return NewEmptyBoard(8, 8, StandardChessBoardSettings()) }
 
@@ -361,13 +375,14 @@ func NewEmptyStandardChessBoard() *Board { return NewEmptyBoard(8, 8, StandardCh
 func NewEmptyTestBoard() *Board { return NewEmptyBoard(5, 6, testBoardSettings()) }
 
 // NewEmptyBoard creates new empty rectangular board with i cols and j rows
-func NewEmptyBoard(i, j int, settings base.Settings) *Board {
+func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b := &Board{}
 	b.width, b.height = i, j
 	b.createCells()
 	b.initializeKing()
 	b.initializeRookCoords()
-	b.settings = settings
+	b.SetSettings(settings)
+	b.SetSideToMove(White)
 	return b
 }
 

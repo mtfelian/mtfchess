@@ -18,8 +18,8 @@ type IBoard interface {
 	Copy() IBoard
 	Set(b1 IBoard)
 
-	SetSettings(s Settings)
-	Settings() Settings
+	SetSettings(s *Settings)
+	Settings() *Settings
 
 	Piece(at ICoord) IPiece
 	PlacePiece(to ICoord, p IPiece) IBoard
@@ -45,4 +45,7 @@ type IBoard interface {
 
 	FindPieces(f IPieceFilter) Pieces
 	FindAttackedCellsBy(f IPieceFilter) ICoords
+
+	SideToMove() Colour
+	SetSideToMove(to Colour)
 }

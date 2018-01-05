@@ -21,4 +21,7 @@ type Settings struct {
 
 	// CastlingsFunc returns available castlings for the given colour
 	CastlingsFunc func(board IBoard, colour Colour) Castlings
+
+	// MoveOrder enables move order control if set to true
+	MoveOrder bool
 }

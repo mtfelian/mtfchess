@@ -25,6 +25,7 @@ var _ = Describe("Castling test", func() {
 	checkMakeCastling := func(c base.Castling) {
 		boardCopy := b.Copy()
 		Expect(boardCopy.MakeCastling(c.Copy(boardCopy))).To(BeTrue())
+		Expect(boardCopy.SideToMove()).To(Equal(b.SideToMove().Invert()), "side to move did not changed on castling")
 	}
 
 	checkWhiteCastlingASideEnabled := func(c base.Castling) {
@@ -55,6 +56,7 @@ var _ = Describe("Castling test", func() {
 		BeforeEach(func() {
 			resetBoard = func() {
 				b = rect.NewEmptyStandardChessBoard()
+				b.Settings().MoveOrder = false
 				// set rook initial coords to enable castling
 				b.SetRookInitialCoords(White, 0, rect.Coord{1, 1})
 				b.SetRookInitialCoords(White, 1, rect.Coord{8, 1})
@@ -312,6 +314,9 @@ var _ = Describe("Castling test", func() {
 				b.PlacePiece(rect.Coord{1, 8}, br1)
 				b.PlacePiece(rect.Coord{7, 8}, br2)
 				b.PlacePiece(rect.Coord{5, 8}, bk)
+
+				b.Settings().MoveOrder = false
+				b.SetSideToMove(White)
 			}
 
 			It("checks that both castlings are enabled", func() {
@@ -321,6 +326,22 @@ var _ = Describe("Castling test", func() {
 				Expect(bc).To(HaveLen(1))
 				checkWhiteCastlingZSideEnabled(wc[0])
 				checkBlackCastlingZSideEnabled(bc[0])
+			})
+
+			It("checks that can't do castling not in opponent's move", func() {
+				setupPosition()
+				b.Settings().MoveOrder = true
+
+				wc, bc := b.Castlings(White), b.Castlings(Black)
+				Expect(wc).To(HaveLen(1))
+				Expect(bc).To(HaveLen(1))
+
+				boardCopy := b.Copy()
+				Expect(b.MakeCastling(bc[0])).To(BeFalse(), "did castling in opponent's move")
+				Expect(boardCopy.Equals(b)).To(BeTrue(), "castling failed but board changed")
+
+				Expect(b.MakeCastling(wc[0])).To(BeTrue(), "can't to castling in my move")
+				Expect(b.SideToMove()).To(Equal(boardCopy.SideToMove().Invert()))
 			})
 		})
 	})

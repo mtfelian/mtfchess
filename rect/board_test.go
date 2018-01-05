@@ -12,11 +12,13 @@ import (
 )
 
 var _ = Describe("Board test", func() {
-	w, h := 5, 6
+	var w, h int
 	var b base.IBoard
 
 	BeforeEach(func() {
-		b = rect.NewEmptyBoard(w, h, base.Settings{PawnLongMoveModifier: rect.NoPawnLongMove})
+		b = rect.NewEmptyTestBoard()
+		bC := b.Dim().(rect.Coord)
+		w, h = bC.X, bC.Y
 	})
 
 	It("checks board width and height", func() {
@@ -96,6 +98,47 @@ var _ = Describe("Board test", func() {
 				rect.Coord{3, 2}, rect.Coord{5, 2}, rect.Coord{2, 3},
 				rect.Coord{2, 5}, rect.Coord{3, 6}, rect.Coord{5, 6},
 			}))).To(BeTrue())
+		})
+	})
+
+	Describe("check move order control", func() {
+		It("is enabled", func() {
+			b.Settings().MoveOrder = true
+			b.SetSideToMove(White)
+
+			Expect(b.SideToMove()).To(Equal(White))
+
+			wr, br := piece.NewRook(White), piece.NewRook(Black)
+			b.PlacePiece(rect.Coord{1, 1}, wr)
+			b.PlacePiece(rect.Coord{3, 3}, br)
+
+			Expect(b.MakeMove(rect.Coord{3, 4}, br)).To(BeFalse(), "white to move, but black moved")
+			Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "white to move, but white can't move")
+			Expect(b.SideToMove()).To(Equal(Black))
+
+			Expect(b.MakeMove(rect.Coord{1, 1}, wr)).To(BeFalse(), "black to move, but white moved")
+			Expect(b.MakeMove(rect.Coord{3, 5}, br)).To(BeTrue(), "black to move, but black can't move")
+			Expect(b.SideToMove()).To(Equal(White))
+		})
+
+		It("is disabled", func() {
+			b.Settings().MoveOrder = false
+			b.SetSideToMove(White)
+
+			Expect(b.SideToMove()).To(Equal(White))
+
+			wr, br := piece.NewRook(White), piece.NewRook(Black)
+			b.PlacePiece(rect.Coord{1, 1}, wr)
+			b.PlacePiece(rect.Coord{3, 3}, br)
+
+			Expect(b.MakeMove(rect.Coord{3, 4}, br)).To(BeTrue(), "1 white to move, ordering disabled, but move failed")
+			Expect(b.SideToMove()).To(Equal(Black))
+			Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "2 black to move, ordering disabled, but move failed")
+			Expect(b.SideToMove()).To(Equal(White))
+			Expect(b.MakeMove(rect.Coord{1, 1}, wr)).To(BeTrue(), "3 white to move, ordering disabled, but move failed")
+			Expect(b.SideToMove()).To(Equal(Black))
+			Expect(b.MakeMove(rect.Coord{3, 5}, br)).To(BeTrue(), "4 black to move, ordering disabled, but move failed")
+			Expect(b.SideToMove()).To(Equal(White))
 		})
 	})
 })

@@ -7,24 +7,26 @@ import (
 )
 
 // StandardChessBoardSettings returns a set of settings for standard chess
-func StandardChessBoardSettings() base.Settings {
-	return base.Settings{
+func StandardChessBoardSettings() *base.Settings {
+	return &base.Settings{
 		PawnLongMoveModifier:   StandardPawnLongMove,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          StandardCastlingFunc,
 		EnPassantFunc:          StandardEnPassantFunc,
+		MoveOrder:              true,
 	}
 }
 
 // testBoardSettings returns a set of settings for tests
-func testBoardSettings() base.Settings {
-	return base.Settings{
+func testBoardSettings() *base.Settings {
+	return &base.Settings{
 		PawnLongMoveModifier:   NoPawnLongMove,
 		AllowedPromotions:      StandardAllowedPromotions(),
 		PromotionConditionFunc: StandardPromotionConditionFunc,
 		CastlingsFunc:          NoCastlingFunc,
 		EnPassantFunc:          NoEnPassantFunc,
+		MoveOrder:              false,
 	}
 }
 
