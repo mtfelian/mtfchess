@@ -96,24 +96,21 @@ func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.C
 	res, bh := base.Castling{Enabled: false}, board.Dim().(Coord).Y
 
 	king := board.King(colour)
-	if king == nil || king.WasMoved() {
-		return res
-	}
-
-	if board.InCheck(colour) {
+	if king == nil || king.WasMoved() || board.InCheck(colour) {
 		return res
 	}
 
 	// detect, whether it aSide or zSide castling
-	rooksCoords, n, x := board.RookInitialCoords(colour), -1, rook.Coord().(Coord).X
+	rooksCoords, n := board.RookInitialCoords(colour), -1
 	if len(rooksCoords) != 2 {
 		panic("rookCoords should have len 2")
 	}
+	rC := rook.Coord().(Coord)
 	for i := range rooksCoords {
 		if rooksCoords[i] == nil {
 			continue
 		}
-		if rooksCoords[i].(Coord).X == x {
+		if rooksCoords[i].(Coord).X == rC.X {
 			n = i
 			break
 		}
@@ -128,29 +125,35 @@ func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.C
 		kDstX, rDstX = 7, 6 // zSide castling
 	}
 
-	kC, xStep := king.Coord().(Coord), 1 // go right if king now is to the left from the rook
-	if kC.X > x {                        // go left if king now is to the right from rook
-		xStep = -1
-	}
-
-	kingDstCoord := map[Colour]Coord{White: {kDstX, 1}, Black: {kDstX, bh}}
-	rookDstCoord := map[Colour]Coord{White: {rDstX, 1}, Black: {rDstX, bh}}
-
 	// checking that king's path from source cell to destination cell is not attacked and free of pieces
+	// except the same rook
+	kC, step := king.Coord().(Coord), 1 // go right if king now is to the left from the dst
+	if kDstX < kC.X {                   // go left if king now is to the right from the dst
+		step = -1
+	}
 	attacked := board.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}})
-	//fmt.Println(colour.Invert(), attacked)
-	for i := xStep; kC.X+i != kingDstCoord[colour].X+xStep; i += xStep {
+	for i := step; kC.X+i != kDstX+step; i += step {
 		shouldBeFree := Coord{kC.X + i, kC.Y}
-		//fmt.Println(colour, i, shouldBeFree, attacked.Contains(shouldBeFree), board.Piece(shouldBeFree) != nil)
-		// can castle if it's the same rook on the path (condition after ||)
 		if attacked.Contains(shouldBeFree) ||
 			(board.Piece(shouldBeFree) != nil && !board.Piece(shouldBeFree).Coord().Equals(rook.Coord())) {
-			//fmt.Println("!! xStep=", xStep, i, kC.X)
-			//fmt.Println(">>", colour, kingDstCoord[colour].X)
 			return res
 		}
 	}
 
+	// checking that rook's path from source cell to destination cell is free of pieces except king
+	step = 1          // go right if rook now is to the left from the dst
+	if rDstX < rC.X { // go left if rook now is to the right from the dst
+		step = -1
+	}
+	for i := step; rC.X+i != rDstX+step; i += step {
+		shouldBeFree := Coord{rC.X + i, rC.Y}
+		if board.Piece(shouldBeFree) != nil && !board.Piece(shouldBeFree).Coord().Equals(king.Coord()) {
+			return res
+		}
+	}
+
+	kingDstCoord := map[Colour]Coord{White: {kDstX, 1}, Black: {kDstX, bh}}
+	rookDstCoord := map[Colour]Coord{White: {rDstX, 1}, Black: {rDstX, bh}}
 	return base.Castling{
 		Piece:   [2]base.IPiece{king, rook},
 		To:      [2]base.ICoord{kingDstCoord[colour], rookDstCoord[colour]},
