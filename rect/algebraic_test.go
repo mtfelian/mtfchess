@@ -32,7 +32,7 @@ var _ = Describe("Algebraic test", func() {
 		}
 
 		for i, entry := range testTable {
-			By(fmt.Sprintf("Checking entry %v at index %d", entry, i))
+			By(fmt.Sprintf("Checking entry %v at index %d...", entry, i))
 			coord, err := rect.FromAlgebraic(entry.algebraic)
 			Expect((err != nil) == entry.errorOccured).To(BeTrue())
 			if entry.coord == nil {

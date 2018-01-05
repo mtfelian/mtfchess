@@ -202,8 +202,7 @@ func parseCastling(line string, board *rect.Board) error {
 			return fmt.Errorf("king is not set while parseCastling() in XFEN")
 		}
 		outer := strings.Contains(string(token), "KkQq")
-		kC := king.Coord().(rect.Coord)
-		i := 0
+		i, kC := 0, king.Coord().(rect.Coord)
 		if strings.Contains(string(token), "Kk") || (!outer && rect.FromLetter(token) > kC.X) {
 			i = 1
 		}
