@@ -106,6 +106,13 @@ var _ = Describe("Board test", func() {
 			b.Settings().MoveOrder = true
 			b.SetSideToMove(White)
 
+			Expect(b.MoveNumber()).To(BeNumerically("==", 1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", 1))
+			var mn, hmc uint = 3, 6
+			b.SetMoveNumber(mn)
+			b.SetHalfMoveCount(hmc)
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc))
 			Expect(b.SideToMove()).To(Equal(White))
 
 			wr, br := piece.NewRook(White), piece.NewRook(Black)
@@ -114,10 +121,14 @@ var _ = Describe("Board test", func() {
 
 			Expect(b.MakeMove(rect.Coord{3, 4}, br)).To(BeFalse(), "white to move, but black moved")
 			Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "white to move, but white can't move")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+1))
 			Expect(b.SideToMove()).To(Equal(Black))
 
 			Expect(b.MakeMove(rect.Coord{1, 1}, wr)).To(BeFalse(), "black to move, but white moved")
 			Expect(b.MakeMove(rect.Coord{3, 5}, br)).To(BeTrue(), "black to move, but black can't move")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn+1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+2))
 			Expect(b.SideToMove()).To(Equal(White))
 		})
 
@@ -125,6 +136,13 @@ var _ = Describe("Board test", func() {
 			b.Settings().MoveOrder = false
 			b.SetSideToMove(White)
 
+			Expect(b.MoveNumber()).To(BeNumerically("==", 1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", 1))
+			var mn, hmc uint = 3, 6
+			b.SetMoveNumber(mn)
+			b.SetHalfMoveCount(hmc)
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc))
 			Expect(b.SideToMove()).To(Equal(White))
 
 			wr, br := piece.NewRook(White), piece.NewRook(Black)
@@ -132,12 +150,20 @@ var _ = Describe("Board test", func() {
 			b.PlacePiece(rect.Coord{3, 3}, br)
 
 			Expect(b.MakeMove(rect.Coord{3, 4}, br)).To(BeTrue(), "1 white to move, ordering disabled, but move failed")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn+1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+1))
 			Expect(b.SideToMove()).To(Equal(Black))
 			Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "2 black to move, ordering disabled, but move failed")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn+1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+2))
 			Expect(b.SideToMove()).To(Equal(White))
 			Expect(b.MakeMove(rect.Coord{1, 1}, wr)).To(BeTrue(), "3 white to move, ordering disabled, but move failed")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn+1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+3))
 			Expect(b.SideToMove()).To(Equal(Black))
 			Expect(b.MakeMove(rect.Coord{3, 5}, br)).To(BeTrue(), "4 black to move, ordering disabled, but move failed")
+			Expect(b.MoveNumber()).To(BeNumerically("==", mn+2))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", hmc+4))
 			Expect(b.SideToMove()).To(Equal(White))
 		})
 	})

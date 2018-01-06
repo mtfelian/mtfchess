@@ -159,6 +159,10 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 // parseCastling parses line about allowed castlings
 // this func changes board parameter
 func parseCastling(line string, board *rect.Board) error {
+	if line == "-" {
+		return nil
+	}
+
 	bC := board.Dim().(rect.Coord)
 	// findRook finds rook of colour.
 	// Set i to 0 for aSide rook finding, set i to 1 for zSide rook finding
@@ -232,16 +236,6 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, fmt.Errorf("invalid xfen length")
 	}
 
-	halfMovesCount, err := StringToUint(xfenParts[4])
-	if err != nil {
-		return nil, err
-	}
-
-	moveNumber, err := StringToUint(xfenParts[5])
-	if err != nil {
-		return nil, err
-	}
-
 	posLines := strings.Split(xfenParts[0], "/")
 	bh := len(posLines)
 	if bh < 3 {
@@ -270,8 +264,17 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
-	_, _ = halfMovesCount, moveNumber
+	halfMovesCount, err := StringToUint(xfenParts[4])
+	if err != nil {
+		return nil, err
+	}
+	b.SetHalfMoveCount(halfMovesCount)
+	moveNumber, err := StringToUint(xfenParts[5])
+	if err != nil {
+		return nil, err
+	}
+	b.SetMoveNumber(moveNumber)
 
-	// todo: moves counters, tests on it, especially on castling parsing
+	// todo: tests on it, especially on castling parsing
 	return b, nil
 }

@@ -17,6 +17,8 @@ type Board struct {
 	rookCoords            base.RookCoords
 	settings              *base.Settings
 	sideToMove            Colour
+	moveNumber            uint
+	halfMoveCounter       uint
 }
 
 // X converts x1 to slice index
@@ -180,6 +182,8 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetSettings(b.Settings())
 	newBoard.SetCanCaptureEnPassantAt(b.CanCaptureEnPassantAt())
 	newBoard.SetSideToMove(b.SideToMove())
+	newBoard.SetMoveNumber(b.MoveNumber())
+	newBoard.SetHalfMoveCount(b.HalfMoveCount())
 	return newBoard
 }
 
@@ -239,6 +243,10 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	piece.Set(b.Piece(to)) // set piece to copy of itself on the new board
 
 	b.SetSideToMove(b.SideToMove().Invert())
+	if piece.Colour() == Black {
+		b.SetMoveNumber(b.MoveNumber() + 1)
+	}
+	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
 	return true
 }
 
@@ -266,6 +274,10 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 	castling.Piece[1].Set(b.Piece(castling.To[1]))
 
 	b.SetSideToMove(b.SideToMove().Invert())
+	if castling.Piece[0].Colour() == Black {
+		b.SetMoveNumber(b.MoveNumber() + 1)
+	}
+	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
 	return true
 }
 
@@ -336,7 +348,8 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 // Equals returns true if two boards are equal
 func (b *Board) Equals(to base.IBoard) bool {
 	b1 := to.(*Board)
-	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove {
+	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove ||
+		b.halfMoveCounter != b1.halfMoveCounter || b.moveNumber != b1.moveNumber {
 		return false
 	}
 	for y := 1; y <= b.height; y++ {
@@ -362,6 +375,18 @@ func (b *Board) InCheck(colour Colour) bool {
 	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }
 
+// MoveNumber returns current move number
+func (b *Board) MoveNumber() uint { return b.moveNumber }
+
+// SetMoveNumber sets the current move number to n
+func (b *Board) SetMoveNumber(n uint) { b.moveNumber = n }
+
+// HalfMoveCount returns current half-move counter
+func (b *Board) HalfMoveCount() uint { return b.halfMoveCounter }
+
+// SetHalfMoveCount sets the current half-move counter to n
+func (b *Board) SetHalfMoveCount(n uint) { b.halfMoveCounter = n }
+
 // SideToMove returns colour of side to move
 func (b *Board) SideToMove() Colour { return b.sideToMove }
 
@@ -383,6 +408,8 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b.initializeRookCoords()
 	b.SetSettings(settings)
 	b.SetSideToMove(White)
+	b.SetMoveNumber(1)
+	b.SetHalfMoveCount(1)
 	return b
 }
 
