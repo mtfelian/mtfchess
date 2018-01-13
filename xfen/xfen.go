@@ -45,66 +45,35 @@ func parsePosLines(lines []string, board *rect.Board) error {
 				continue
 			}
 
-			c := rect.Coord{x, board.Dim().(rect.Coord).Y - y}
-			runeToken := []rune(token)[0]
-			switch runeToken {
-			case 'P':
-				board.PlacePiece(c, piece.NewPawn(White))
-			case 'N':
-				board.PlacePiece(c, piece.NewKnight(White))
-			case 'B':
-				board.PlacePiece(c, piece.NewBishop(White))
-			case 'R':
-				board.PlacePiece(c, piece.NewRook(White))
-			case 'Q':
-				board.PlacePiece(c, piece.NewQueen(White))
-			case 'A':
-				board.PlacePiece(c, piece.NewArchbishop(White))
-			case 'C':
-				board.PlacePiece(c, piece.NewChancellor(White))
-			case 'K':
-				board.PlacePiece(c, piece.NewKing(White))
-			case 'p':
-				board.PlacePiece(c, piece.NewPawn(Black))
-			case 'n':
-				board.PlacePiece(c, piece.NewKnight(Black))
-			case 'b':
-				board.PlacePiece(c, piece.NewBishop(Black))
-			case 'r':
-				board.PlacePiece(c, piece.NewRook(Black))
-			case 'q':
-				board.PlacePiece(c, piece.NewQueen(Black))
-			case 'a':
-				board.PlacePiece(c, piece.NewArchbishop(Black))
-			case 'c':
-				board.PlacePiece(c, piece.NewChancellor(Black))
-			case 'k':
-				board.PlacePiece(c, piece.NewKing(Black))
-			default:
+			coord, runeToken := rect.Coord{x, board.Dim().(rect.Coord).Y - y}, []rune(token)[0]
+
+			colour := White
+			if unicode.IsLower(runeToken) {
+				colour = Black
+			}
+
+			f, exists := map[rune]func(Colour) base.IPiece{
+				'p': piece.NewPawn, 'n': piece.NewKnight, 'b': piece.NewBishop, 'r': piece.NewRook,
+				'q': piece.NewQueen, 'a': piece.NewArchbishop, 'c': piece.NewChancellor, 'k': piece.NewKing,
+			}[unicode.ToLower(runeToken)]
+			if !exists {
 				return fmt.Errorf("invalid piece token: %s", token)
 			}
-			x++
+			board.PlacePiece(coord, f(colour))
 
 			// marking pieces moved as long as possible to detect it
 			bh := board.Dim().(rect.Coord).Y
-			switch runeToken {
-			case 'p':
-				if c.Y != bh-1 {
-					board.Piece(c).MarkMoved()
-				}
-			case 'P':
-				if c.Y != 2 {
-					board.Piece(c).MarkMoved()
-				}
+			switch {
+			case runeToken == 'p' && coord.Y != bh-1:
+				board.Piece(coord).MarkMoved()
+			case runeToken == 'P' && coord.Y != 2:
+				board.Piece(coord).MarkMoved()
 			default:
-				if unicode.IsUpper(runeToken) && c.Y != 1 {
-					board.Piece(c).MarkMoved()
-				}
-				if unicode.IsLower(runeToken) && c.Y != bh {
-					board.Piece(c).MarkMoved()
+				if (unicode.IsUpper(runeToken) && coord.Y != 1) || (unicode.IsLower(runeToken) && coord.Y != bh) {
+					board.Piece(coord).MarkMoved()
 				}
 			}
-
+			x++
 		}
 	}
 	return nil
