@@ -47,9 +47,9 @@ var _ = Describe("XFEN test", func() {
 		resetBoard = func() {
 			b = rect.NewEmptyStandardChessBoard()
 			// set rook initial coords to enable castling
-			b.SetRookInitialCoords(White, 0, rect.Coord{1, 1})
+			//b.SetRookInitialCoords(White, 0, rect.Coord{1, 1}) // should not set it, rook moved
 			b.SetRookInitialCoords(White, 1, rect.Coord{7, 1})
-			//b.SetRookInitialCoords(Black, 0, rect.Coord{1, 8}) // should not set it, rook moved
+			b.SetRookInitialCoords(Black, 0, rect.Coord{1, 8})
 			b.SetRookInitialCoords(Black, 1, rect.Coord{7, 8})
 		}
 		var wr1, wr2, wk, br1, br2, bk base.IPiece
@@ -97,8 +97,6 @@ var _ = Describe("XFEN test", func() {
 			setupPosition()
 			inputXFEN := `rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`
 			parsedBoard, err := NewFromStandardXFEN(inputXFEN)
-			fmt.Println(b)
-			fmt.Println(parsedBoard)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(parsedBoard).NotTo(BeNil())
 			Expect(b.Equals(parsedBoard)).To(BeTrue())

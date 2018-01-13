@@ -352,15 +352,17 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 // Equals returns true if two boards are equal
 func (b *Board) Equals(to base.IBoard) bool {
 	b1 := to.(*Board)
+	canEP, canEP1 := b.CanCaptureEnPassantAt(), to.CanCaptureEnPassantAt()
 	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove ||
 		b.halfMoveCounter != b1.halfMoveCounter || b.moveNumber != b1.moveNumber ||
-		!b.rookCoords.Equals(b1.rookCoords) {
+		!b.rookCoords.Equals(b1.rookCoords) ||
+		((canEP == nil) != (canEP1 == nil)) || (canEP != nil && canEP1 != nil && !canEP.Equals(canEP1)) {
 		return false
 	}
 	for y := 1; y <= b.height; y++ {
 		for x := 1; x <= b.width; x++ {
 			p1, p2 := b.Cell(Coord{x, y}).Piece(), b1.Cell(Coord{x, y}).Piece()
-			if (p1 == nil && p2 != nil) || (p1 != nil && p2 == nil) {
+			if (p1 == nil) != (p2 == nil) {
 				return false
 			}
 			if p1 != nil && p2 != nil && !p1.Equals(p2) {

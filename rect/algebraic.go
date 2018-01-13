@@ -5,14 +5,13 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/mtfelian/mtfchess/base"
 )
 
 // FromLetter returns x coord from the given letter
-func FromLetter(letter rune) int {
-	return int(letter - 'a' + 1)
-}
+func FromLetter(letter rune) int { return int(unicode.ToLower(letter) - 'a' + 1) }
 
 // FromAlgebraic makes (x,y) coords from algebraic form.
 // coord is case-insensitive

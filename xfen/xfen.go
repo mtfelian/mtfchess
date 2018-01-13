@@ -208,16 +208,14 @@ func parseCastling(line string, board *rect.Board) error {
 		if king == nil {
 			return fmt.Errorf("king is not set while parseCastling() in XFEN")
 		}
-		outer := strings.Contains(string(token), "KkQq")
-		i, kC := 0, king.Coord().(rect.Coord)
-		if strings.Contains(string(token), "Kk") || (!outer && rect.FromLetter(token) > kC.X) {
+		outer, i, kC := strings.Contains("KkQq", string(token)), 0, king.Coord().(rect.Coord)
+		if strings.Contains("Kk", string(token)) || (!outer && rect.FromLetter(token) > kC.X) {
 			i = 1
 		}
 		r := findRook(colour, i, outer)
 		if r == nil {
 			return fmt.Errorf("wrong FEN, %s-castling specified, but rook not found", string(token))
 		}
-		fmt.Println("setting init:", r.Coord(), i, colour)
 		board.SetRookInitialCoords(colour, i, r.Coord())
 	}
 	return nil

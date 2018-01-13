@@ -1,7 +1,6 @@
 package base
 
 import (
-	"fmt"
 	. "github.com/mtfelian/mtfchess/colour"
 )
 
@@ -33,7 +32,6 @@ func (c RookCoords) Equals(to RookCoords) bool {
 			return false
 		}
 		for i := range c[colour] {
-			fmt.Println(colour, c, to, i, c[colour][i], to[colour][i])
 			if (c[colour][i] == nil) != (to[colour][i] == nil) {
 				return false
 			}
