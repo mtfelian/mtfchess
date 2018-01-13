@@ -1,4 +1,4 @@
-package xfen_test
+package xfen
 
 import (
 	"testing"

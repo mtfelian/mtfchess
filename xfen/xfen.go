@@ -39,7 +39,7 @@ func getPosLineTokens(line string) []string {
 }
 
 // parseBoardWidth parses one line of posLines and returns a board width, it can be any of line
-// (they should result in same int value) due to all horizontals (rows) have the same length == board width
+// (they should tokens in same int value) due to all horizontals (rows) have the same length == board width
 func parseBoardWidth(line string) int {
 	w := 0
 	for _, token := range getPosLineTokens(line) {

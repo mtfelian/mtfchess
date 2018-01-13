@@ -11,12 +11,11 @@ import (
 
 var _ = Describe("Algebraic test", func() {
 	It("checks converting algebraic coord to rect.Coord", func() {
-		type testCase struct {
+		testCases := []struct {
 			algebraic    string
 			coord        base.ICoord
 			errorOccured bool
-		}
-		testTable := []testCase{
+		}{
 			{"a1", rect.Coord{1, 1}, false},
 			{"a8", rect.Coord{1, 8}, false},
 			{"i1", rect.Coord{9, 1}, false},
@@ -31,14 +30,14 @@ var _ = Describe("Algebraic test", func() {
 			{"10e", nil, true},
 		}
 
-		for i, entry := range testTable {
-			By(fmt.Sprintf("Checking entry %v at index %d...", entry, i))
-			coord, err := rect.FromAlgebraic(entry.algebraic)
-			Expect((err != nil) == entry.errorOccured).To(BeTrue())
-			if entry.coord == nil {
+		for i, testCase := range testCases {
+			By(fmt.Sprintf("Checking testCase %v at index %d...", testCase, i))
+			coord, err := rect.FromAlgebraic(testCase.algebraic)
+			Expect((err != nil) == testCase.errorOccured).To(BeTrue())
+			if testCase.coord == nil {
 				Expect(coord).To(BeNil())
 			} else {
-				Expect(coord).To(Equal(entry.coord))
+				Expect(coord).To(Equal(testCase.coord))
 			}
 		}
 	})

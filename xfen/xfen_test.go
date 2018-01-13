@@ -1,20 +1,43 @@
-package xfen_test
+package xfen
 
 import (
+	"fmt"
+
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
-	"github.com/mtfelian/mtfchess/xfen"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("XFEN test", func() {
 	It("checks error on totally invalid XFEN", func() {
-		b, err := xfen.NewFromStandardXFEN("1/2/3")
+		b, err := NewFromStandardXFEN("1/2/3")
 		Expect(b).To(BeNil())
 		Expect(err).To(HaveOccurred())
+	})
+
+	It("checks getting tokens from one position line", func() {
+		testCases := []struct {
+			line   string
+			tokens []string
+		}{
+			{"4QRqr5", []string{"4", "Q", "R", "q", "r", "5"}},
+			{"QRqr5", []string{"Q", "R", "q", "r", "5"}},
+			{"10QRqr5", []string{"10", "Q", "R", "q", "r", "5"}},
+			{"QRqr10", []string{"Q", "R", "q", "r", "10"}},
+			{"QR10qr5", []string{"Q", "R", "10", "q", "r", "5"}},
+			{"5", []string{"5"}},
+			{"10", []string{"10"}},
+			{"", []string{}},
+		}
+
+		for i, testCase := range testCases {
+			By(fmt.Sprintf("Checking testCase %v at index %d...", testCase, i))
+			tokens := getPosLineTokens(testCase.line)
+			Expect(tokens).To(Equal(testCase.tokens))
+		}
 	})
 
 	Context("valid XFEN, chess960", func() {
@@ -73,7 +96,7 @@ var _ = Describe("XFEN test", func() {
 		It("checks that parsed board is equal to hard-coded board", func() {
 			setupPosition()
 			inputXFEN := `rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`
-			parsedBoard, err := xfen.NewFromStandardXFEN(inputXFEN)
+			parsedBoard, err := NewFromStandardXFEN(inputXFEN)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(parsedBoard).NotTo(BeNil())
 			Expect(b.Equals(parsedBoard)).To(BeTrue())
