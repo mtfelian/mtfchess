@@ -17,8 +17,8 @@ type Board struct {
 	rookCoords            base.RookCoords
 	settings              *base.Settings
 	sideToMove            Colour
-	moveNumber            uint
-	halfMoveCounter       uint
+	moveNumber            int
+	halfMoveCounter       int
 }
 
 // X converts x1 to slice index
@@ -36,6 +36,8 @@ func (b *Board) String() string {
 		}
 		s += "\n"
 	}
+	s += fmt.Sprintf("Side: %s, Rook: %v, EP: %v, King: %v, M/HM: %d/%d\n",
+		b.sideToMove, b.rookCoords, b.canCaptureEnPassantAt, b.king, b.moveNumber, b.halfMoveCounter)
 	return s
 }
 
@@ -221,6 +223,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	if capturedPiece != nil {
 		capturedPiece.SetCoords(b, nil)
+		b.SetHalfMoveCount(-1) // next it will be increased to 0
 	}
 
 	if piece.Name() == "pawn" {
@@ -235,6 +238,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if diff != 1 && diff != -1 { // long pawn move
 			b.SetCanCaptureEnPassantAt(to)
 		}
+		b.SetHalfMoveCount(-1)
 	}
 
 	piece.MarkMoved()
@@ -376,16 +380,16 @@ func (b *Board) InCheck(colour Colour) bool {
 }
 
 // MoveNumber returns current move number
-func (b *Board) MoveNumber() uint { return b.moveNumber }
+func (b *Board) MoveNumber() int { return b.moveNumber }
 
 // SetMoveNumber sets the current move number to n
-func (b *Board) SetMoveNumber(n uint) { b.moveNumber = n }
+func (b *Board) SetMoveNumber(n int) { b.moveNumber = n }
 
-// HalfMoveCount returns current half-move counter
-func (b *Board) HalfMoveCount() uint { return b.halfMoveCounter }
+// HalfMoveCount returns current half-move counter since the last capture or pawn advance
+func (b *Board) HalfMoveCount() int { return b.halfMoveCounter }
 
-// SetHalfMoveCount sets the current half-move counter to n
-func (b *Board) SetHalfMoveCount(n uint) { b.halfMoveCounter = n }
+// SetHalfMoveCount sets the current half-move counter since the last capture or pawn advance to n
+func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 
 // SideToMove returns colour of side to move
 func (b *Board) SideToMove() Colour { return b.sideToMove }

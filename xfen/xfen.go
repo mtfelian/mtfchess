@@ -10,35 +10,55 @@ import (
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
-	. "github.com/mtfelian/utils"
 )
+
+// getPosLineTokens parses line as runes into string tokens
+// it should be done especially for board with at least one of rect dimensions
+// greater then 9 (in this case token may consist of one or two runes)
+func getPosLineTokens(line string) []string {
+	tokens := []string{}
+	firstDigit := true
+	for _, rune := range line {
+		if !unicode.IsDigit(rune) {
+			tokens = append(tokens, string(rune))
+			firstDigit = true
+			continue
+		}
+
+		// if unicode.IsDigit(rune)
+		if firstDigit {
+			tokens = append(tokens, string(rune))
+			firstDigit = false
+			continue
+		}
+
+		// if unicode.IsDigit(rune) && !firstDigit
+		tokens[len(tokens)-1] += string(rune)
+	}
+	return tokens
+}
+
+// parseBoardWidth parses one line of posLines and returns a board width, it can be any of line
+// (they should result in same int value) due to all horizontals (rows) have the same length == board width
+func parseBoardWidth(line string) int {
+	w := 0
+	for _, token := range getPosLineTokens(line) {
+		i, err := strconv.Atoi(token)
+		if err == nil { // token is a number
+			w += i
+			continue
+		}
+		w++
+	}
+	return w
+}
 
 // parsePosLines parses lines containing FEN position parts (between '/' splitters) into pieces on a board
 // this func changes board parameter
 func parsePosLines(lines []string, board *rect.Board) error {
 	for y, line := range lines {
-		tokens := []string{}
-		firstDigit := true
-		for _, rune := range line {
-			if !unicode.IsDigit(rune) {
-				tokens = append(tokens, string(rune))
-				firstDigit = true
-				continue
-			}
-
-			// if unicode.IsDigit(rune)
-			if firstDigit {
-				tokens = append(tokens, string(rune))
-				firstDigit = false
-				continue
-			}
-
-			// if unicode.IsDigit(rune) && !firstDigit
-			tokens[len(tokens)-1] += string(rune)
-		}
-
 		x := 1
-		for _, token := range tokens {
+		for _, token := range getPosLineTokens(line) {
 			i, err := strconv.Atoi(token)
 			if err == nil { // token is a number
 				x += i
@@ -214,7 +234,7 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 	if bh < 3 {
 		return nil, fmt.Errorf("bh is too small")
 	}
-	bw := len(posLines[0])
+	bw := parseBoardWidth(posLines[0])
 	if bw < 3 {
 		return nil, fmt.Errorf("bw is too small")
 	}
@@ -237,12 +257,12 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 
-	halfMovesCount, err := StringToUint(xfenParts[4])
+	halfMovesCount, err := strconv.Atoi(xfenParts[4])
 	if err != nil {
 		return nil, err
 	}
 	b.SetHalfMoveCount(halfMovesCount)
-	moveNumber, err := StringToUint(xfenParts[5])
+	moveNumber, err := strconv.Atoi(xfenParts[5])
 	if err != nil {
 		return nil, err
 	}

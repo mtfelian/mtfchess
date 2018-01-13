@@ -1,15 +1,83 @@
 package xfen_test
 
 import (
+	"github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/colour"
+	"github.com/mtfelian/mtfchess/piece"
+	"github.com/mtfelian/mtfchess/rect"
 	"github.com/mtfelian/mtfchess/xfen"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("XFEN test", func() {
-	It("is test dummy", func() {
+	It("checks error on totally invalid XFEN", func() {
 		b, err := xfen.NewFromStandardXFEN("1/2/3")
 		Expect(b).To(BeNil())
 		Expect(err).To(HaveOccurred())
 	})
+
+	Context("valid XFEN, chess960", func() {
+		var b base.IBoard
+		var resetBoard func()
+		JustBeforeEach(func() { resetBoard() })
+		resetBoard = func() {
+			b = rect.NewEmptyStandardChessBoard()
+			// set rook initial coords to enable castling
+			b.SetRookInitialCoords(White, 0, rect.Coord{1, 1})
+			b.SetRookInitialCoords(White, 1, rect.Coord{7, 1})
+			b.SetRookInitialCoords(Black, 0, rect.Coord{1, 8})
+			b.SetRookInitialCoords(Black, 1, rect.Coord{7, 8})
+		}
+		var wr1, wr2, wk, br1, br2, bk base.IPiece
+		setupPosition := func() {
+			wr1, wr2, wk = piece.NewRook(White), piece.NewRook(White), piece.NewKing(White)
+			br1, br2, bk = piece.NewRook(Black), piece.NewRook(Black), piece.NewKing(Black)
+
+			b.PlacePiece(rect.Coord{3, 1}, piece.NewBishop(White))
+			b.PlacePiece(rect.Coord{4, 1}, piece.NewKnight(White))
+			b.PlacePiece(rect.Coord{2, 2}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{3, 2}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{4, 2}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{5, 2}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{6, 2}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{3, 3}, piece.NewKnight(White))
+			b.PlacePiece(rect.Coord{6, 3}, piece.NewBishop(White))
+			b.PlacePiece(rect.Coord{1, 4}, piece.NewPawn(White))
+			b.PlacePiece(rect.Coord{6, 5}, piece.NewBishop(Black))
+			b.PlacePiece(rect.Coord{7, 5}, piece.NewKnight(Black))
+			b.PlacePiece(rect.Coord{4, 6}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{7, 6}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{1, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{2, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{3, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{5, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{6, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{8, 7}, piece.NewPawn(Black))
+			b.PlacePiece(rect.Coord{2, 8}, piece.NewKnight(Black))
+
+			b.PlacePiece(rect.Coord{8, 1}, wr1)
+			wr1.MarkMoved()
+			b.PlacePiece(rect.Coord{7, 1}, wr2)
+			b.PlacePiece(rect.Coord{5, 1}, wk)
+			b.PlacePiece(rect.Coord{1, 8}, br1)
+			b.PlacePiece(rect.Coord{7, 8}, br2)
+			b.PlacePiece(rect.Coord{5, 8}, bk)
+
+			b.Settings().MoveOrder = false
+			b.SetSideToMove(White)
+			b.SetMoveNumber(11)
+			b.SetHalfMoveCount(4)
+		}
+
+		It("checks that parsed board is equal to hard-coded board", func() {
+			setupPosition()
+			inputXFEN := `rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`
+			parsedBoard, err := xfen.NewFromStandardXFEN(inputXFEN)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(parsedBoard).NotTo(BeNil())
+			Expect(b.Equals(parsedBoard)).To(BeTrue())
+		})
+	})
+
 })

@@ -49,9 +49,9 @@ type IBoard interface {
 	SideToMove() Colour
 	SetSideToMove(to Colour)
 
-	MoveNumber() uint
-	SetMoveNumber(n uint)
+	MoveNumber() int
+	SetMoveNumber(n int)
 
-	HalfMoveCount() uint
-	SetHalfMoveCount(n uint)
+	HalfMoveCount() int
+	SetHalfMoveCount(n int)
 }
