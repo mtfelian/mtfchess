@@ -81,13 +81,13 @@ var _ = Describe("Archbishop test", func() {
 		testReset()
 		destinations := wa.Destinations(b)
 
-		wbCoord, brCoord := wa.Coord().Copy(), br.Coord().Copy()
+		waCoord, brCoord := wa.Coord().Copy(), br.Coord().Copy()
 		Expect(destinations.Len()).To(Equal(13))
 		for destinations.HasNext() {
 			d := destinations.Next().(base.ICoord)
 			Expect(b.MakeMove(d, wa)).To(BeTrue(), "failed at destination %d", destinations.I())
 			// check source cell to be empty
-			Expect(b.Piece(wbCoord)).To(BeNil())
+			Expect(b.Piece(waCoord)).To(BeNil())
 			// check destination cell to contain new piece
 			Expect(b.Piece(d)).To(Equal(wa))
 			if !brCoord.Equals(d) { // if not capture

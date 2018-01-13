@@ -60,7 +60,8 @@ func parsePosLines(lines []string, board *rect.Board) error {
 				board.PlacePiece(c, piece.NewQueen(White))
 			case 'A':
 				board.PlacePiece(c, piece.NewArchbishop(White))
-			case 'C': // todo board.PlacePiece(c, piece.NewChancellor(White))
+			case 'C':
+				board.PlacePiece(c, piece.NewChancellor(White))
 			case 'K':
 				board.PlacePiece(c, piece.NewKing(White))
 			case 'p':
@@ -75,7 +76,8 @@ func parsePosLines(lines []string, board *rect.Board) error {
 				board.PlacePiece(c, piece.NewQueen(Black))
 			case 'a':
 				board.PlacePiece(c, piece.NewArchbishop(Black))
-			case 'c': // todo board.PlacePiece(c, piece.NewChancellor(Black))
+			case 'c':
+				board.PlacePiece(c, piece.NewChancellor(Black))
 			case 'k':
 				board.PlacePiece(c, piece.NewKing(Black))
 			default:

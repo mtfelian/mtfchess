@@ -415,7 +415,6 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 
 /*
 todo to implement:
-  - chancellor piece;
   - with board options:
     - 3-fold repetition draw rule;
     - 50 moves draw rule;

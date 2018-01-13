@@ -47,10 +47,10 @@ var _ = Describe("Rook test", func() {
 			rect.Coord{2, 3}, rect.Coord{2, 4}, rect.Coord{2, 5},
 		}))).To(BeTrue())
 
-		Expect(b.MakeMove(rect.Coord{2, 5}, wn)).To(BeFalse(), "captured own piece")
-		Expect(b.MakeMove(rect.Coord{3, 2}, wn)).To(BeFalse(), "captured own piece")
-		Expect(b.MakeMove(rect.Coord{1, 2}, wn)).To(BeFalse(), "can't capture")
-		Expect(b.MakeMove(rect.Coord{2, 6}, wn)).To(BeFalse(), "jumped over own piece")
+		Expect(b.MakeMove(rect.Coord{2, 5}, wr)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(rect.Coord{3, 2}, wr)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(rect.Coord{2, 6}, wr)).To(BeFalse(), "jumped over own piece")
+		Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "can't capture")
 	})
 
 	It("makes legal moves", func() {
