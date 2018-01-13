@@ -18,8 +18,8 @@ var _ = Describe("Castling test", func() {
 		Expect(c.Enabled).To(BeTrue())
 		Expect(c.To).To(HaveLen(2))
 		Expect(c.Piece).To(HaveLen(2))
-		Expect(c.Piece[0].Name()).To(Equal("king"))
-		Expect(c.Piece[1].Name()).To(Equal("rook"))
+		Expect(c.Piece[0].Name()).To(Equal(base.KingName))
+		Expect(c.Piece[1].Name()).To(Equal(base.RookName))
 	}
 
 	checkMakeCastling := func(c base.Castling) {

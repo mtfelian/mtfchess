@@ -379,7 +379,8 @@ var _ = Describe("Pawn promotion test", func() {
 
 	It("pawn tries to make an invalid promotion", func() {
 		s := b.(*rect.Board).Settings()
-		s.AllowedPromotions = []string{"knight", "bishop", "queen"} // exclude rook from promotion list
+		// exclude rook from promotion list
+		s.AllowedPromotions = []string{base.KnightName, base.BishopName, base.QueenName}
 		b.SetSettings(s)
 
 		wp, bk := piece.NewPawn(White), piece.NewKing(Black)

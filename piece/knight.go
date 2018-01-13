@@ -11,7 +11,7 @@ type Knight struct{ *base.Piece }
 
 // NewKnight creates new knight with colour
 func NewKnight(colour Colour) base.IPiece {
-	return &Knight{Piece: base.NewPiece(colour, "knight", "N♘♞")}
+	return &Knight{Piece: base.NewPiece(colour, base.KnightName, "N♘♞")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

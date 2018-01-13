@@ -226,7 +226,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		b.SetHalfMoveCount(-1) // next it will be increased to 0
 	}
 
-	if piece.Name() == "pawn" {
+	if piece.Name() == base.PawnName {
 		epCaptureAt := b.CanCaptureEnPassantAt()
 		if epCaptureAt != nil && to.(Coord).X == epCaptureAt.(Coord).X {
 			b.Empty(epCaptureAt)

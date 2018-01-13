@@ -7,6 +7,17 @@ import (
 	. "github.com/mtfelian/mtfchess/colour"
 )
 
+const (
+	PawnName       = "pawn"
+	KnightName     = "knight"
+	BishopName     = "bishop"
+	RookName       = "rook"
+	QueenName      = "queen"
+	ArchbishopName = "archbishop"
+	ChancellorName = "chancellor"
+	KingName       = "king"
+)
+
 // Piece is a base piece
 type Piece struct {
 	colour         Colour

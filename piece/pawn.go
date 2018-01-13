@@ -11,7 +11,7 @@ type Pawn struct{ *base.Piece }
 
 // NewPawn creates new pawn with colour
 func NewPawn(colour Colour) base.IPiece {
-	return &Pawn{Piece: base.NewPiece(colour, "pawn", "P♙♟")}
+	return &Pawn{Piece: base.NewPiece(colour, base.PawnName, "P♙♟")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

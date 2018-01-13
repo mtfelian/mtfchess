@@ -11,7 +11,7 @@ type Archbishop struct{ *base.Piece }
 
 // NewArchbishop creates new archbishop with colour
 func NewArchbishop(colour Colour) base.IPiece {
-	return &Archbishop{Piece: base.NewPiece(colour, "archbishop", "AAa")}
+	return &Archbishop{Piece: base.NewPiece(colour, base.ArchbishopName, "AAa")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

@@ -39,7 +39,7 @@ func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
 // StandardEnPassantFunc enables en passant capturing like in standard chess, returns coords to capture
 // piece is a capturing piece
 func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
-	if piece.Name() != "pawn" {
+	if piece.Name() != base.PawnName {
 		return nil
 	}
 
@@ -80,12 +80,14 @@ func StandardEnPassantFunc(board base.IBoard, piece base.IPiece) base.ICoord {
 }
 
 // StandardAllowedPromotions returns allowed pawn promotions pieces names list for standard chess
-func StandardAllowedPromotions() []string { return []string{"knight", "bishop", "rook", "queen"} }
+func StandardAllowedPromotions() []string {
+	return []string{base.KnightName, base.BishopName, base.RookName, base.QueenName}
+}
 
 // StandardPromotionConditionFunc is a pawn promotion condition for standard chess
 func StandardPromotionConditionFunc(board base.IBoard, piece base.IPiece, dst base.ICoord, to base.IPiece) bool {
 	bh, fromY, dstY := board.(*Board).height, piece.Coord().(Coord).Y, dst.(Coord).Y
-	return piece.Name() == "pawn" && // only pawn can be promoted
+	return piece.Name() == base.PawnName && // only pawn can be promoted
 		to.Colour() == piece.Colour() && // only to self-colored
 		SliceContains(to.Name(), board.(*Board).Settings().AllowedPromotions) && // to piece from list
 		(piece.Colour() == White && fromY == bh-1 && dstY == bh || // for white from pre-last horizontal to the last
@@ -167,7 +169,7 @@ func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.C
 func StandardCastlingFunc(board base.IBoard, colour Colour) base.Castlings {
 	bh := board.Dim().(Coord).Y
 	rooks := board.FindPieces(base.PieceFilter{
-		Names:   []string{"rook"},
+		Names:   []string{base.RookName},
 		Colours: []Colour{colour},
 		Condition: func(r base.IPiece) bool {
 			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}

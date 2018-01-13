@@ -11,7 +11,7 @@ type Queen struct{ *base.Piece }
 
 // NewQueen creates new queen with colour
 func NewQueen(colour Colour) base.IPiece {
-	return &Queen{Piece: base.NewPiece(colour, "queen", "Q♕♛")}
+	return &Queen{Piece: base.NewPiece(colour, base.QueenName, "Q♕♛")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

@@ -140,7 +140,7 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 	for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
 		coord := rect.Coord{epCoordX, y}
 		p := board.Piece(coord)
-		if p != nil && p.Name() == "pawn" {
+		if p != nil && p.Name() == base.PawnName {
 			board.SetCanCaptureEnPassantAt(coord)
 			return nil
 		}
@@ -162,7 +162,7 @@ func parseCastling(line string, board *rect.Board) error {
 	// Set outer to true to find outer rook (closer to board border), otherwise inner rook (closer to king)
 	findRook := func(colour Colour, i int, outer bool) *piece.Rook {
 		rooks := board.FindPieces(base.PieceFilter{
-			Names:   []string{"rook"},
+			Names:   []string{base.RookName},
 			Colours: []Colour{colour},
 			Condition: func(r base.IPiece) bool {
 				rC, y := r.Coord().(rect.Coord), map[Colour]int{White: 1, Black: bC.Y}

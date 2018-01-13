@@ -11,7 +11,7 @@ type King struct{ *base.Piece }
 
 // NewKing creates new king with colour
 func NewKing(colour Colour) base.IPiece {
-	return &King{Piece: base.NewPiece(colour, "king", "K♔♚")}
+	return &King{Piece: base.NewPiece(colour, base.KingName, "K♔♚")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

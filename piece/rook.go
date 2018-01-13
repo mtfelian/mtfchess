@@ -11,7 +11,7 @@ type Rook struct{ *base.Piece }
 
 // NewRook creates new rook with colour
 func NewRook(colour Colour) base.IPiece {
-	return &Rook{Piece: base.NewPiece(colour, "rook", "R♖♜")}
+	return &Rook{Piece: base.NewPiece(colour, base.RookName, "R♖♜")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves

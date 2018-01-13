@@ -11,7 +11,7 @@ type Chancellor struct{ *base.Piece }
 
 // NewChancellor creates new chancellor with colour
 func NewChancellor(colour Colour) base.IPiece {
-	return &Chancellor{Piece: base.NewPiece(colour, "chancellor", "CCc")}
+	return &Chancellor{Piece: base.NewPiece(colour, base.ChancellorName, "CCc")}
 }
 
 // dst returns a slice of destination cells coords, making it's legal moves
