@@ -217,6 +217,7 @@ func parseCastling(line string, board *rect.Board) error {
 		if r == nil {
 			return fmt.Errorf("wrong FEN, %s-castling specified, but rook not found", string(token))
 		}
+		fmt.Println("setting init:", r.Coord(), i, colour)
 		board.SetRookInitialCoords(colour, i, r.Coord())
 	}
 	return nil

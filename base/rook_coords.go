@@ -1,6 +1,9 @@
 package base
 
-import . "github.com/mtfelian/mtfchess/colour"
+import (
+	"fmt"
+	. "github.com/mtfelian/mtfchess/colour"
+)
 
 // RookCoords maps colour to array of rook coords
 type RookCoords map[Colour][2]ICoord
@@ -21,4 +24,28 @@ func (c RookCoords) Copy() RookCoords {
 		res[colour] = coords
 	}
 	return res
+}
+
+// Equals returns true if c equals to, and returns false otherwise
+func (c RookCoords) Equals(to RookCoords) bool {
+	for colour := range c {
+		if _, exists := to[colour]; !exists || len(c[colour]) != len(to[colour]) {
+			return false
+		}
+		for i := range c[colour] {
+			fmt.Println(colour, c, to, i, c[colour][i], to[colour][i])
+			if (c[colour][i] == nil) != (to[colour][i] == nil) {
+				return false
+			}
+			if c[colour][i] != nil && to[colour][i] == nil && !c[colour][i].Equals(to[colour][i]) {
+				return false
+			}
+		}
+	}
+	for colour := range to {
+		if _, exists := c[colour]; !exists {
+			return false
+		}
+	}
+	return true
 }

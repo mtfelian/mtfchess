@@ -353,7 +353,8 @@ func (b *Board) FindAttackedCellsBy(f base.IPieceFilter) base.ICoords {
 func (b *Board) Equals(to base.IBoard) bool {
 	b1 := to.(*Board)
 	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove ||
-		b.halfMoveCounter != b1.halfMoveCounter || b.moveNumber != b1.moveNumber {
+		b.halfMoveCounter != b1.halfMoveCounter || b.moveNumber != b1.moveNumber ||
+		!b.rookCoords.Equals(b1.rookCoords) {
 		return false
 	}
 	for y := 1; y <= b.height; y++ {
