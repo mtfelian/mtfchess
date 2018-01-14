@@ -385,6 +385,9 @@ func (b *Board) InCheck(colour Colour) bool {
 // InCheckMate if king of colour is in check and have no moves
 func (b *Board) InCheckMate(colour Colour) bool { return b.InCheck(colour) && !b.HasMoves(colour) }
 
+// InStaleMate if king of colour is not in check and have no moves
+func (b *Board) InStaleMate(colour Colour) bool { return !b.InCheck(colour) && !b.HasMoves(colour) }
+
 // MoveNumber returns current move number
 func (b *Board) MoveNumber() int { return b.moveNumber }
 
@@ -447,6 +450,5 @@ todo to implement:
   - with board options:
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
-  - stalemate detection (no check and no legal moves);
   - other notations except long algebraic.
 */
