@@ -52,14 +52,14 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 	check := ""
 	if projection.InCheckMate(projection.SideToMove()) {
 		check = "#"
-		return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.EncodeCoord(), delimiter, anTo.EncodeCoord(), check)
+		return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 	}
 
 	if projection.InCheck(projection.SideToMove()) {
 		check = "+"
 	}
 
-	return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.EncodeCoord(), delimiter, anTo.EncodeCoord(), check)
+	return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 }
 
 // EncodeCastling on board
