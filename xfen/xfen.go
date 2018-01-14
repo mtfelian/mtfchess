@@ -124,7 +124,7 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 	}
 
 	ep := rect.NewLongAlgebraicNotation()
-	if err := ep.Decode(line); err != nil {
+	if err := ep.DecodeCoord(line); err != nil {
 		return err
 	}
 

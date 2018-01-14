@@ -8,6 +8,7 @@ import (
 	"unicode"
 
 	"github.com/mtfelian/mtfchess/base"
+	. "github.com/mtfelian/mtfchess/colour"
 )
 
 const (
@@ -36,9 +37,9 @@ func (n *algebraicNotation) SetCoord(to base.ICoord) base.INotation {
 func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst base.ICoord) string {
 	anFrom := NewLongAlgebraicNotation().SetCoord(piece.Coord())
 	anTo := NewLongAlgebraicNotation().SetCoord(dst)
-	delim := "-"
+	delimiter := "-"
 	if board.Piece(dst) != nil {
-		delim = "x"
+		delimiter = "x"
 	}
 
 	fig := piece.Capital()
@@ -48,20 +49,33 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 
 	projection := board.Project(piece, dst)
 	projection.SetSideToMove(projection.SideToMove().Invert())
+
 	check := ""
-	if len(projection.LegalMoves(notation)) == 0 {
+	if projection.InCheckMate(projection.SideToMove()) {
 		check = "#"
-	} else {
-		if projection.InCheck(projection.SideToMove()) {
-			check = "+"
-		}
+		return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.EncodeCoord(), delimiter, anTo.EncodeCoord(), check)
 	}
 
-	return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.Encode(), delim, anTo.Encode(), check)
+	if projection.InCheck(projection.SideToMove()) {
+		check = "+"
+	}
+
+	return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.EncodeCoord(), delimiter, anTo.EncodeCoord(), check)
 }
 
-// Decode coord string (case-insensitive) to (x,y) coords
-func (n *algebraicNotation) Decode(coord string) error {
+// EncodeCastling on board for sideToMove
+func (n *algebraicNotation) EncodeCastling(board base.IBoard, sideToMove Colour, i int) string {
+	switch {
+	case board.RookCanCastle(sideToMove, 0):
+		return "O-O-O"
+	case board.RookCanCastle(sideToMove, 1):
+		return "O-O"
+	}
+	return ""
+}
+
+// DecodeCoord coord string (case-insensitive) to (x,y) coords
+func (n *algebraicNotation) DecodeCoord(coord string) error {
 	coord = strings.ToLower(coord)
 	re := regexp.MustCompile(`^([a-z])(\d{1,2})$`)
 	if !re.MatchString(coord) {
@@ -83,8 +97,8 @@ func (n *algebraicNotation) Decode(coord string) error {
 	return nil
 }
 
-// Encode n.Coord as string
-func (n *algebraicNotation) Encode() string {
+// EncodeCoord n.Coord as string
+func (n *algebraicNotation) EncodeCoord() string {
 	if n.Coord == nil {
 		return ""
 	}

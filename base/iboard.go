@@ -26,6 +26,7 @@ type IBoard interface {
 	MakeMove(to ICoord, piece IPiece) bool
 
 	InCheck(colour Colour) bool
+	InCheckMate(colour Colour) bool
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool
 
@@ -55,5 +56,6 @@ type IBoard interface {
 	HalfMoveCount() int
 	SetHalfMoveCount(n int)
 
+	HasMoves(colour Colour) bool
 	LegalMoves(notation INotation) []string
 }

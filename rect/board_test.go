@@ -228,7 +228,7 @@ var _ = Describe("Board test", func() {
 				"O-O",
 				"a4-a5", "b2-b3", "b2-b4", "d2-d3", "d2-d4", "e2-e3", "e2-e4",
 				"Nc3-e4", "Nc3-a2", "Nc3-d5", "Nc3-b5", "Nc3-b1",
-				"Bf3-g4", "Bf3-h5", "Bf3-e4", "Bf3-d5", "Bf3-c6", "Bf3xb7", "Bf3-g2",
+				"Bf3-g4", "Bf3-h5", "Bf3-e4", "Bf3-d5", "Bf3-c6+", "Bf3xb7", "Bf3-g2",
 				"Nd1-e3",
 				"Ke1-f1",
 				"Rg1-f1", "Rg1-g2", "Rg1-g3", "Rg1-g4", "Rg1xg5",

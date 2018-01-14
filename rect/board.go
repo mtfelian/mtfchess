@@ -5,7 +5,6 @@ import (
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	"github.com/mtfelian/mtfchess/piece"
 	. "github.com/mtfelian/utils"
 )
 
@@ -99,6 +98,11 @@ func (b *Board) RookCanCastle(colour Colour, i int) bool {
 	}
 	states := b.rookCoords[colour]
 	return states[i] != nil
+}
+
+// HaveCastlings returns whether side of colour have castling or not
+func (b *Board) HaveCastlings(colour Colour) bool {
+	return b.RookCanCastle(colour, 0) || b.RookCanCastle(colour, 1)
 }
 
 // RookInitialCoords returns rooks coords for castlings as array where
@@ -377,11 +381,23 @@ func (b *Board) Equals(to base.IBoard) bool {
 // RookCoords returns available castlings for colour
 func (b *Board) Castlings(colour Colour) base.Castlings { return b.Settings().CastlingsFunc(b, colour) }
 
+// HasMoves true if side of colour has any moves (except castlings)
+func (b *Board) HasMoves(colour Colour) bool {
+	pieces, c := b.FindPieces(base.PieceFilter{Colours: []Colour{colour}}), 0
+	for i := range pieces {
+		c += pieces[i].Destinations(b).Len()
+	}
+	return c > 0 || b.HaveCastlings(colour)
+}
+
 // InChecks returns true if king of colour is in check
 func (b *Board) InCheck(colour Colour) bool {
 	king := b.King(colour)
 	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }
+
+// InCheckMate if king of colour is in check and have no moves
+func (b *Board) InCheckMate(colour Colour) bool { return b.InCheck(colour) && !b.HasMoves(colour) }
 
 // MoveNumber returns current move number
 func (b *Board) MoveNumber() int { return b.moveNumber }
@@ -402,43 +418,14 @@ func (b *Board) LegalMoves(notation base.INotation) []string {
 	for i := range pieces {
 		dst := pieces[i].Destinations(b)
 		for dst.HasNext() {
-			switch notation.(type) {
-			case *algebraicNotation:
-				nextDst := dst.Next().(base.ICoord)
-				anFrom := NewLongAlgebraicNotation().SetCoord(pieces[i].Coord())
-				anTo := NewLongAlgebraicNotation().SetCoord(nextDst)
-				delim := "-"
-				if b.Piece(nextDst) != nil {
-					delim = "x"
-				}
-
-				fig := pieces[i].Capital()
-				if pieces[i].Name() == base.PawnName {
-					fig = ""
-				}
-
-				projection := b.Project(pieces[i], nextDst)
-				projection.SetSideToMove(projection.SideToMove().Invert())
-				check := ""
-				if len(projection.LegalMoves(notation)) == 0 {
-					check = "#"
-				} else {
-					if projection.InCheck(projection.SideToMove()) {
-						check = "+"
-					}
-				}
-
-				res = append(res, fmt.Sprintf("%s%s%s%s%s", fig, anFrom.Encode(), delim, anTo.Encode(), check))
-			default:
-				panic("invalid notation type")
-			}
+			res = append(res, notation.EncodeMove(b, pieces[i], dst.Next().(base.ICoord)))
 		}
 	}
 	if b.RookCanCastle(sideToMove, 0) {
-		res = append(res, `O-O-O`)
+		res = append(res, notation.EncodeCastling(b, sideToMove, 0))
 	}
 	if b.RookCanCastle(sideToMove, 1) {
-		res = append(res, `O-O`)
+		res = append(res, notation.EncodeCastling(b, sideToMove, 0))
 	}
 	return res
 }
@@ -471,10 +458,13 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 
 /*
 todo to implement:
+  - tests on checkmate detection;
+  - tests on returning legal moves in algebraic notation in cases of checks and castlings;
+
   - with board options:
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
-  - returning legal moves in algebraic notation;
   - stalemate detection (no check and no legal moves);
-  - checkmate detection (check and no legal moves);
+
+  - other notations except long algebraic.
 */
