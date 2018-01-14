@@ -8,7 +8,6 @@ import (
 	"unicode"
 
 	"github.com/mtfelian/mtfchess/base"
-	. "github.com/mtfelian/mtfchess/colour"
 )
 
 const (
@@ -63,15 +62,12 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 	return fmt.Sprintf("%s%s%s%s%s", fig, anFrom.EncodeCoord(), delimiter, anTo.EncodeCoord(), check)
 }
 
-// EncodeCastling on board for sideToMove
-func (n *algebraicNotation) EncodeCastling(board base.IBoard, sideToMove Colour, i int) string {
-	switch {
-	case board.RookCanCastle(sideToMove, 0):
+// EncodeCastling on board
+func (n *algebraicNotation) EncodeCastling(board base.IBoard, i int) string {
+	if i == 0 {
 		return "O-O-O"
-	case board.RookCanCastle(sideToMove, 1):
-		return "O-O"
 	}
-	return ""
+	return "O-O"
 }
 
 // DecodeCoord coord string (case-insensitive) to (x,y) coords

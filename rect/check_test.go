@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+//r3kb1r/3Q3p/p3P1n1/2p1p1P1/2P1bp2/7P/PB3P2/R4RK1 b kq - 2 24
 var _ = Describe("Check test", func() {
 	var b base.IBoard
 	resetBoard := func() { b = rect.NewEmptyTestBoard() }

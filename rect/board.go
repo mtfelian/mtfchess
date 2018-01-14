@@ -90,26 +90,12 @@ func (b *Board) SetRookInitialCoords(colour Colour, i int, coord base.ICoord) {
 	b.rookCoords[colour] = states
 }
 
-// RookCanCastle returns true if rook of colour can castle
-// set parameter i to 0 for most aSide rook and set i to 1 for most zSide rook
-func (b *Board) RookCanCastle(colour Colour, i int) bool {
-	if i != 0 && i != 1 {
-		panic(fmt.Sprintf("RookCanCastle(): it should be 0 or 1, i: %d", i))
-	}
-	states := b.rookCoords[colour]
-	return states[i] != nil
-}
-
 // HaveCastlings returns whether side of colour have castling or not
-func (b *Board) HaveCastlings(colour Colour) bool {
-	return b.RookCanCastle(colour, 0) || b.RookCanCastle(colour, 1)
-}
+func (b *Board) HaveCastlings(colour Colour) bool { return len(b.Castlings(colour)) > 0 }
 
 // RookInitialCoords returns rooks coords for castlings as array where
 // 0 index means most aSide rook and 1 index means most zSide rook, coord contains nil if no such rook
-func (b *Board) RookInitialCoords(colour Colour) [2]base.ICoord {
-	return b.rookCoords[colour]
-}
+func (b *Board) RookInitialCoords(colour Colour) [2]base.ICoord { return b.rookCoords[colour] }
 
 // createCells returns a slice of Cell for the board
 func (b *Board) createCells() {
@@ -421,12 +407,12 @@ func (b *Board) LegalMoves(notation base.INotation) []string {
 			res = append(res, notation.EncodeMove(b, pieces[i], dst.Next().(base.ICoord)))
 		}
 	}
-	if b.RookCanCastle(sideToMove, 0) {
-		res = append(res, notation.EncodeCastling(b, sideToMove, 0))
+
+	castlings := b.Castlings(sideToMove)
+	for i := range castlings {
+		res = append(res, notation.EncodeCastling(b, castlings[i].I))
 	}
-	if b.RookCanCastle(sideToMove, 1) {
-		res = append(res, notation.EncodeCastling(b, sideToMove, 0))
-	}
+
 	return res
 }
 
@@ -458,13 +444,9 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 
 /*
 todo to implement:
-  - tests on checkmate detection;
-  - tests on returning legal moves in algebraic notation in cases of checks and castlings;
-
   - with board options:
     - 3-fold repetition draw rule;
     - 50 moves draw rule;
   - stalemate detection (no check and no legal moves);
-
   - other notations except long algebraic.
 */

@@ -30,8 +30,8 @@ func testBoardSettings() *base.Settings {
 	}
 }
 
-const NoPawnLongMove int = 0
-const StandardPawnLongMove int = 1
+const NoPawnLongMove = 0
+const StandardPawnLongMove = 1
 
 // NoEnPassantFunc always disables en passant capturing
 func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }
@@ -161,6 +161,7 @@ func standardCastling(board base.IBoard, colour Colour, rook base.IPiece) base.C
 	return base.Castling{
 		Piece:   [2]base.IPiece{king, rook},
 		To:      [2]base.ICoord{kingDstCoord[colour], rookDstCoord[colour]},
+		I:       n,
 		Enabled: true,
 	}
 }
@@ -175,7 +176,7 @@ func StandardCastlingFunc(board base.IBoard, colour Colour) base.Castlings {
 			rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
 			rCoords, boardAllowed := board.RookInitialCoords(colour), false
 			for i := range rCoords {
-				if rCoords[i].Equals(r.Coord()) {
+				if rCoords[i] != nil && rCoords[i].Equals(r.Coord()) {
 					boardAllowed = true
 					break
 				}

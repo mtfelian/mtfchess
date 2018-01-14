@@ -34,7 +34,6 @@ type IBoard interface {
 	CanCaptureEnPassantAt() ICoord
 
 	SetRookInitialCoords(colour Colour, i int, coord ICoord)
-	RookCanCastle(colour Colour, i int) bool
 	RookInitialCoords(colour Colour) [2]ICoord
 
 	// Project a piece to coords, returns a pointer to a new copy of a board, don't check legality
