@@ -5,6 +5,7 @@ import (
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
+	"github.com/mtfelian/mtfchess/piece"
 	. "github.com/mtfelian/utils"
 )
 
@@ -394,8 +395,52 @@ func (b *Board) HalfMoveCount() int { return b.halfMoveCounter }
 // SetHalfMoveCount sets the current half-move counter since the last capture or pawn advance to n
 func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 
-func (b *Board) LegalMoves() []string {
-	return []string{}
+// LegalMoves returns strings for legal moves
+func (b *Board) LegalMoves(notation base.INotation) []string {
+	sideToMove, res := b.SideToMove(), []string{}
+	pieces := b.FindPieces(base.PieceFilter{Colours: []Colour{sideToMove}})
+	for i := range pieces {
+		dst := pieces[i].Destinations(b)
+		for dst.HasNext() {
+			switch notation.(type) {
+			case *algebraicNotation:
+				nextDst := dst.Next().(base.ICoord)
+				anFrom := NewLongAlgebraicNotation().SetCoord(pieces[i].Coord())
+				anTo := NewLongAlgebraicNotation().SetCoord(nextDst)
+				delim := "-"
+				if b.Piece(nextDst) != nil {
+					delim = "x"
+				}
+
+				fig := pieces[i].Capital()
+				if pieces[i].Name() == base.PawnName {
+					fig = ""
+				}
+
+				projection := b.Project(pieces[i], nextDst)
+				projection.SetSideToMove(projection.SideToMove().Invert())
+				check := ""
+				if len(projection.LegalMoves(notation)) == 0 {
+					check = "#"
+				} else {
+					if projection.InCheck(projection.SideToMove()) {
+						check = "+"
+					}
+				}
+
+				res = append(res, fmt.Sprintf("%s%s%s%s%s", fig, anFrom.Encode(), delim, anTo.Encode(), check))
+			default:
+				panic("invalid notation type")
+			}
+		}
+	}
+	if b.RookCanCastle(sideToMove, 0) {
+		res = append(res, `O-O-O`)
+	}
+	if b.RookCanCastle(sideToMove, 1) {
+		res = append(res, `O-O`)
+	}
+	return res
 }
 
 // SideToMove returns colour of side to move

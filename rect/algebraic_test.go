@@ -32,12 +32,13 @@ var _ = Describe("Algebraic test", func() {
 
 		for i, testCase := range testCases {
 			By(fmt.Sprintf("Checking testCase %v at index %d...", testCase, i))
-			coord, err := rect.FromAlgebraic(testCase.algebraic)
+			n := rect.NewLongAlgebraicNotation()
+			err := n.Decode(testCase.algebraic)
 			Expect((err != nil) == testCase.errorOccured).To(BeTrue())
 			if testCase.coord == nil {
-				Expect(coord).To(BeNil())
+				Expect(n.Coord).To(BeNil())
 			} else {
-				Expect(coord).To(Equal(testCase.coord))
+				Expect(n.Coord).To(Equal(testCase.coord))
 			}
 		}
 	})
@@ -58,8 +59,8 @@ var _ = Describe("Algebraic test", func() {
 
 		for i, testCase := range testCases {
 			By(fmt.Sprintf("Checking testCase %v at index %d...", testCase, i))
-			algebraic := rect.ToAlgebraic(testCase.coord)
-			Expect(algebraic).To(Equal(testCase.algebraic))
+			notation := rect.NewLongAlgebraicNotation().SetCoord(testCase.coord)
+			Expect(notation.Encode()).To(Equal(testCase.algebraic))
 		}
 	})
 })

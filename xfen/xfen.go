@@ -123,8 +123,8 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 		return nil
 	}
 
-	epCoord, err := rect.FromAlgebraic(line)
-	if err != nil {
+	ep := rect.NewLongAlgebraicNotation()
+	if err := ep.Decode(line); err != nil {
 		return err
 	}
 
@@ -136,8 +136,8 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 
 	// FEN has 'EP capture dst cell' coords while the board keeps 'piece to capture' coords
 
-	epCoordX := epCoord.(rect.Coord).X
-	for y := epCoord.(rect.Coord).Y + step; y != limY; y = y + step {
+	epCoordX := ep.Coord.(rect.Coord).X
+	for y := ep.Coord.(rect.Coord).Y + step; y != limY; y = y + step {
 		coord := rect.Coord{epCoordX, y}
 		p := board.Piece(coord)
 		if p != nil && p.Name() == base.PawnName {

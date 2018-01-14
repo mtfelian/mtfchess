@@ -44,12 +44,15 @@ func NewPiece(colour Colour, name, literals string) *Piece {
 // Name returns the name of a piece
 func (p *Piece) Name() string { return p.name }
 
+// Capital returns a piece's capital letter
+func (p *Piece) Capital() string { return string(p.literals[0]) }
+
 // String makes BasePiece to implement fmt.Stringer
 func (p *Piece) String() string {
 	return map[Colour]string{
-		Transparent: cli.Sprintf("{0|%s", string(p.literals[0])),
-		White:       cli.Sprintf("{W|%s{0|", string(p.literals[0])),
-		Black:       cli.Sprintf("{A|%s{0|", string(p.literals[0])),
+		Transparent: cli.Sprintf("{0|%s", p.Capital()),
+		White:       cli.Sprintf("{W|%s{0|", p.Capital()),
+		Black:       cli.Sprintf("{A|%s{0|", p.Capital()),
 	}[p.Colour()]
 }
 

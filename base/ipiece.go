@@ -14,6 +14,8 @@ type IPiece interface {
 	fmt.Stringer
 	// Name returns piece name
 	Name() string
+	// Capital returns piece's capital letter
+	Capital() string
 	// Attacks returns a slice of cells coords attacked by piece
 	Attacks(b IBoard) ICoords
 	// Destinations returns a slice of cells coords to destination cells of possible moves
