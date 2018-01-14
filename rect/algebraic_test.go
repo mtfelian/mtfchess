@@ -41,4 +41,25 @@ var _ = Describe("Algebraic test", func() {
 			}
 		}
 	})
+
+	It("checks converting rect.Coord to algebraic coord", func() {
+		testCases := []struct {
+			coord     base.ICoord
+			algebraic string
+		}{
+			{rect.Coord{1, 1}, "a1"},
+			{rect.Coord{1, 8}, "a8"},
+			{rect.Coord{9, 1}, "i1"},
+			{rect.Coord{9, 8}, "i8"},
+			{rect.Coord{5, 4}, "e4"},
+			{rect.Coord{5, 10}, "e10"},
+			{nil, ""},
+		}
+
+		for i, testCase := range testCases {
+			By(fmt.Sprintf("Checking testCase %v at index %d...", testCase, i))
+			algebraic := rect.ToAlgebraic(testCase.coord)
+			Expect(algebraic).To(Equal(testCase.algebraic))
+		}
+	})
 })

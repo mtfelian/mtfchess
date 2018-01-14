@@ -394,6 +394,10 @@ func (b *Board) HalfMoveCount() int { return b.halfMoveCounter }
 // SetHalfMoveCount sets the current half-move counter since the last capture or pawn advance to n
 func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 
+func (b *Board) LegalMoves() []string {
+	return []string{}
+}
+
 // SideToMove returns colour of side to move
 func (b *Board) SideToMove() Colour { return b.sideToMove }
 

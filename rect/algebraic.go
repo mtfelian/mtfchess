@@ -35,3 +35,12 @@ func FromAlgebraic(coord string) (base.ICoord, error) {
 
 	return Coord{x, y}, nil
 }
+
+// ToAlgebraic returns an algebraic coords from coord
+func ToAlgebraic(coord base.ICoord) string {
+	if coord == nil {
+		return ""
+	}
+	c := coord.(Coord)
+	return fmt.Sprintf("%s%d", string('a'-1+c.X), c.Y)
+}

@@ -54,4 +54,6 @@ type IBoard interface {
 
 	HalfMoveCount() int
 	SetHalfMoveCount(n int)
+
+	LegalMoves() []string
 }
