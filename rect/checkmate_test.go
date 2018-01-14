@@ -41,13 +41,14 @@ var _ = Describe("Checkmate test", func() {
 			Expect(b.HasMoves(Black)).To(BeFalse())
 			Expect(b.HasMoves(White)).To(BeTrue())
 
+			Expect(b.SideToMove()).To(Equal(Black))
+
 			// check that making move will not be successful
-			pawns := b.FindPieces(base.PieceFilter{Names: []string{base.PawnName}})
-			for i := range pawns {
-				dsts := pawns[i].Destinations(b)
+			pieces := b.FindPieces(base.PieceFilter{Colours: []Colour{b.SideToMove()}})
+			for i := range pieces {
+				dsts := pieces[i].Destinations(b)
 				for dsts.HasNext() {
-					dst := dsts.Next().(base.ICoord)
-					Expect(b.MakeMove(dst, pawns[i])).To(BeFalse())
+					Expect(b.MakeMove(dsts.Next().(base.ICoord), pieces[i])).To(BeFalse())
 				}
 			}
 		})
