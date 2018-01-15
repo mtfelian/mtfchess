@@ -29,6 +29,9 @@ type IBoard interface {
 	InCheckMate(colour Colour) bool
 	InStaleMate(colour Colour) bool
 
+	Outcome() Outcome
+	SetOutcome(to Outcome)
+
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool
 

@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Checkmate test", func() {
+var _ = Describe("checkmate test", func() {
 	var b base.IBoard
 	var err error
 

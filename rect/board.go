@@ -19,6 +19,7 @@ type Board struct {
 	sideToMove            Colour
 	moveNumber            int
 	halfMoveCounter       int
+	outcome               base.Outcome
 }
 
 // X converts x1 to slice index
@@ -177,6 +178,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetSideToMove(b.SideToMove())
 	newBoard.SetMoveNumber(b.MoveNumber())
 	newBoard.SetHalfMoveCount(b.HalfMoveCount())
+	newBoard.SetOutcome(b.Outcome())
 	return newBoard
 }
 
@@ -347,7 +349,8 @@ func (b *Board) Equals(to base.IBoard) bool {
 	if b.width != b1.width || b.height != b1.height || b.sideToMove != b1.sideToMove ||
 		b.halfMoveCounter != b1.halfMoveCounter || b.moveNumber != b1.moveNumber ||
 		!b.rookCoords.Equals(b1.rookCoords) ||
-		((canEP == nil) != (canEP1 == nil)) || (canEP != nil && canEP1 != nil && !canEP.Equals(canEP1)) {
+		((canEP == nil) != (canEP1 == nil)) || (canEP != nil && canEP1 != nil && !canEP.Equals(canEP1)) ||
+		!b.Outcome().Equals(b1.Outcome()) {
 		return false
 	}
 	for y := 1; y <= b.height; y++ {
@@ -400,6 +403,12 @@ func (b *Board) HalfMoveCount() int { return b.halfMoveCounter }
 // SetHalfMoveCount sets the current half-move counter since the last capture or pawn advance to n
 func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 
+// Outcome returns the game outcome
+func (b *Board) Outcome() base.Outcome { return b.outcome }
+
+// SetOutcome to
+func (b *Board) SetOutcome(to base.Outcome) { b.outcome = to }
+
 // LegalMoves returns strings for legal moves
 func (b *Board) LegalMoves(notation base.INotation) []string {
 	sideToMove, res := b.SideToMove(), []string{}
@@ -442,6 +451,7 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b.SetSideToMove(White)
 	b.SetMoveNumber(1)
 	b.SetHalfMoveCount(1)
+	b.SetOutcome(base.NewOutcomeNotCompleted())
 	return b
 }
 
