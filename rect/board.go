@@ -419,7 +419,6 @@ func (b *Board) ComputeOutcome() {
 	}
 
 	sideToMove := b.SideToMove()
-
 	switch {
 	case b.InCheckmate(sideToMove):
 		b.SetOutcome(base.NewCheckmate(sideToMove.Invert()))

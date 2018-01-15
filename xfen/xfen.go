@@ -12,6 +12,9 @@ import (
 	"github.com/mtfelian/mtfchess/rect"
 )
 
+// XFEN is an X-FEN string
+type XFEN string
+
 // getPosLineTokens parses line as runes into string tokens
 // it should be done especially for board with at least one of rect dimensions
 // greater then 9 (in this case token may consist of one or two runes)
@@ -221,21 +224,21 @@ func parseCastling(line string, board *rect.Board) error {
 	return nil
 }
 
-// NewFromStandardXFEN creates new chess board with pieces from standard XFEN
-func NewFromStandardXFEN(fen string) (*rect.Board, error) {
-	xfenParts := strings.Split(fen, " ")
+// NewFromStandard creates new chess board with pieces from standard X-FEN
+func NewFromStandard(s XFEN) (*rect.Board, error) {
+	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
-		return nil, fmt.Errorf("invalid xfen length")
+		return nil, fmt.Errorf("invalid X-FEN length")
 	}
 
 	posLines := strings.Split(xfenParts[0], "/")
 	bh := len(posLines)
 	if bh < 3 {
-		return nil, fmt.Errorf("bh is too small")
+		return nil, fmt.Errorf("board height is too small")
 	}
 	bw := parseBoardWidth(posLines[0])
 	if bw < 3 {
-		return nil, fmt.Errorf("bw is too small")
+		return nil, fmt.Errorf("board width is too small")
 	}
 
 	b := rect.NewEmptyBoard(bw, bh, rect.StandardChessBoardSettings())
@@ -268,6 +271,5 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 	b.SetMoveNumber(moveNumber)
 	b.ComputeOutcome()
 
-	// todo: tests on it, especially on castling parsing
 	return b, nil
 }
