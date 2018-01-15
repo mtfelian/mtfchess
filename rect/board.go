@@ -420,19 +420,13 @@ func (b *Board) ComputeOutcome() {
 
 	sideToMove := b.SideToMove()
 
-	if b.InCheckmate(sideToMove) {
+	switch {
+	case b.InCheckmate(sideToMove):
 		b.SetOutcome(base.NewCheckmate(sideToMove.Invert()))
-		return
-	}
-
-	if b.InStalemate(sideToMove) {
+	case b.InStalemate(sideToMove):
 		b.SetOutcome(base.NewStalemate())
-		return
-	}
-
-	if settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw {
+	case settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw:
 		b.SetOutcome(base.NewDrawByMovesRule())
-		return
 	}
 }
 
