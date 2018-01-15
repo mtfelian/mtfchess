@@ -224,12 +224,21 @@ func parseCastling(line string, board *rect.Board) error {
 	return nil
 }
 
+// MustPositionsAreEqual returns true if position of s X-FEN is equal to position of to X-FEN,
+// it may panic if X-FEN is invalid (or it can have an unexpected behaviour)
+func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
+	return strings.Join(strings.Split(string(s), " ")[:4], " ") == strings.Join(strings.Split(string(to), " ")[:4], " ")
+}
+
 // NewFromStandard creates new chess board with pieces from standard X-FEN
 func NewFromStandard(s XFEN) (*rect.Board, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
 		return nil, fmt.Errorf("invalid X-FEN length")
 	}
+
+	// xfenParts slice indexes:
+	// 0 - position, 1 - side to move, 2 - castling rights, 3 - EP dst cell, 4 - half-moves counter, 5 - move number
 
 	posLines := strings.Split(xfenParts[0], "/")
 	bh := len(posLines)
