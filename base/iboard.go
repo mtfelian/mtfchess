@@ -26,11 +26,12 @@ type IBoard interface {
 	MakeMove(to ICoord, piece IPiece) bool
 
 	InCheck(colour Colour) bool
-	InCheckMate(colour Colour) bool
-	InStaleMate(colour Colour) bool
+	InCheckmate(colour Colour) bool
+	InStalemate(colour Colour) bool
 
 	Outcome() Outcome
 	SetOutcome(to Outcome)
+	ComputeOutcome()
 
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool

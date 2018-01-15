@@ -24,4 +24,7 @@ type Settings struct {
 
 	// MoveOrder enables move order control if set to true
 	MoveOrder bool
+
+	// MovesToDraw specifies amount of moves without capture or pawn advance to declare a draw
+	MovesToDraw int
 }

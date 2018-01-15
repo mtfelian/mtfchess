@@ -16,7 +16,7 @@ const (
 	stalemate
 	drawByAgreement
 	drawBy3FoldRepetition
-	drawBy50MovesRule
+	drawByMovesRule
 	drawByNotSufficientMaterial
 )
 
@@ -44,13 +44,16 @@ func (o Outcome) String() string {
 		return "Draw by agreement"
 	case drawBy3FoldRepetition:
 		return "Draw by 3-fold repetition"
-	case drawBy50MovesRule:
+	case drawByMovesRule:
 		return "Draw by 50 moves rule"
 	case drawByNotSufficientMaterial:
 		return "Draw by no sufficient material"
 	}
 	return ""
 }
+
+// IsFinished returns true if game is finished
+func (o Outcome) IsFinished() bool { return o.Reason != notCompleted }
 
 // NewOutcomeNotCompleted returns an incomplete game outcome
 func NewOutcomeNotCompleted() Outcome { return Outcome{Winner: Transparent, Reason: notCompleted} }
@@ -72,8 +75,8 @@ func NewDrawBy3FoldRepetition() Outcome {
 	return Outcome{Winner: Transparent, Reason: drawBy3FoldRepetition}
 }
 
-// NewDrawBy50MovesRule returns an outcome for draw by 50 moves rule
-func NewDrawBy50MovesRule() Outcome { return Outcome{Winner: Transparent, Reason: drawBy50MovesRule} }
+// NewDrawByMovesRule returns an outcome for draw by (50) moves rule
+func NewDrawByMovesRule() Outcome { return Outcome{Winner: Transparent, Reason: drawByMovesRule} }
 
 // NewDrawByNotSufficientMaterial returns an outcome for draw due to not sufficient material
 func NewDrawByNotSufficientMaterial() Outcome {

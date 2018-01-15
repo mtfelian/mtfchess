@@ -193,7 +193,7 @@ func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
 // MakeMove makes move with piece to coords (x,y)
 // It returns true if move succesful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
-	if b.Settings().MoveOrder && b.SideToMove() != piece.Colour() || to.OutOf(b) {
+	if b.Outcome().IsFinished() || (b.Settings().MoveOrder && b.SideToMove() != piece.Colour()) || to.OutOf(b) {
 		return false
 	}
 
@@ -216,7 +216,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	if capturedPiece != nil {
 		capturedPiece.SetCoords(b, nil)
-		b.SetHalfMoveCount(-1) // next it will be increased to 0
+		b.SetHalfMoveCount(-1) // capture, reset counting: next it will be increased to 0
 	}
 
 	if piece.Name() == base.PawnName {
@@ -231,7 +231,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		if diff != 1 && diff != -1 { // long pawn move
 			b.SetCanCaptureEnPassantAt(to)
 		}
-		b.SetHalfMoveCount(-1)
+		b.SetHalfMoveCount(-1) // pawn advance, reset counting: next it will be increased to 0
 	}
 
 	piece.MarkMoved()
@@ -244,13 +244,14 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
+	b.ComputeOutcome()
 	return true
 }
 
 // MakeCastling makes a castling.
 // It returns true if castling succesful (legal), otherwise it returns false.
 func (b *Board) MakeCastling(castling base.Castling) bool {
-	if b.Settings().MoveOrder && b.SideToMove() != castling.Piece[0].Colour() {
+	if b.Outcome().IsFinished() || (b.Settings().MoveOrder && b.SideToMove() != castling.Piece[0].Colour()) {
 		return false
 	}
 
@@ -275,6 +276,7 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
+	b.ComputeOutcome()
 	return true
 }
 
@@ -385,11 +387,11 @@ func (b *Board) InCheck(colour Colour) bool {
 	return king != nil && b.FindAttackedCellsBy(base.PieceFilter{Colours: []Colour{colour.Invert()}}).Contains(king.Coord())
 }
 
-// InCheckMate if king of colour is in check and have no moves
-func (b *Board) InCheckMate(colour Colour) bool { return b.InCheck(colour) && !b.HasMoves(colour) }
+// InCheckmate if king of colour is in check and have no moves
+func (b *Board) InCheckmate(colour Colour) bool { return b.InCheck(colour) && !b.HasMoves(colour) }
 
-// InStaleMate if king of colour is not in check and have no moves
-func (b *Board) InStaleMate(colour Colour) bool { return !b.InCheck(colour) && !b.HasMoves(colour) }
+// InStalemate if king of colour is not in check and have no moves
+func (b *Board) InStalemate(colour Colour) bool { return !b.InCheck(colour) && !b.HasMoves(colour) }
 
 // MoveNumber returns current move number
 func (b *Board) MoveNumber() int { return b.moveNumber }
@@ -408,6 +410,31 @@ func (b *Board) Outcome() base.Outcome { return b.outcome }
 
 // SetOutcome to
 func (b *Board) SetOutcome(to base.Outcome) { b.outcome = to }
+
+// ComputeOutcome computes outcome and sets it
+func (b *Board) ComputeOutcome() {
+	settings := b.Settings()
+	if !settings.MoveOrder {
+		return
+	}
+
+	sideToMove := b.SideToMove()
+
+	if b.InCheckmate(sideToMove) {
+		b.SetOutcome(base.NewCheckmate(sideToMove.Invert()))
+		return
+	}
+
+	if b.InStalemate(sideToMove) {
+		b.SetOutcome(base.NewStalemate())
+		return
+	}
+
+	if settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw {
+		b.SetOutcome(base.NewDrawByMovesRule())
+		return
+	}
+}
 
 // LegalMoves returns strings for legal moves
 func (b *Board) LegalMoves(notation base.INotation) []string {
@@ -459,6 +486,6 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 todo to implement:
   - with board options:
     - 3-fold repetition draw rule;
-    - 50 moves draw rule;
-  - other notations except long algebraic.
+  - other notations except long algebraic;
+  - ComputeOutcome(): test for 50 moves draw rule, 3-fold repetition, agreement, time over, not sufficient material
 */

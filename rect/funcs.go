@@ -6,6 +6,16 @@ import (
 	. "github.com/mtfelian/utils"
 )
 
+const (
+	NoPawnLongMove       = 0 // disable pawn long move
+	StandardPawnLongMove = 1 // pawn from starting rank can go 1 vert. cell further
+)
+
+const (
+	NoMovesToDraw       = 0  // disable N moves draw rule
+	StandardMovesToDraw = 50 // 50 moves draw rule
+)
+
 // StandardChessBoardSettings returns a set of settings for standard chess
 func StandardChessBoardSettings() *base.Settings {
 	return &base.Settings{
@@ -15,6 +25,7 @@ func StandardChessBoardSettings() *base.Settings {
 		CastlingsFunc:          StandardCastlingFunc,
 		EnPassantFunc:          StandardEnPassantFunc,
 		MoveOrder:              true,
+		MovesToDraw:            StandardMovesToDraw,
 	}
 }
 
@@ -27,11 +38,9 @@ func testBoardSettings() *base.Settings {
 		CastlingsFunc:          NoCastlingFunc,
 		EnPassantFunc:          NoEnPassantFunc,
 		MoveOrder:              false,
+		MovesToDraw:            NoMovesToDraw,
 	}
 }
-
-const NoPawnLongMove = 0
-const StandardPawnLongMove = 1
 
 // NoEnPassantFunc always disables en passant capturing
 func NoEnPassantFunc(_ base.IBoard, _ base.IPiece) base.ICoord { return nil }

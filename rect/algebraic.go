@@ -50,7 +50,7 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 	projection.SetSideToMove(projection.SideToMove().Invert())
 
 	check := ""
-	if projection.InCheckMate(projection.SideToMove()) {
+	if projection.InCheckmate(projection.SideToMove()) {
 		check = "#"
 		return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 	}

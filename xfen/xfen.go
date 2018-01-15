@@ -266,6 +266,7 @@ func NewFromStandardXFEN(fen string) (*rect.Board, error) {
 		return nil, err
 	}
 	b.SetMoveNumber(moveNumber)
+	b.ComputeOutcome()
 
 	// todo: tests on it, especially on castling parsing
 	return b, nil
