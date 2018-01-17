@@ -230,8 +230,8 @@ func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
 	return strings.Join(strings.Split(string(s), " ")[:4], " ") == strings.Join(strings.Split(string(to), " ")[:4], " ")
 }
 
-// NewFromStandard creates new chess board with pieces from standard X-FEN
-func NewFromStandard(s XFEN) (*rect.Board, error) {
+// RectBoard returns a new rectangular chess board with pieces from standard X-FEN
+func (s XFEN) RectBoard() (*rect.Board, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
 		return nil, fmt.Errorf("invalid X-FEN length")

@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("XFEN test", func() {
 	It("checks error on totally invalid XFEN", func() {
-		b, err := NewFromStandard(XFEN(`1/2/3`))
+		b, err := XFEN(`1/2/3`).RectBoard()
 		Expect(b).To(BeNil())
 		Expect(err).To(HaveOccurred())
 	})
@@ -96,7 +96,7 @@ var _ = Describe("XFEN test", func() {
 		It("checks that parsed board is equal to hard-coded board", func() {
 			setupPosition()
 			var input XFEN = `rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`
-			parsedBoard, err := NewFromStandard(input)
+			parsedBoard, err := input.RectBoard()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(parsedBoard).NotTo(BeNil())
 			Expect(b.Equals(parsedBoard)).To(BeTrue())
