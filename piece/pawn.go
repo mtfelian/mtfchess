@@ -20,7 +20,7 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 	switch b := board.(type) {
 	case *rect.Board:
 		long, pY := 0, p.Coord().(rect.Coord).Y
-		if (p.Colour() == White && pY == 2) || (p.Colour() == Black && pY == board.Dim().(rect.Coord).Y-1) {
+		if p.Colour() == White && pY == 2 || p.Colour() == Black && pY == board.Dim().(rect.Coord).Y-1 {
 			long = b.Settings().PawnLongMoveModifier
 		}
 

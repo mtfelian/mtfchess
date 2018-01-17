@@ -11,6 +11,9 @@ const (
 	Black
 )
 
+// AllColours returns a slice of all colours
+func AllColours() []Colour { return []Colour{White, Black} }
+
 // Name returns a side name
 func (c Colour) Name() string {
 	switch c {

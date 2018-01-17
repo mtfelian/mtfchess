@@ -92,7 +92,7 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			case runeToken == 'P' && coord.Y != 2:
 				board.Piece(coord).MarkMoved()
 			default:
-				if (unicode.IsUpper(runeToken) && coord.Y != 1) || (unicode.IsLower(runeToken) && coord.Y != bh) {
+				if unicode.IsUpper(runeToken) && coord.Y != 1 || unicode.IsLower(runeToken) && coord.Y != bh {
 					board.Piece(coord).MarkMoved()
 				}
 			}
@@ -286,11 +286,13 @@ func (s XFEN) RectBoard() (*rect.Board, error) {
 // NewFromRectBoard converts rectangular board position to X-FEN
 func NewFromRectBoard(board *rect.Board) XFEN {
 	xfen := ""
+
+	// converting position
 	cells := board.Cells().(rect.Cells)
+	setCase := map[Colour]func(rune) rune{White: unicode.ToUpper, Black: unicode.ToLower}
 	for y := range cells {
 		empty := 0
 		for x := range cells[y] {
-			setCase := map[Colour]func(rune) rune{White: unicode.ToUpper, Black: unicode.ToLower}
 			piece := cells[y][x].Piece()
 			if piece == nil {
 				empty++
@@ -309,7 +311,47 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 	}
 	xfen = xfen[:len(xfen)-1]
 
+	// converting side to move
 	xfen += " " + string(unicode.ToLower([]rune(board.SideToMove().Name())[0]))
+
+	// converting castling flags
+	castlingLetter, bh, castlingFlags := map[int]rune{0: 'q', 1: 'k'}, board.Dim().(rect.Coord).Y, ""
+	for _, colour := range AllColours() {
+		king := board.King(colour)
+		if king == nil || king.WasMoved() {
+			continue
+		}
+		rookInitialCoords := board.RookInitialCoords(colour)
+		for i := len(rookInitialCoords) - 1; i >= 0; i-- {
+			if rookInitialCoords[i] == nil {
+				continue
+			}
+			r := board.Piece(rookInitialCoords[i])
+			if r == nil || r.WasMoved() {
+				continue
+			}
+
+			rC := r.Coord().(rect.Coord)
+			rooks := board.FindPieces(
+				base.PieceFilter{
+					Names:   []string{base.RookName},
+					Colours: []Colour{colour},
+					Condition: func(p base.IPiece) bool {
+						pC, y := p.Coord().(rect.Coord), map[Colour]int{White: 1, Black: bh}
+						return pC.Y == y[colour] && (pC.X < rC.X && i == 0 || pC.X > rC.X && i == 1)
+					},
+				})
+			castlingFlag := setCase[colour](castlingLetter[i])
+			if len(rooks) > 0 {
+				castlingFlag = setCase[colour](rect.ToLetter(rC.X))
+			}
+			castlingFlags += string(castlingFlag)
+		}
+	}
+	if castlingFlags == "" {
+		castlingFlags = "-"
+	}
+	xfen += " " + castlingFlags
 
 	return XFEN(xfen)
 }

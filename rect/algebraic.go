@@ -26,6 +26,9 @@ func NewLongAlgebraicNotation() *algebraicNotation { return &algebraicNotation{m
 // FromLetter returns x coord from the given letter
 func FromLetter(letter rune) int { return int(unicode.ToLower(letter) - 'a' + 1) }
 
+// ToLetter returns letter from the given x coord
+func ToLetter(x int) rune { return 'a' - 1 + rune(x) }
+
 // SetCoords sets notation coord to
 func (n *algebraicNotation) SetCoord(to base.ICoord) base.INotation {
 	n.Coord = to
@@ -99,5 +102,5 @@ func (n *algebraicNotation) EncodeCoord() string {
 		return ""
 	}
 	c := n.Coord.(Coord)
-	return fmt.Sprintf("%s%d", string('a'-1+c.X), c.Y)
+	return fmt.Sprintf("%c%d", ToLetter(c.X), c.Y)
 }
