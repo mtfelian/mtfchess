@@ -296,15 +296,11 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 				empty++
 				continue
 			}
-			letter := piece.Capital()
-			switch letter {
-			case 'P', 'N', 'B', 'R', 'Q', 'A', 'C', 'K':
-				if empty != 0 {
-					xfen += strconv.Itoa(empty)
-					empty = 0
-				}
-				xfen += string(setCase[piece.Colour()](letter))
+			if empty != 0 {
+				xfen += strconv.Itoa(empty)
+				empty = 0
 			}
+			xfen += string(setCase[piece.Colour()](piece.Capital()))
 		}
 		if empty != 0 {
 			xfen += strconv.Itoa(empty)
