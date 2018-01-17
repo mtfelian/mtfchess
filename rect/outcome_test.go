@@ -4,7 +4,7 @@ import (
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/rect"
-	"github.com/mtfelian/mtfchess/xfen"
+	"github.com/mtfelian/mtfchess/rect/xfen"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
