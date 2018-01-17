@@ -230,7 +230,7 @@ func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
 	return strings.Join(strings.Split(string(s), " ")[:4], " ") == strings.Join(strings.Split(string(to), " ")[:4], " ")
 }
 
-// RectBoard returns a new rectangular chess board with pieces from standard X-FEN
+// RectBoard returns a new rectangular chess board position from standard X-FEN
 func (s XFEN) RectBoard() (*rect.Board, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
@@ -281,4 +281,39 @@ func (s XFEN) RectBoard() (*rect.Board, error) {
 	b.ComputeOutcome()
 
 	return b, nil
+}
+
+// NewFromRectBoard converts rectangular board position to X-FEN
+func NewFromRectBoard(board *rect.Board) XFEN {
+	xfen := ""
+	cells := board.Cells().(rect.Cells)
+	for y := range cells {
+		empty := 0
+		for x := range cells[y] {
+			setCase := map[Colour]func(rune) rune{White: unicode.ToUpper, Black: unicode.ToLower}
+			piece := cells[y][x].Piece()
+			if piece == nil {
+				empty++
+				continue
+			}
+			letter := piece.Capital()
+			switch letter {
+			case 'P', 'N', 'B', 'R', 'Q', 'A', 'C', 'K':
+				if empty != 0 {
+					xfen += strconv.Itoa(empty)
+					empty = 0
+				}
+				xfen += string(setCase[piece.Colour()](letter))
+			}
+		}
+		if empty != 0 {
+			xfen += strconv.Itoa(empty)
+		}
+		xfen += "/"
+	}
+	xfen = xfen[:len(xfen)-1]
+
+	xfen += " " + string(unicode.ToLower([]rune(board.SideToMove().Name())[0]))
+
+	return XFEN(xfen)
 }

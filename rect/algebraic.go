@@ -41,7 +41,7 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 		delimiter = "x"
 	}
 
-	fig := piece.Capital()
+	fig := string(piece.Capital())
 	if piece.Name() == base.PawnName {
 		fig = ""
 	}
