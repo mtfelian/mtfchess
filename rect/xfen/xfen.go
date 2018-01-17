@@ -356,8 +356,7 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 	xfen += " " + castlingFlags
 
 	// converting en-passant capture coord
-	canCaptureEP := board.CanCaptureEnPassantAt()
-	epCaptureFEN := "-"
+	canCaptureEP, epCaptureFEN := board.CanCaptureEnPassantAt(), "-"
 	if canCaptureEP != nil {
 		step := 1
 		if sideToMove == Black {
