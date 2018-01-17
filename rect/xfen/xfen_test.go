@@ -158,10 +158,9 @@ var _ = Describe("Rectangular board to XFEN tests", func() {
 		b.SetHalfMoveCount(4)
 	}
 
-	FIt("checks converting board to XFEN", func() {
+	It("checks converting board to XFEN", func() {
 		setupPosition()
 		xfen := NewFromRectBoard(b)
-		fmt.Println(xfen)
 		Expect(xfen).To(Equal(XFEN(`rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`)))
 	})
 })

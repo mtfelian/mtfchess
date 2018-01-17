@@ -311,11 +311,13 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 	}
 	xfen = xfen[:len(xfen)-1]
 
+	sideToMove := board.SideToMove()
+
 	// converting side to move
-	xfen += " " + string(unicode.ToLower([]rune(board.SideToMove().Name())[0]))
+	xfen += " " + string(unicode.ToLower([]rune(sideToMove.Name())[0]))
 
 	// converting castling flags
-	castlingLetter, bh, castlingFlags := map[int]rune{0: 'q', 1: 'k'}, board.Dim().(rect.Coord).Y, ""
+	bh, castlingFlags := board.Dim().(rect.Coord).Y, ""
 	for _, colour := range AllColours() {
 		king := board.King(colour)
 		if king == nil || king.WasMoved() {
@@ -341,7 +343,7 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 						return pC.Y == y[colour] && (pC.X < rC.X && i == 0 || pC.X > rC.X && i == 1)
 					},
 				})
-			castlingFlag := setCase[colour](castlingLetter[i])
+			castlingFlag := setCase[colour]([]rune{'q', 'k'}[i])
 			if len(rooks) > 0 {
 				castlingFlag = setCase[colour](rect.ToLetter(rC.X))
 			}
@@ -352,6 +354,23 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 		castlingFlags = "-"
 	}
 	xfen += " " + castlingFlags
+
+	// converting en-passant capture coord
+	canCaptureEP := board.CanCaptureEnPassantAt()
+	epCaptureFEN := "-"
+	if canCaptureEP != nil {
+		step := 1
+		if sideToMove == Black {
+			step = -1
+		}
+		epCoord, notation := canCaptureEP.(rect.Coord), rect.NewLongAlgebraicNotation()
+		notation.SetCoord(rect.Coord{epCoord.X, epCoord.Y + step})
+		epCaptureFEN = notation.EncodeCoord()
+	}
+	xfen += " " + epCaptureFEN
+
+	// converting counters
+	xfen += fmt.Sprintf(" %d %d", board.HalfMoveCount(), board.MoveNumber())
 
 	return XFEN(xfen)
 }
