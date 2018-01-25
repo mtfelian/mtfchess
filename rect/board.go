@@ -225,13 +225,14 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 			b.Empty(epCaptureAt)
 		}
 
-		b.SetCanCaptureEnPassantAt(nil)
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
 		diff := pY - toY
 		if diff != 1 && diff != -1 { // long pawn move
 			b.SetCanCaptureEnPassantAt(to)
 		}
 		b.SetHalfMoveCount(-1) // pawn advance, reset counting: next it will be increased to 0
+	} else {
+		b.SetCanCaptureEnPassantAt(nil)
 	}
 
 	piece.MarkMoved()

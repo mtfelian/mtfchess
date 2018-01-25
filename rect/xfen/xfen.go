@@ -373,3 +373,8 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 
 	return XFEN(xfen)
 }
+
+// NewStandardChessStartingPosition returns XFEN for starting position for standard chess
+func NewStandardChessStartingPosition() XFEN {
+	return XFEN(`rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1`)
+}

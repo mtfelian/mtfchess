@@ -35,6 +35,8 @@ func (n *algebraicNotation) SetCoord(to base.ICoord) base.INotation {
 	return n
 }
 
+// todo implement DecodeMove (and add it to INotation)
+
 // EncodeMove on board with piece to dst coord
 func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst base.ICoord) string {
 	anFrom := NewLongAlgebraicNotation().SetCoord(piece.Coord())
@@ -64,6 +66,8 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 
 	return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 }
+
+// todo implement DecodeCastling (and add it to INotation)
 
 // EncodeCastling on board
 func (n *algebraicNotation) EncodeCastling(board base.IBoard, i int) string {
