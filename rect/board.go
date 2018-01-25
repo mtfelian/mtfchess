@@ -223,6 +223,8 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		epCaptureAt := b.CanCaptureEnPassantAt()
 		if epCaptureAt != nil && to.(Coord).X == epCaptureAt.(Coord).X {
 			b.Empty(epCaptureAt)
+		} else {
+			b.SetCanCaptureEnPassantAt(nil)
 		}
 
 		pY, toY := piece.Coord().(Coord).Y, to.(Coord).Y
@@ -471,7 +473,7 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b.SetSettings(settings)
 	b.SetSideToMove(White)
 	b.SetMoveNumber(1)
-	b.SetHalfMoveCount(1)
+	b.SetHalfMoveCount(0)
 	b.SetOutcome(base.NewOutcomeNotCompleted())
 	return b
 }
@@ -482,5 +484,5 @@ todo to implement:
     - 3-fold repetition draw rule (it requires each move X-FEN storing);
   - other notations except long algebraic;
   - more tests on board to X-FEN conversion;
-  - ComputeOutcome(): test for 50 moves draw rule; add 3-fold repetition, agreement, time over, not sufficient material;
+  - ComputeOutcome(): add 3-fold repetition, agreement, time over, not sufficient material and test for all of it;
 */

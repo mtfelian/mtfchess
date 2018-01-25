@@ -107,7 +107,7 @@ var _ = Describe("Board test", func() {
 			b.SetSideToMove(White)
 
 			Expect(b.MoveNumber()).To(BeNumerically("==", 1))
-			Expect(b.HalfMoveCount()).To(BeNumerically("==", 1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", 0))
 			var mn, hmc = 3, 6
 			b.SetMoveNumber(mn)
 			b.SetHalfMoveCount(hmc)
@@ -137,7 +137,7 @@ var _ = Describe("Board test", func() {
 			b.SetSideToMove(White)
 
 			Expect(b.MoveNumber()).To(BeNumerically("==", 1))
-			Expect(b.HalfMoveCount()).To(BeNumerically("==", 1))
+			Expect(b.HalfMoveCount()).To(BeNumerically("==", 0))
 			var mn, hmc = 3, 6
 			b.SetMoveNumber(mn)
 			b.SetHalfMoveCount(hmc)
