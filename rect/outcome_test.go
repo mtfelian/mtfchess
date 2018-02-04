@@ -278,7 +278,7 @@ var _ = Describe("outcome test", func() {
 				{`g6`, `e7`}, {`g8`, `h8`},
 				{`e6`, `g5`}, /* draw by 50-moves rule */
 			})
-			Expect(b.Outcome().Equals(base.NewDrawByMovesRule())).To(BeTrue())
+			Expect(b.Outcome().Equals(base.NewDrawByXMovesRule())).To(BeTrue())
 		})
 	})
 })

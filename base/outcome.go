@@ -15,8 +15,8 @@ const (
 	timeOver
 	stalemate
 	drawByAgreement
-	drawBy3FoldRepetition
-	drawByMovesRule
+	drawByXFoldRepetition
+	drawByXMovesRule
 	drawByNotSufficientMaterial
 )
 
@@ -42,9 +42,9 @@ func (o Outcome) String() string {
 		return "Stalemate"
 	case drawByAgreement:
 		return "Draw by agreement"
-	case drawBy3FoldRepetition:
+	case drawByXFoldRepetition:
 		return "Draw by 3-fold repetition"
-	case drawByMovesRule:
+	case drawByXMovesRule:
 		return "Draw by 50 moves rule"
 	case drawByNotSufficientMaterial:
 		return "Draw by no sufficient material"
@@ -72,11 +72,11 @@ func NewDrawByAgreement() Outcome { return Outcome{Winner: Transparent, Reason: 
 
 // NewDrawBy3FoldRepetition returns an outcome for draw by 3-fold repetition
 func NewDrawBy3FoldRepetition() Outcome {
-	return Outcome{Winner: Transparent, Reason: drawBy3FoldRepetition}
+	return Outcome{Winner: Transparent, Reason: drawByXFoldRepetition}
 }
 
-// NewDrawByMovesRule returns an outcome for draw by (50) moves rule
-func NewDrawByMovesRule() Outcome { return Outcome{Winner: Transparent, Reason: drawByMovesRule} }
+// NewDrawByXMovesRule returns an outcome for draw by (50) moves rule
+func NewDrawByXMovesRule() Outcome { return Outcome{Winner: Transparent, Reason: drawByXMovesRule} }
 
 // NewDrawByNotSufficientMaterial returns an outcome for draw due to not sufficient material
 func NewDrawByNotSufficientMaterial() Outcome {

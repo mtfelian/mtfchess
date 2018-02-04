@@ -428,7 +428,7 @@ func (b *Board) ComputeOutcome() {
 	case b.InStalemate(sideToMove):
 		b.SetOutcome(base.NewStalemate())
 	case settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw:
-		b.SetOutcome(base.NewDrawByMovesRule())
+		b.SetOutcome(base.NewDrawByXMovesRule())
 	}
 }
 
