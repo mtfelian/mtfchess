@@ -20,6 +20,7 @@ type Board struct {
 	moveNumber            int
 	halfMoveCounter       int
 	outcome               base.Outcome
+	positions             []base.IPosition
 }
 
 // X converts x1 to slice index
@@ -248,6 +249,9 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
 	b.ComputeOutcome()
+	xFEN := NewXFEN(b)
+	_ = xFEN
+	//b.positions = append(b.positions, )
 	return true
 }
 

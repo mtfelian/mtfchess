@@ -3,7 +3,6 @@ package rect_test
 import (
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	"github.com/mtfelian/mtfchess/piece"
 	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -68,8 +67,8 @@ var _ = Describe("Castling test", func() {
 		Context("4 rooks, 2 kings", func() {
 			var wr1, wr2, wk, br1, br2, bk base.IPiece
 			setupPosition := func() {
-				wr1, wr2, wk = piece.NewRook(White), piece.NewRook(White), piece.NewKing(White)
-				br1, br2, bk = piece.NewRook(Black), piece.NewRook(Black), piece.NewKing(Black)
+				wr1, wr2, wk = rect.NewRook(White), rect.NewRook(White), rect.NewKing(White)
+				br1, br2, bk = rect.NewRook(Black), rect.NewRook(Black), rect.NewKing(Black)
 				b.PlacePiece(rect.Coord{1, 1}, wr1)
 				b.PlacePiece(rect.Coord{8, 1}, wr2)
 				b.PlacePiece(rect.Coord{5, 1}, wk)
@@ -131,7 +130,7 @@ var _ = Describe("Castling test", func() {
 
 			It("checks that only one castling is enabled due to opponent's piece at king's path", func() {
 				setupPosition()
-				b.PlacePiece(rect.Coord{6, 1}, piece.NewKnight(Black))
+				b.PlacePiece(rect.Coord{6, 1}, rect.NewKnight(Black))
 				wc, bc := b.Castlings(White), b.Castlings(Black)
 				Expect(wc).To(HaveLen(1))
 				Expect(bc).To(HaveLen(2))
@@ -142,7 +141,7 @@ var _ = Describe("Castling test", func() {
 
 			It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
 				setupPosition()
-				b.PlacePiece(rect.Coord{7, 1}, piece.NewKnight(Black))
+				b.PlacePiece(rect.Coord{7, 1}, rect.NewKnight(Black))
 				wc, bc := b.Castlings(White), b.Castlings(Black)
 				Expect(wc).To(HaveLen(1))
 				Expect(bc).To(HaveLen(2))
@@ -153,7 +152,7 @@ var _ = Describe("Castling test", func() {
 
 			It("checks that only one castling is enabled due to opponent's piece at king's path", func() {
 				setupPosition()
-				b.PlacePiece(rect.Coord{4, 8}, piece.NewKnight(Black))
+				b.PlacePiece(rect.Coord{4, 8}, rect.NewKnight(Black))
 				wc, bc := b.Castlings(White), b.Castlings(Black)
 				Expect(wc).To(HaveLen(2))
 				Expect(bc).To(HaveLen(1))
@@ -164,7 +163,7 @@ var _ = Describe("Castling test", func() {
 
 			It("checks that only one castling is enabled due to opponent's piece at king's dst", func() {
 				setupPosition()
-				b.PlacePiece(rect.Coord{3, 8}, piece.NewKnight(Black))
+				b.PlacePiece(rect.Coord{3, 8}, rect.NewKnight(Black))
 				wc, bc := b.Castlings(White), b.Castlings(Black)
 				Expect(wc).To(HaveLen(2))
 				Expect(bc).To(HaveLen(1))
@@ -175,7 +174,7 @@ var _ = Describe("Castling test", func() {
 
 			It("checks that no castlings if in check", func() {
 				setupPosition()
-				b.PlacePiece(rect.Coord{4, 2}, piece.NewBishop(Black))
+				b.PlacePiece(rect.Coord{4, 2}, rect.NewBishop(Black))
 				wc, bc := b.Castlings(White), b.Castlings(Black)
 				Expect(wc).To(HaveLen(0))
 				Expect(bc).To(HaveLen(2))
@@ -240,8 +239,8 @@ var _ = Describe("Castling test", func() {
 		Context("2 rooks, 2 kings", func() {
 			var wr, wk, br, bk base.IPiece
 			setupPosition := func() {
-				wr, wk = piece.NewRook(White), piece.NewKing(White)
-				br, bk = piece.NewRook(Black), piece.NewKing(Black)
+				wr, wk = rect.NewRook(White), rect.NewKing(White)
+				br, bk = rect.NewRook(Black), rect.NewKing(Black)
 				b.PlacePiece(rect.Coord{1, 1}, wr)
 				b.PlacePiece(rect.Coord{5, 1}, wk)
 				b.PlacePiece(rect.Coord{8, 8}, br)
@@ -282,30 +281,30 @@ var _ = Describe("Castling test", func() {
 		Context("4 rooks, 2 kings", func() {
 			var wr1, wr2, wk, br1, br2, bk base.IPiece
 			setupPosition := func() {
-				wr1, wr2, wk = piece.NewRook(White), piece.NewRook(White), piece.NewKing(White)
-				br1, br2, bk = piece.NewRook(Black), piece.NewRook(Black), piece.NewKing(Black)
+				wr1, wr2, wk = rect.NewRook(White), rect.NewRook(White), rect.NewKing(White)
+				br1, br2, bk = rect.NewRook(Black), rect.NewRook(Black), rect.NewKing(Black)
 
-				b.PlacePiece(rect.Coord{3, 1}, piece.NewBishop(White))
-				b.PlacePiece(rect.Coord{4, 1}, piece.NewKnight(White))
-				b.PlacePiece(rect.Coord{2, 2}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{3, 2}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{4, 2}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{5, 2}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{6, 2}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{3, 3}, piece.NewKnight(White))
-				b.PlacePiece(rect.Coord{6, 3}, piece.NewBishop(White))
-				b.PlacePiece(rect.Coord{1, 4}, piece.NewPawn(White))
-				b.PlacePiece(rect.Coord{6, 5}, piece.NewBishop(Black))
-				b.PlacePiece(rect.Coord{7, 5}, piece.NewKnight(Black))
-				b.PlacePiece(rect.Coord{4, 6}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{7, 6}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{1, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{2, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{3, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{5, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{6, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{8, 7}, piece.NewPawn(Black))
-				b.PlacePiece(rect.Coord{2, 8}, piece.NewKnight(Black))
+				b.PlacePiece(rect.Coord{3, 1}, rect.NewBishop(White))
+				b.PlacePiece(rect.Coord{4, 1}, rect.NewKnight(White))
+				b.PlacePiece(rect.Coord{2, 2}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{3, 2}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{4, 2}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{5, 2}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{6, 2}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{3, 3}, rect.NewKnight(White))
+				b.PlacePiece(rect.Coord{6, 3}, rect.NewBishop(White))
+				b.PlacePiece(rect.Coord{1, 4}, rect.NewPawn(White))
+				b.PlacePiece(rect.Coord{6, 5}, rect.NewBishop(Black))
+				b.PlacePiece(rect.Coord{7, 5}, rect.NewKnight(Black))
+				b.PlacePiece(rect.Coord{4, 6}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{7, 6}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{1, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{2, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{3, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{5, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{6, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{8, 7}, rect.NewPawn(Black))
+				b.PlacePiece(rect.Coord{2, 8}, rect.NewKnight(Black))
 
 				b.PlacePiece(rect.Coord{8, 1}, wr1)
 				wr1.MarkMoved()

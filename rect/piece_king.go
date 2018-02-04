@@ -1,9 +1,8 @@
-package piece
+package rect
 
 import (
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	"github.com/mtfelian/mtfchess/rect"
 )
 
 // King is a chess king
@@ -17,12 +16,8 @@ func NewKing(colour Colour) base.IPiece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
 func (p *King) dst(board base.IBoard, moving bool) base.ICoords {
-	switch b := board.(type) {
-	case *rect.Board:
-		return rect.NewCoords(append(leaper(1, 0, p, b, moving, 0, moveAny), leaper(1, 1, p, b, moving, 0, moveAny)...))
-	default:
-		panic("invalid coord type")
-	}
+	return NewCoords(append(leaper(1, 0, p, board.(*Board), moving, 0, moveAny),
+		leaper(1, 1, p, board.(*Board), moving, 0, moveAny)...))
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece

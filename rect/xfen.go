@@ -1,4 +1,4 @@
-package xfen
+package rect
 
 import (
 	"fmt"
@@ -8,8 +8,6 @@ import (
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	"github.com/mtfelian/mtfchess/piece"
-	"github.com/mtfelian/mtfchess/rect"
 )
 
 // XFEN is an X-FEN string
@@ -58,7 +56,7 @@ func parseBoardWidth(line string) int {
 
 // parsePosLines parses lines containing FEN position parts (between '/' splitters) into pieces on a board
 // this func changes board parameter
-func parsePosLines(lines []string, board *rect.Board) error {
+func parsePosLines(lines []string, board *Board) error {
 	for y, line := range lines {
 		x := 1
 		for _, token := range getPosLineTokens(line) {
@@ -68,7 +66,7 @@ func parsePosLines(lines []string, board *rect.Board) error {
 				continue
 			}
 
-			coord, runeToken := rect.Coord{x, board.Dim().(rect.Coord).Y - y}, []rune(token)[0]
+			coord, runeToken := Coord{x, board.Dim().(Coord).Y - y}, []rune(token)[0]
 
 			colour := White
 			if unicode.IsLower(runeToken) {
@@ -76,8 +74,8 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			}
 
 			f, exists := map[rune]func(Colour) base.IPiece{
-				'p': piece.NewPawn, 'n': piece.NewKnight, 'b': piece.NewBishop, 'r': piece.NewRook,
-				'q': piece.NewQueen, 'a': piece.NewArchbishop, 'c': piece.NewChancellor, 'k': piece.NewKing,
+				'p': NewPawn, 'n': NewKnight, 'b': NewBishop, 'r': NewRook,
+				'q': NewQueen, 'a': NewArchbishop, 'c': NewChancellor, 'k': NewKing,
 			}[unicode.ToLower(runeToken)]
 			if !exists {
 				return fmt.Errorf("invalid piece token: %s", token)
@@ -85,7 +83,7 @@ func parsePosLines(lines []string, board *rect.Board) error {
 			board.PlacePiece(coord, f(colour))
 
 			// marking pieces moved as long as possible to detect it
-			bh := board.Dim().(rect.Coord).Y
+			bh := board.Dim().(Coord).Y
 			switch {
 			case runeToken == 'p' && coord.Y != bh-1:
 				board.Piece(coord).MarkMoved()
@@ -104,7 +102,7 @@ func parsePosLines(lines []string, board *rect.Board) error {
 
 // parseSideToMove parses line into side to move colour
 // this func changes board parameter
-func parseSideToMove(line string, board *rect.Board) error {
+func parseSideToMove(line string, board *Board) error {
 	if len(line) != 1 {
 		return fmt.Errorf("invalid side to move: %s", line)
 	}
@@ -121,17 +119,17 @@ func parseSideToMove(line string, board *rect.Board) error {
 
 // parseEP parses line into dst coords of a piece which can be EP-captured in board, with specified sideToMove
 // this func changes board parameter
-func parseEP(line string, sideToMove Colour, board *rect.Board) error {
+func parseEP(line string, sideToMove Colour, board *Board) error {
 	if line == "-" {
 		return nil
 	}
 
-	ep := rect.NewLongAlgebraicNotation()
+	ep := NewLongAlgebraicNotation()
 	if err := ep.DecodeCoord(line); err != nil {
 		return err
 	}
 
-	epPieceColour, bh := sideToMove.Invert(), board.Dim().(rect.Coord).Y
+	epPieceColour, bh := sideToMove.Invert(), board.Dim().(Coord).Y
 	step, limY := 1, bh-1
 	if epPieceColour == Black {
 		step, limY = -1, 2
@@ -139,9 +137,9 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 
 	// FEN has 'EP capture dst cell' coords while the board keeps 'piece to capture' coords
 
-	epCoordX := ep.Coord.(rect.Coord).X
-	for y := ep.Coord.(rect.Coord).Y + step; y != limY; y = y + step {
-		coord := rect.Coord{epCoordX, y}
+	epCoordX := ep.Coord.(Coord).X
+	for y := ep.Coord.(Coord).Y + step; y != limY; y = y + step {
+		coord := Coord{epCoordX, y}
 		p := board.Piece(coord)
 		if p != nil && p.Name() == base.PawnName {
 			board.SetCanCaptureEnPassantAt(coord)
@@ -154,21 +152,21 @@ func parseEP(line string, sideToMove Colour, board *rect.Board) error {
 
 // parseCastling parses line about allowed castlings
 // this func changes board parameter
-func parseCastling(line string, board *rect.Board) error {
+func parseCastling(line string, board *Board) error {
 	if line == "-" {
 		return nil
 	}
 
-	bC := board.Dim().(rect.Coord)
+	bC := board.Dim().(Coord)
 	// findRook finds rook of colour.
 	// Set i to 0 for aSide rook finding, set i to 1 for zSide rook finding
 	// Set outer to true to find outer rook (closer to board border), otherwise inner rook (closer to king)
-	findRook := func(colour Colour, i int, outer bool) *piece.Rook {
+	findRook := func(colour Colour, i int, outer bool) *Rook {
 		rooks := board.FindPieces(base.PieceFilter{
 			Names:   []string{base.RookName},
 			Colours: []Colour{colour},
 			Condition: func(r base.IPiece) bool {
-				rC, y := r.Coord().(rect.Coord), map[Colour]int{White: 1, Black: bC.Y}
+				rC, y := r.Coord().(Coord), map[Colour]int{White: 1, Black: bC.Y}
 				return rC.Y == y[colour]
 			},
 		})
@@ -177,7 +175,7 @@ func parseCastling(line string, board *rect.Board) error {
 		}
 
 		if len(rooks) == 1 {
-			return rooks[0].(*piece.Rook)
+			return rooks[0].(*Rook)
 		}
 
 		if len(rooks) > 2 {
@@ -187,7 +185,7 @@ func parseCastling(line string, board *rect.Board) error {
 		minRookX, maxRookX := bC.X+1, 0
 		var aRook, zRook base.IPiece
 		for j := range rooks {
-			c := rooks[j].Coord().(rect.Coord)
+			c := rooks[j].Coord().(Coord)
 			if c.X < minRookX {
 				minRookX, aRook = c.X, rooks[j]
 			}
@@ -196,10 +194,10 @@ func parseCastling(line string, board *rect.Board) error {
 			}
 		}
 		if outer && i == 1 || !outer && i == 0 {
-			return zRook.(*piece.Rook)
+			return zRook.(*Rook)
 		}
 		// if (outer && i == 0) || (!outer && i == 1)
-		return aRook.(*piece.Rook)
+		return aRook.(*Rook)
 	}
 
 	for _, token := range []rune(line) {
@@ -211,8 +209,8 @@ func parseCastling(line string, board *rect.Board) error {
 		if king == nil {
 			return fmt.Errorf("king is not set while parseCastling() in XFEN")
 		}
-		outer, i, kC := strings.Contains("KkQq", string(token)), 0, king.Coord().(rect.Coord)
-		if strings.Contains("Kk", string(token)) || (!outer && rect.FromLetter(token) > kC.X) {
+		outer, i, kC := strings.Contains("KkQq", string(token)), 0, king.Coord().(Coord)
+		if strings.Contains("Kk", string(token)) || (!outer && FromLetter(token) > kC.X) {
 			i = 1
 		}
 		r := findRook(colour, i, outer)
@@ -230,8 +228,8 @@ func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
 	return strings.Join(strings.Split(string(s), " ")[:4], " ") == strings.Join(strings.Split(string(to), " ")[:4], " ")
 }
 
-// RectBoard returns a new rectangular chess board position from standard X-FEN
-func (s XFEN) RectBoard() (*rect.Board, error) {
+// Board returns a new rectangular chess board position from standard X-FEN
+func (s XFEN) Board() (base.IBoard, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
 		return nil, fmt.Errorf("invalid X-FEN length")
@@ -250,7 +248,7 @@ func (s XFEN) RectBoard() (*rect.Board, error) {
 		return nil, fmt.Errorf("board width is too small")
 	}
 
-	b := rect.NewEmptyBoard(bw, bh, rect.StandardChessBoardSettings())
+	b := NewEmptyBoard(bw, bh, StandardChessBoardSettings())
 
 	if err := parsePosLines(posLines, b); err != nil {
 		return nil, err
@@ -283,12 +281,12 @@ func (s XFEN) RectBoard() (*rect.Board, error) {
 	return b, nil
 }
 
-// NewFromRectBoard converts rectangular board position to X-FEN
-func NewFromRectBoard(board *rect.Board) XFEN {
+// NewXFEN converts rectangular board position to X-FEN
+func NewXFEN(board *Board) XFEN {
 	xfen := ""
 
 	// converting position
-	cells := board.Cells().(rect.Cells)
+	cells := board.Cells().(Cells)
 	setCase := map[Colour]func(rune) rune{White: unicode.ToUpper, Black: unicode.ToLower}
 	for y := range cells {
 		empty := 0
@@ -317,7 +315,7 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 	xfen += " " + string(unicode.ToLower([]rune(sideToMove.Name())[0]))
 
 	// converting castling flags
-	bh, castlingFlags := board.Dim().(rect.Coord).Y, ""
+	bh, castlingFlags := board.Dim().(Coord).Y, ""
 	for _, colour := range AllColours() {
 		king := board.King(colour)
 		if king == nil || king.WasMoved() {
@@ -333,19 +331,19 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 				continue
 			}
 
-			rC := r.Coord().(rect.Coord)
+			rC := r.Coord().(Coord)
 			rooks := board.FindPieces(
 				base.PieceFilter{
 					Names:   []string{base.RookName},
 					Colours: []Colour{colour},
 					Condition: func(p base.IPiece) bool {
-						pC, y := p.Coord().(rect.Coord), map[Colour]int{White: 1, Black: bh}
+						pC, y := p.Coord().(Coord), map[Colour]int{White: 1, Black: bh}
 						return pC.Y == y[colour] && (pC.X < rC.X && i == 0 || pC.X > rC.X && i == 1)
 					},
 				})
 			castlingFlag := setCase[colour]([]rune{'q', 'k'}[i])
 			if len(rooks) > 0 {
-				castlingFlag = setCase[colour](rect.ToLetter(rC.X))
+				castlingFlag = setCase[colour](ToLetter(rC.X))
 			}
 			castlingFlags += string(castlingFlag)
 		}
@@ -362,8 +360,8 @@ func NewFromRectBoard(board *rect.Board) XFEN {
 		if sideToMove == Black {
 			step = -1
 		}
-		epCoord, notation := canCaptureEP.(rect.Coord), rect.NewLongAlgebraicNotation()
-		notation.SetCoord(rect.Coord{epCoord.X, epCoord.Y + step})
+		epCoord, notation := canCaptureEP.(Coord), NewLongAlgebraicNotation()
+		notation.SetCoord(Coord{epCoord.X, epCoord.Y + step})
 		epCaptureFEN = notation.EncodeCoord()
 	}
 	xfen += " " + epCaptureFEN

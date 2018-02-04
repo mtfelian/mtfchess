@@ -6,7 +6,6 @@ import (
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
 	"github.com/mtfelian/mtfchess/rect"
-	"github.com/mtfelian/mtfchess/rect/xfen"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -17,7 +16,7 @@ var _ = Describe("outcome test", func() {
 
 	Context("position 1, from chess960", func() {
 		BeforeEach(func() {
-			b, err = xfen.XFEN(`rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`).RectBoard()
+			b, err = rect.XFEN(`rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11`).Board()
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -34,7 +33,7 @@ var _ = Describe("outcome test", func() {
 
 	Context("position 2, checkmate", func() {
 		BeforeEach(func() {
-			b, err = xfen.XFEN(`r3kb1r/3Q3p/p3P1n1/2p1p1P1/2P1bp2/7P/PB3P2/R4RK1 b kq - 2 24`).RectBoard()
+			b, err = rect.XFEN(`r3kb1r/3Q3p/p3P1n1/2p1p1P1/2P1bp2/7P/PB3P2/R4RK1 b kq - 2 24`).Board()
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -65,7 +64,7 @@ var _ = Describe("outcome test", func() {
 
 	Context("position 3, stalemate", func() {
 		BeforeEach(func() {
-			b, err = xfen.XFEN(`5bnr/4p1pq/4Qpkr/7p/2P4P/8/PP1PPPP1/RNB1KBNR b KQ - 0 10`).RectBoard()
+			b, err = rect.XFEN(`5bnr/4p1pq/4Qpkr/7p/2P4P/8/PP1PPPP1/RNB1KBNR b KQ - 0 10`).Board()
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -93,7 +92,7 @@ var _ = Describe("outcome test", func() {
 
 	Context("50 moves draw rule", func() {
 		BeforeEach(func() {
-			b, err = xfen.NewStandardChessStartingPosition().RectBoard()
+			b, err = rect.NewStandardChessStartingPosition().Board()
 			Expect(err).NotTo(HaveOccurred())
 		})
 

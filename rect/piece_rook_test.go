@@ -1,74 +1,72 @@
-package piece_test
+package rect
 
 import (
 	"sort"
 
 	"github.com/mtfelian/mtfchess/base"
 	. "github.com/mtfelian/mtfchess/colour"
-	"github.com/mtfelian/mtfchess/piece"
-	"github.com/mtfelian/mtfchess/rect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Rook test", func() {
 	var b base.IBoard
-	resetBoard := func() { b = rect.NewEmptyTestBoard() }
+	resetBoard := func() { b = NewEmptyTestBoard() }
 	BeforeEach(func() { resetBoard() })
 
 	It("generates moves", func() {
-		wr, wn, br := piece.NewRook(White), piece.NewKnight(White), piece.NewRook(Black)
-		b.PlacePiece(rect.Coord{4, 2}, wr)
-		b.PlacePiece(rect.Coord{4, 4}, wn)
-		b.PlacePiece(rect.Coord{4, 1}, br)
+		wr, wn, br := NewRook(White), NewKnight(White), NewRook(Black)
+		b.PlacePiece(Coord{4, 2}, wr)
+		b.PlacePiece(Coord{4, 4}, wn)
+		b.PlacePiece(Coord{4, 1}, br)
 
 		d := wr.Destinations(b)
 		Expect(d.Len()).To(Equal(6))
 		sort.Sort(d)
-		Expect(d.Equals(rect.NewCoords([]base.ICoord{
-			rect.Coord{4, 1}, rect.Coord{1, 2}, rect.Coord{2, 2},
-			rect.Coord{3, 2}, rect.Coord{5, 2}, rect.Coord{4, 3},
+		Expect(d.Equals(NewCoords([]base.ICoord{
+			Coord{4, 1}, Coord{1, 2}, Coord{2, 2},
+			Coord{3, 2}, Coord{5, 2}, Coord{4, 3},
 		}))).To(BeTrue())
 	})
 
 	It("attacks right cells", func() {
-		wr, bq := piece.NewRook(White), piece.NewQueen(Black)
-		bn, wn, wk := piece.NewKnight(Black), piece.NewKnight(White), piece.NewKing(White)
-		b.PlacePiece(rect.Coord{1, 2}, bq)
-		b.PlacePiece(rect.Coord{2, 2}, wr)
-		b.PlacePiece(rect.Coord{3, 2}, wk)
-		b.PlacePiece(rect.Coord{2, 1}, bn)
-		b.PlacePiece(rect.Coord{2, 5}, wn)
+		wr, bq := NewRook(White), NewQueen(Black)
+		bn, wn, wk := NewKnight(Black), NewKnight(White), NewKing(White)
+		b.PlacePiece(Coord{1, 2}, bq)
+		b.PlacePiece(Coord{2, 2}, wr)
+		b.PlacePiece(Coord{3, 2}, wk)
+		b.PlacePiece(Coord{2, 1}, bn)
+		b.PlacePiece(Coord{2, 5}, wn)
 
 		attacking := wr.Attacks(b)
 		sort.Sort(attacking)
-		Expect(attacking.Equals(rect.NewCoords([]base.ICoord{
-			rect.Coord{2, 1}, rect.Coord{1, 2}, rect.Coord{3, 2},
-			rect.Coord{2, 3}, rect.Coord{2, 4}, rect.Coord{2, 5},
+		Expect(attacking.Equals(NewCoords([]base.ICoord{
+			Coord{2, 1}, Coord{1, 2}, Coord{3, 2},
+			Coord{2, 3}, Coord{2, 4}, Coord{2, 5},
 		}))).To(BeTrue())
 
-		Expect(b.MakeMove(rect.Coord{2, 5}, wr)).To(BeFalse(), "captured own piece")
-		Expect(b.MakeMove(rect.Coord{3, 2}, wr)).To(BeFalse(), "captured own piece")
-		Expect(b.MakeMove(rect.Coord{2, 6}, wr)).To(BeFalse(), "jumped over own piece")
-		Expect(b.MakeMove(rect.Coord{1, 2}, wr)).To(BeTrue(), "can't capture")
+		Expect(b.MakeMove(Coord{2, 5}, wr)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(Coord{3, 2}, wr)).To(BeFalse(), "captured own piece")
+		Expect(b.MakeMove(Coord{2, 6}, wr)).To(BeFalse(), "jumped over own piece")
+		Expect(b.MakeMove(Coord{1, 2}, wr)).To(BeTrue(), "can't capture")
 	})
 
 	It("makes legal moves", func() {
 		var wr, br base.IPiece
 		testReset := func() {
 			resetBoard()
-			wr, br = piece.NewRook(White), piece.NewRook(Black)
-			b.PlacePiece(rect.Coord{2, 1}, wr)
-			b.PlacePiece(rect.Coord{4, 1}, br)
+			wr, br = NewRook(White), NewRook(Black)
+			b.PlacePiece(Coord{2, 1}, wr)
+			b.PlacePiece(Coord{4, 1}, br)
 		}
 		testReset()
 
 		destinations := wr.Destinations(b)
 		sort.Sort(destinations)
-		Expect(destinations.Equals(rect.NewCoords([]base.ICoord{
-			rect.Coord{1, 1}, rect.Coord{3, 1}, rect.Coord{4, 1},
-			rect.Coord{2, 2}, rect.Coord{2, 3}, rect.Coord{2, 4},
-			rect.Coord{2, 5}, rect.Coord{2, 6},
+		Expect(destinations.Equals(NewCoords([]base.ICoord{
+			Coord{1, 1}, Coord{3, 1}, Coord{4, 1},
+			Coord{2, 2}, Coord{2, 3}, Coord{2, 4},
+			Coord{2, 5}, Coord{2, 6},
 		}))).To(BeTrue())
 
 		brCoord, wrCoord := br.Coord().Copy(), wr.Coord().Copy()
@@ -97,15 +95,15 @@ var _ = Describe("Rook test", func() {
 		var wr, br base.IPiece
 		testReset := func() {
 			resetBoard()
-			wr, br = piece.NewRook(White), piece.NewRook(Black)
-			b.PlacePiece(rect.Coord{2, 1}, wr)
-			b.PlacePiece(rect.Coord{4, 1}, br)
+			wr, br = NewRook(White), NewRook(Black)
+			b.PlacePiece(Coord{2, 1}, wr)
+			b.PlacePiece(Coord{4, 1}, br)
 		}
 		testReset()
 
-		destinations := rect.NewCoords([]base.ICoord{rect.Coord{3, 2}, rect.Coord{5, 1}, wr.Coord()})
+		destinations := NewCoords([]base.ICoord{Coord{3, 2}, Coord{5, 1}, wr.Coord()})
 		for destinations.HasNext() {
-			d, c := destinations.Next().(rect.Coord), wr.Coord()
+			d, c := destinations.Next().(Coord), wr.Coord()
 			dCellCopy := b.Cell(d).Copy(b)
 			Expect(b.MakeMove(d, wr)).To(BeFalse(), "failed at offset %d", destinations.I())
 			// check source cell to contain unmoved piece
