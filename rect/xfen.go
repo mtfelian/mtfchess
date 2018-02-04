@@ -229,7 +229,7 @@ func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
 }
 
 // Board returns a new rectangular chess board position from standard X-FEN
-func (s XFEN) Board() (base.IBoard, error) {
+func (s XFEN) Board() (*Board, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
 		return nil, fmt.Errorf("invalid X-FEN length")

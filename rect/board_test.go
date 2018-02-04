@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("Board test", func() {
 	var w, h int
-	var b base.IBoard
+	var b *rect.Board
 
 	BeforeEach(func() {
 		b = rect.NewEmptyTestBoard()
@@ -168,7 +168,7 @@ var _ = Describe("Board test", func() {
 	})
 
 	Describe("check LegalMoves", func() {
-		var b base.IBoard
+		var b *rect.Board
 		var resetBoard func()
 		JustBeforeEach(func() { resetBoard() })
 		resetBoard = func() {

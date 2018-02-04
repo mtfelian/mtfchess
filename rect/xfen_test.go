@@ -39,7 +39,7 @@ var _ = Describe("XFEN to rectangular board tests", func() {
 	})
 
 	Context("valid XFEN, chess960", func() {
-		var b base.IBoard
+		var b *Board
 		var resetBoard func()
 		JustBeforeEach(func() { resetBoard() })
 		resetBoard = func() {
