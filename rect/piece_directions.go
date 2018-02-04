@@ -122,7 +122,7 @@ directions:
 				continue // should continue in same direction (may be further capture releases check?)
 			}
 			if stroke(to, moving, board, piece, &result, moveType) {
-				continue directions // capture occured, don't go further in that direction
+				continue directions // capture occurred, don't go further in that direction
 			}
 		}
 	}

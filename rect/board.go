@@ -26,7 +26,7 @@ type Board struct {
 // X converts x1 to slice index
 func (b *Board) X(x int) int { return x - 1 }
 
-// Y convers y1 to slice index
+// Y converts y1 to slice index
 func (b *Board) Y(y int) int { return b.height - y }
 
 // String makes Board to implement Stringer
@@ -209,7 +209,7 @@ func (b *Board) Project(piece base.IPiece, to base.ICoord) base.IBoard {
 }
 
 // MakeMove makes move with piece to coords (x,y)
-// It returns true if move succesful (legal), otherwise it returns false.
+// It returns true if move successful (legal), otherwise it returns false.
 func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 	if b.Outcome().IsFinished() || (b.Settings().MoveOrder && b.SideToMove() != piece.Colour()) || to.OutOf(b) {
 		return false
@@ -274,7 +274,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 func (b *Board) PositionsCounter() map[string]int { return b.positionsCounter }
 
 // MakeCastling makes a castling.
-// It returns true if castling succesful (legal), otherwise it returns false.
+// It returns true if castling successful (legal), otherwise it returns false.
 func (b *Board) MakeCastling(castling base.Castling) bool {
 	if b.Outcome().IsFinished() || (b.Settings().MoveOrder && b.SideToMove() != castling.Piece[0].Colour()) {
 		return false
