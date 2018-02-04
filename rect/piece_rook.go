@@ -15,15 +15,15 @@ func NewRook(colour Colour) base.IPiece {
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
-func (p *Rook) dst(board base.IBoard, moving bool) base.ICoords {
-	return NewCoords(reader(1, 0, p, board.(*Board), moving, 0, 0, moveAny))
+func (p *Rook) dst(b *Board, moving bool) base.ICoords {
+	return NewCoords(reader(1, 0, p, b, moving, 0, 0, moveAny))
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
-func (p *Rook) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
+func (p *Rook) Attacks(b base.IBoard) base.ICoords { return p.dst(b.(*Board), false) }
 
 // Destinations returns a slice of cells coords, making it's legal moves
-func (p *Rook) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
+func (p *Rook) Destinations(b base.IBoard) base.ICoords { return p.dst(b.(*Board), true) }
 
 // Copy a piece
 func (p *Rook) Copy() base.IPiece { return &Rook{Piece: p.Piece.Copy()} }

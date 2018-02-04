@@ -15,18 +15,18 @@ func NewQueen(colour Colour) base.IPiece {
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
-func (p *Queen) dst(board base.IBoard, moving bool) base.ICoords {
+func (p *Queen) dst(b *Board, moving bool) base.ICoords {
 	return NewCoords(append(
-		reader(1, 0, p, board.(*Board), moving, 0, 0, moveAny),
-		reader(1, 1, p, board.(*Board), moving, 0, 0, moveAny)...,
+		reader(1, 0, p, b, moving, 0, 0, moveAny),
+		reader(1, 1, p, b, moving, 0, 0, moveAny)...,
 	))
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
-func (p *Queen) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
+func (p *Queen) Attacks(b base.IBoard) base.ICoords { return p.dst(b.(*Board), false) }
 
 // Destinations returns a slice of cells coords, making it's legal moves
-func (p *Queen) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
+func (p *Queen) Destinations(b base.IBoard) base.ICoords { return p.dst(b.(*Board), true) }
 
 // Copy a piece
 func (p *Queen) Copy() base.IPiece { return &Queen{Piece: p.Piece.Copy()} }

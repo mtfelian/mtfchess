@@ -15,10 +15,9 @@ func NewPawn(colour Colour) base.IPiece {
 
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
-func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
-	b := board.(*Board)
+func (p *Pawn) dst(b *Board, moving bool) base.ICoords {
 	long, pY := 0, p.Coord().(Coord).Y
-	if p.Colour() == White && pY == 2 || p.Colour() == Black && pY == board.Dim().(Coord).Y-1 {
+	if p.Colour() == White && pY == 2 || p.Colour() == Black && pY == b.Dim().(Coord).Y-1 {
 		long = b.Settings().PawnLongMoveModifier
 	}
 
@@ -29,7 +28,7 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 
 	if moving {
 		// search through the possible en passant capturing coords and add if appropriate coords is found
-		epCoord := board.Settings().EnPassantFunc(board, p)
+		epCoord := b.Settings().EnPassantFunc(b, p)
 		if epCoord != nil {
 			d.Add(epCoord)
 		}
@@ -39,10 +38,10 @@ func (p *Pawn) dst(board base.IBoard, moving bool) base.ICoords {
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece
-func (p *Pawn) Attacks(b base.IBoard) base.ICoords { return p.dst(b, false) }
+func (p *Pawn) Attacks(b base.IBoard) base.ICoords { return p.dst(b.(*Board), false) }
 
 // Destinations returns a slice of cells coords, making it's legal moves
-func (p *Pawn) Destinations(b base.IBoard) base.ICoords { return p.dst(b, true) }
+func (p *Pawn) Destinations(b base.IBoard) base.ICoords { return p.dst(b.(*Board), true) }
 
 // Copy a piece
 func (p *Pawn) Copy() base.IPiece { return &Pawn{Piece: p.Piece.Copy()} }
