@@ -505,7 +505,7 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 /*
 todo to implement:
   - with board options:
-    - 3-fold repetition draw rule (it requires each move X-FEN storing);
+    - 3-fold repetition draw rule (check current positionsCounter);
   - other notations except long algebraic;
   - more tests on board to X-FEN conversion;
   - ComputeOutcome(): add 3-fold repetition, agreement, time over, not sufficient material and test for all of it;
