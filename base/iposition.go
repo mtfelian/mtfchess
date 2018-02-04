@@ -2,5 +2,5 @@ package base
 
 // IPosition
 type IPosition interface {
-	Board() IBoard
+	Board() (IBoard, error)
 }

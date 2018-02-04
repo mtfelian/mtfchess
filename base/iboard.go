@@ -63,4 +63,6 @@ type IBoard interface {
 
 	HasMoves(colour Colour) bool
 	LegalMoves(notation INotation) []string
+
+	PositionsCounter() map[string]int
 }

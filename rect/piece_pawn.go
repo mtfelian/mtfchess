@@ -21,10 +21,8 @@ func (p *Pawn) dst(b *Board, moving bool) base.ICoords {
 		long = b.Settings().PawnLongMoveModifier
 	}
 
-	d := NewCoords(append(
-		reader(1, 0, p, b, moving, 1+long, 1, moveNonCapture),
-		leaper(1, 1, p, b, moving, 1, moveCapture)...,
-	))
+	d := NewCoords(append(reader(1, 0, p, b, moving, 1+long, 1, moveNonCapture),
+		leaper(1, 1, p, b, moving, 1, moveCapture)...))
 
 	if moving {
 		// search through the possible en passant capturing coords and add if appropriate coords is found

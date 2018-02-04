@@ -20,7 +20,7 @@ type Board struct {
 	moveNumber            int
 	halfMoveCounter       int
 	outcome               base.Outcome
-	positions             []base.IPosition
+	positionsCounter      map[string]int
 }
 
 // X converts x1 to slice index
@@ -66,6 +66,13 @@ func (b *Board) initializeKing() {
 func (b *Board) initializeRookCoords() {
 	if b.rookCoords == nil {
 		b.rookCoords = base.NewRookCoords()
+	}
+}
+
+// initializePositionsCounter initialized a positions counter
+func (b *Board) initializePositionsCounter() {
+	if b.positionsCounter == nil {
+		b.positionsCounter = make(map[string]int)
 	}
 }
 
@@ -167,6 +174,15 @@ func (b *Board) copyKings() map[Colour]base.IPiece {
 	return newKing
 }
 
+// copyPositionsCounter returns a deep copy of a positions counter
+func (b *Board) copyPositionsCounter() map[string]int {
+	c := make(map[string]int)
+	for key, value := range b.positionsCounter {
+		c[key] = value
+	}
+	return c
+}
+
 // Copy returns a pointer to a deep copy of a board
 func (b *Board) Copy() base.IBoard {
 	newBoard := &Board{}
@@ -180,6 +196,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetMoveNumber(b.MoveNumber())
 	newBoard.SetHalfMoveCount(b.HalfMoveCount())
 	newBoard.SetOutcome(b.Outcome())
+	newBoard.positionsCounter = b.copyPositionsCounter()
 	return newBoard
 }
 
@@ -248,12 +265,13 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
+	b.positionsCounter[NewXFEN(b).PositionPart()]++
 	b.ComputeOutcome()
-	xFEN := NewXFEN(b)
-	_ = xFEN
-	//b.positions = append(b.positions, )
 	return true
 }
+
+// PositionsCounter returns positions counter
+func (b *Board) PositionsCounter() map[string]int { return b.positionsCounter }
 
 // MakeCastling makes a castling.
 // It returns true if castling succesful (legal), otherwise it returns false.
@@ -283,6 +301,7 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
+	b.positionsCounter[NewXFEN(b).PositionPart()]++
 	b.ComputeOutcome()
 	return true
 }
@@ -478,6 +497,7 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b.SetSideToMove(White)
 	b.SetMoveNumber(1)
 	b.SetHalfMoveCount(0)
+	b.initializePositionsCounter()
 	b.SetOutcome(base.NewOutcomeNotCompleted())
 	return b
 }

@@ -222,14 +222,13 @@ func parseCastling(line string, board *Board) error {
 	return nil
 }
 
-// MustPositionsAreEqual returns true if position of s X-FEN is equal to position of to X-FEN,
-// it may panic if X-FEN is invalid (or it can have an unexpected behaviour)
-func (s XFEN) MustPositionsAreEqual(to XFEN) bool {
-	return strings.Join(strings.Split(string(s), " ")[:4], " ") == strings.Join(strings.Split(string(to), " ")[:4], " ")
+// PositionPart returns a position part of an X-FEN
+func (s XFEN) PositionPart() string {
+	return strings.Join(strings.Split(string(s), " ")[:4], " ")
 }
 
 // Board returns a new rectangular chess board position from standard X-FEN
-func (s XFEN) Board() (*Board, error) {
+func (s XFEN) Board() (base.IBoard, error) {
 	xfenParts := strings.Split(string(s), " ")
 	if len(xfenParts) != 6 {
 		return nil, fmt.Errorf("invalid X-FEN length")

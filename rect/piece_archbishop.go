@@ -16,10 +16,7 @@ func NewArchbishop(colour Colour) base.IPiece {
 // dst returns a slice of destination cells coords, making it's legal moves
 // if moving is false then pairs leading to check-exposing moves also included
 func (p *Archbishop) dst(b *Board, moving bool) base.ICoords {
-	return NewCoords(append(
-		reader(1, 1, p, b, moving, 0, 0, moveAny),
-		leaper(1, 2, p, b, moving, 0, moveAny)...,
-	))
+	return NewCoords(append(reader(1, 1, p, b, moving, 0, 0, moveAny), leaper(1, 2, p, b, moving, 0, moveAny)...))
 }
 
 // Attacks returns a slice of coords pairs of cells attacked by a piece

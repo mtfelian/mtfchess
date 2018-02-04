@@ -11,7 +11,7 @@ import (
 )
 
 var _ = Describe("outcome test", func() {
-	var b *rect.Board
+	var b base.IBoard
 	var err error
 
 	Context("position 1, from chess960", func() {
