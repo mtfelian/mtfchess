@@ -441,6 +441,9 @@ func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 // Outcome returns the game outcome
 func (b *Board) Outcome() base.Outcome { return b.outcome }
 
+// Resigns the given colour
+func (b *Board) Resign(colour Colour) { b.setOutcome(base.NewResignation(colour)) }
+
 // setOutcome to
 func (b *Board) setOutcome(to base.Outcome) { b.outcome = to }
 
@@ -513,8 +516,6 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 
 /*
 todo to implement:
-  - implement INotation.DecodeMove()
-  - implement INotation.DecodeCastling()
   - other notations except long algebraic;
   - more tests on board to X-FEN conversion;
   - computeOutcome(): agreement, time over, not sufficient material and test for all of it;

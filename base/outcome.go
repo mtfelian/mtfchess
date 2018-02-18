@@ -13,6 +13,7 @@ const (
 	notCompleted reason = iota
 	checkmate
 	timeOver
+	resignation
 	stalemate
 	drawByAgreement
 	drawByXFoldRepetition
@@ -38,6 +39,8 @@ func (o Outcome) String() string {
 		return fmt.Sprintf("%s won by checkmate", o.Winner.Name())
 	case timeOver:
 		return fmt.Sprintf("%s lost by time over", o.Winner.Invert().Name())
+	case resignation:
+		return fmt.Sprintf("%s won by resignation", o.Winner.Name())
 	case stalemate:
 		return "Stalemate"
 	case drawByAgreement:
@@ -66,6 +69,9 @@ func NewCheckmate(winner Colour) Outcome { return Outcome{Winner: winner, Reason
 
 // NewTimeOver returns an outcome for time over for side
 func NewTimeOver(side Colour) Outcome { return Outcome{Winner: side.Invert(), Reason: timeOver} }
+
+// NewResignation returns an outcome for a case of resignation for the given side
+func NewResignation(side Colour) Outcome { return Outcome{Winner: side.Invert(), Reason: resignation} }
 
 // NewDrawByAgreement returns an outcome for draw by agreement
 func NewDrawByAgreement() Outcome { return Outcome{Winner: Transparent, Reason: drawByAgreement} }

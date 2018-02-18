@@ -30,6 +30,7 @@ type IBoard interface {
 	InStalemate(colour Colour) bool
 
 	Outcome() Outcome
+	Resign(colour Colour)
 
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool

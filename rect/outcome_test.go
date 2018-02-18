@@ -152,25 +152,9 @@ var _ = Describe("outcome test", func() {
 				`c2-c4`, `g7-g6`,
 				`b1-c3`, `f8-g7`,
 				`e2-e4`, `d7-d6`,
-				`g1-f3`, /*black*/
-			})
-
-			// todo implement converting algebraic O-O, O-O-O to castle, keep in mind that board.Castling()
-			// returns exactly amount of POSSIBLE castlings i.e. [0] may be O-O in one position and O-O-O in another.
-			// use I property of Castling, in INotation.DecodeCastling()
-
-			fmt.Println("castling I:", b.Castlings(Black)[0].I)
-			Expect(b.MakeCastling(b.Castlings(Black)[0])).To(BeTrue()) // O-O
-
-			makeMoves([]string{
+				`g1-f3`, `O-O`,
 				`f1-e2`, `e7-e5`, // 6
-			})
-
-			fmt.Println("castling I:", b.Castlings(White)[0].I)
-			Expect(b.MakeCastling(b.Castlings(White)[0])).To(BeTrue()) // O-O
-
-			makeMoves([]string{
-				/*white,*/ `b8-c6`, // 7
+				`O-O`, `b8-c6`, // 7
 				`d4-d5`, `c6-e7`,
 				`f3-d2`, `a7-a5`,
 				`a1-b1`, `f6-d7`,
@@ -318,21 +302,8 @@ var _ = Describe("outcome test", func() {
 				`g1-e2`, `b8-c6`,
 				`d4-d5`, `e6xd5`,
 				`c3xd5`, `f6xb2`,
-				`f1-g2`, /*black*/
-			})
-
-			// todo implement converting algebraic O-O, O-O-O to castle, keep in mind that board.Castling()
-			// returns exactly amount of POSSIBLE castlings i.e. [0] may be O-O in one position and O-O-O in another.
-			// use I property of Castling, in INotation.DecodeCastling()
-
-			fmt.Println("castling I:", b.Castlings(Black)[0].I)
-			Expect(b.MakeCastling(b.Castlings(Black)[0])).To(BeTrue()) // O-O
-
-			fmt.Println("castling I:", b.Castlings(White)[0].I)
-			Expect(b.MakeCastling(b.Castlings(White)[0])).To(BeTrue()) // O-O
-
-			makeMoves([]string{
-				/*white,*/ `b2-h8`,
+				`f1-g2`, `O-O`,
+				`O-O`, `b2-h8`,
 				`e2-f4`, `c6-e5`,
 				`d1-h5`, `e5-g6`,
 				`a1-d1`, `c7-c6`,
@@ -356,6 +327,46 @@ var _ = Describe("outcome test", func() {
 				`d3-e2`, /* draw by 3-fold repetition */
 			})
 			Expect(b.Outcome().Equals(base.NewDrawByXFoldRepetition())).To(BeTrue())
+		})
+
+		It("plays a game with resignation, long castling check", func() {
+			/*
+				PGN:
+				[Event "Belgian Championship"]
+				[Site "Liege BEL"]
+				[Date "1934.??.??"]
+				[EventDate "?"]
+				[Round "?"]
+				[Result "1-0"]
+				[White "Otto Feuer"]
+				[Black "Alberic O'Kelly de Galway"]
+				[ECO "C73"]
+				[WhiteElo "?"]
+				[BlackElo "?"]
+				[PlyCount "25"]
+
+				1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 d6 5.Bxc6+ bxc6 6.d4 f6 7.Nc3
+				Rb8 8.Qd3 Ne7 9.Be3 Rxb2 10.dxe5 fxe5 11.Nxe5 dxe5 12.Qxd8+
+				Kxd8 13.O-O-O+ 1-0
+			*/
+
+			makeMoves([]string{
+				`e2-e4`, `e7-e5`,
+				`g1-f3`, `b8-c6`,
+				`f1-b5`, `a7-a6`,
+				`b5-a4`, `d7-d6`,
+				`a4xc6`, `b7xc6`,
+				`d2-d4`, `f7-f6`,
+				`b1-c3`, `a8-b8`,
+				`d1-d3`, `g8-e7`, // 8
+				`c1-e3`, `b8xb2`,
+				`d4xe5`, `f6xe5`,
+				`f3xe5`, `d6xe5`,
+				`d3xd8`, `e8xd8`,
+				`O-O-O+`, /*white wins by resignation*/
+			})
+			b.Resign(b.SideToMove())
+			Expect(b.Outcome().Equals(base.NewResignation(Black))).To(BeTrue())
 		})
 	})
 })

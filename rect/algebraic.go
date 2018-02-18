@@ -31,6 +31,7 @@ const (
 )
 
 var (
+	castlingRegexp           = regexp.MustCompile(`(?i)^(O-O(?:-O)?)[+#]?$`)
 	longAlgebraicCoordRegexp = regexp.MustCompile(`^([a-z])(\d{1,2})$`)
 	longAlgebraicMoveRegexp  = regexp.MustCompile(`^([a-z]\d{1,2})[-x]([a-z]\d{1,2})[+#]?$`)
 )
@@ -56,10 +57,32 @@ func (n *algebraicNotation) SetCoord(to base.ICoord) base.INotation {
 	return n
 }
 
-// DecodeMove returns a func that tries to make a decoded move on a board
+// DecodeMove returns a func that tries to make a decoded move (or castling) on a board
 func (n *algebraicNotation) DecodeMove(board base.IBoard, move string) (func() bool, error) {
-	move = strings.ToLower(move)
-	re := longAlgebraicMoveRegexp.Copy()
+
+	// move is a castling
+	re := castlingRegexp.Copy()
+	if re.MatchString(move) {
+		move = strings.ToUpper(move)
+
+		parts := re.FindStringSubmatch(move)
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("wrong casling move format: %s", move)
+		}
+
+		castlings := board.Castlings(board.SideToMove())
+		castlingStrings := []string{aSideCastling, zSideCastling}
+		for i := range castlings {
+			if parts[1] == castlingStrings[castlings[i].I] {
+				return func() bool { return board.MakeCastling(castlings[i]) }, nil
+			}
+		}
+		return nil, fmt.Errorf("this castling move is not available")
+	}
+
+	// move is not a castling
+
+	move, re = strings.ToLower(move), longAlgebraicMoveRegexp.Copy()
 	if !re.MatchString(move) {
 		return nil, fmt.Errorf("wrong move format: %s", move)
 	}
@@ -110,8 +133,6 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 
 	return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 }
-
-// todo implement DecodeCastling (and add it to INotation)
 
 // EncodeCastling on board
 func (n *algebraicNotation) EncodeCastling(i int) string {
