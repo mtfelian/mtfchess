@@ -275,7 +275,7 @@ func (s XFEN) Board() (base.IBoard, error) {
 		return nil, err
 	}
 	b.SetMoveNumber(moveNumber)
-	b.ComputeOutcome()
+	b.computeOutcome()
 
 	return b, nil
 }

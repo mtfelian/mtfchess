@@ -30,8 +30,6 @@ type IBoard interface {
 	InStalemate(colour Colour) bool
 
 	Outcome() Outcome
-	SetOutcome(to Outcome)
-	ComputeOutcome()
 
 	Castlings(colour Colour) Castlings
 	MakeCastling(castling Castling) bool
@@ -64,5 +62,6 @@ type IBoard interface {
 	HasMoves(colour Colour) bool
 	LegalMoves(notation INotation) []string
 
-	PositionsCounter() map[string]int
+	PositionOccurred() int
+	Position() string
 }

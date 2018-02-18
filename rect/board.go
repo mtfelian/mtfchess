@@ -20,7 +20,7 @@ type Board struct {
 	moveNumber            int
 	halfMoveCounter       int
 	outcome               base.Outcome
-	positionsCounter      map[string]int
+	positionsCounter      map[string]int // maps string position description (part of X-FEN) to counter it's occurred
 }
 
 // X converts x1 to slice index
@@ -195,7 +195,7 @@ func (b *Board) Copy() base.IBoard {
 	newBoard.SetSideToMove(b.SideToMove())
 	newBoard.SetMoveNumber(b.MoveNumber())
 	newBoard.SetHalfMoveCount(b.HalfMoveCount())
-	newBoard.SetOutcome(b.Outcome())
+	newBoard.setOutcome(b.Outcome())
 	newBoard.positionsCounter = b.copyPositionsCounter()
 	return newBoard
 }
@@ -265,13 +265,19 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
-	b.positionsCounter[NewXFEN(b).PositionPart()]++
-	b.ComputeOutcome()
+	b.increasePositionCounter()
+	b.computeOutcome()
 	return true
 }
 
-// PositionsCounter returns positions counter
-func (b *Board) PositionsCounter() map[string]int { return b.positionsCounter }
+// Position returns a string position description
+func (b *Board) Position() string { return NewXFEN(b).PositionPart() }
+
+// PositionOccurred returns a number of times current position occurred through the game
+func (b *Board) PositionOccurred() int { return b.positionsCounter[b.Position()] }
+
+// increasePositionCounter
+func (b *Board) increasePositionCounter() { b.positionsCounter[b.Position()]++ }
 
 // MakeCastling makes a castling.
 // It returns true if castling successful (legal), otherwise it returns false.
@@ -301,8 +307,8 @@ func (b *Board) MakeCastling(castling base.Castling) bool {
 		b.SetMoveNumber(b.MoveNumber() + 1)
 	}
 	b.SetHalfMoveCount(b.HalfMoveCount() + 1)
-	b.positionsCounter[NewXFEN(b).PositionPart()]++
-	b.ComputeOutcome()
+	b.increasePositionCounter()
+	b.computeOutcome()
 	return true
 }
 
@@ -434,11 +440,11 @@ func (b *Board) SetHalfMoveCount(n int) { b.halfMoveCounter = n }
 // Outcome returns the game outcome
 func (b *Board) Outcome() base.Outcome { return b.outcome }
 
-// SetOutcome to
-func (b *Board) SetOutcome(to base.Outcome) { b.outcome = to }
+// setOutcome to
+func (b *Board) setOutcome(to base.Outcome) { b.outcome = to }
 
-// ComputeOutcome computes outcome and sets it
-func (b *Board) ComputeOutcome() {
+// computeOutcome computes outcome and sets it
+func (b *Board) computeOutcome() {
 	settings := b.Settings()
 	if !settings.MoveOrder {
 		return
@@ -447,11 +453,11 @@ func (b *Board) ComputeOutcome() {
 	sideToMove := b.SideToMove()
 	switch {
 	case b.InCheckmate(sideToMove):
-		b.SetOutcome(base.NewCheckmate(sideToMove.Invert()))
+		b.setOutcome(base.NewCheckmate(sideToMove.Invert()))
 	case b.InStalemate(sideToMove):
-		b.SetOutcome(base.NewStalemate())
+		b.setOutcome(base.NewStalemate())
 	case settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw:
-		b.SetOutcome(base.NewDrawByXMovesRule())
+		b.setOutcome(base.NewDrawByXMovesRule())
 	}
 }
 
@@ -498,7 +504,7 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 	b.SetMoveNumber(1)
 	b.SetHalfMoveCount(0)
 	b.initializePositionsCounter()
-	b.SetOutcome(base.NewOutcomeNotCompleted())
+	b.setOutcome(base.NewOutcomeNotCompleted())
 	return b
 }
 
@@ -508,5 +514,5 @@ todo to implement:
     - 3-fold repetition draw rule (check current positionsCounter);
   - other notations except long algebraic;
   - more tests on board to X-FEN conversion;
-  - ComputeOutcome(): add 3-fold repetition, agreement, time over, not sufficient material and test for all of it;
+  - computeOutcome(): add 3-fold repetition, agreement, time over, not sufficient material and test for all of it;
 */
