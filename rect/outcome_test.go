@@ -355,14 +355,14 @@ var _ = Describe("outcome test", func() {
 				`g1-f3`, `b8-c6`,
 				`f1-b5`, `a7-a6`,
 				`b5-a4`, `d7-d6`,
-				`a4xc6`, `b7xc6`,
+				`a4xc6+`, `b7xc6`,
 				`d2-d4`, `f7-f6`,
 				`b1-c3`, `a8-b8`,
 				`d1-d3`, `g8-e7`, // 8
 				`c1-e3`, `b8xb2`,
 				`d4xe5`, `f6xe5`,
 				`f3xe5`, `d6xe5`,
-				`d3xd8`, `e8xd8`,
+				`d3xd8+`, `e8xd8`,
 				`O-O-O+`, /*white wins by resignation*/
 			})
 			b.Resign(b.SideToMove())
