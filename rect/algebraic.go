@@ -14,6 +14,27 @@ const (
 	longAlgebraic = iota
 )
 
+const (
+	moveDelimiter    = "-"
+	captureDelimiter = "x"
+)
+
+const (
+	noPostfix        = ""
+	checkPostfix     = "+"
+	checkmatePostfix = "#"
+)
+
+const (
+	aSideCastling = "O-O-O"
+	zSideCastling = "O-O"
+)
+
+var (
+	longAlgebraicCoordRegexp = regexp.MustCompile(`^([a-z])(\d{1,2})$`)
+	longAlgebraicMoveRegexp  = regexp.MustCompile(`^([a-z]\d{1,2})[-x]([a-z]\d{1,2})[+#]?$`)
+)
+
 // algebraicNotation implementation for INotation
 type algebraicNotation struct {
 	Coord base.ICoord
@@ -35,15 +56,38 @@ func (n *algebraicNotation) SetCoord(to base.ICoord) base.INotation {
 	return n
 }
 
-// todo implement DecodeMove (and add it to INotation)
+// DecodeMove returns a func that tries to make a decoded move on a board
+func (n *algebraicNotation) DecodeMove(board base.IBoard, move string) (func() bool, error) {
+	move = strings.ToLower(move)
+	re := longAlgebraicMoveRegexp.Copy()
+	if !re.MatchString(move) {
+		return nil, fmt.Errorf("wrong move format: %s", move)
+	}
+
+	parts := re.FindStringSubmatch(move)
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("wrong move format: %s", move)
+	}
+
+	if err := n.DecodeCoord(parts[1]); err != nil {
+		return nil, err
+	}
+	fromCoord := n.Coord.Copy()
+	if err := n.DecodeCoord(parts[2]); err != nil {
+		return nil, err
+	}
+	toCoord := n.Coord.Copy()
+
+	return func() bool { return board.MakeMove(toCoord, board.Piece(fromCoord)) }, nil
+}
 
 // EncodeMove on board with piece to dst coord
 func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst base.ICoord) string {
 	anFrom := NewLongAlgebraicNotation().SetCoord(piece.Coord())
 	anTo := NewLongAlgebraicNotation().SetCoord(dst)
-	delimiter := "-"
+	delimiter := moveDelimiter
 	if board.Piece(dst) != nil {
-		delimiter = "x"
+		delimiter = captureDelimiter
 	}
 
 	fig := string(piece.Capital())
@@ -54,14 +98,14 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 	projection := board.Project(piece, dst)
 	projection.SetSideToMove(projection.SideToMove().Invert())
 
-	check := ""
+	check := noPostfix
 	if projection.InCheckmate(projection.SideToMove()) {
-		check = "#"
+		check = checkmatePostfix
 		return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
 	}
 
 	if projection.InCheck(projection.SideToMove()) {
-		check = "+"
+		check = checkPostfix
 	}
 
 	return fig + anFrom.EncodeCoord() + delimiter + anTo.EncodeCoord() + check
@@ -70,17 +114,17 @@ func (n *algebraicNotation) EncodeMove(board base.IBoard, piece base.IPiece, dst
 // todo implement DecodeCastling (and add it to INotation)
 
 // EncodeCastling on board
-func (n *algebraicNotation) EncodeCastling(board base.IBoard, i int) string {
+func (n *algebraicNotation) EncodeCastling(i int) string {
 	if i == 0 {
-		return "O-O-O"
+		return aSideCastling
 	}
-	return "O-O"
+	return zSideCastling
 }
 
 // DecodeCoord coord string (case-insensitive) to (x,y) coords
 func (n *algebraicNotation) DecodeCoord(coord string) error {
 	coord = strings.ToLower(coord)
-	re := regexp.MustCompile(`^([a-z])(\d{1,2})$`)
+	re := longAlgebraicCoordRegexp.Copy()
 	if !re.MatchString(coord) {
 		return fmt.Errorf("wrong coord format: %s", coord)
 	}

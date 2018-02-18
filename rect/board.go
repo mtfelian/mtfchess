@@ -477,7 +477,7 @@ func (b *Board) LegalMoves(notation base.INotation) []string {
 
 	castlings := b.Castlings(sideToMove)
 	for i := range castlings {
-		res = append(res, notation.EncodeCastling(b, castlings[i].I))
+		res = append(res, notation.EncodeCastling(castlings[i].I))
 	}
 
 	return res
@@ -513,9 +513,9 @@ func NewEmptyBoard(i, j int, settings *base.Settings) *Board {
 
 /*
 todo to implement:
-  - with board options:
-    - 3-fold repetition draw rule (check current positionsCounter);
+  - implement INotation.DecodeMove()
+  - implement INotation.DecodeCastling()
   - other notations except long algebraic;
   - more tests on board to X-FEN conversion;
-  - computeOutcome(): add 3-fold repetition, agreement, time over, not sufficient material and test for all of it;
+  - computeOutcome(): agreement, time over, not sufficient material and test for all of it;
 */
