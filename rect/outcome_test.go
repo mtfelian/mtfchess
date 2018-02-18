@@ -96,24 +96,14 @@ var _ = Describe("outcome test", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 
-		// to returns a board coord from coord given in algebraic notation
-		to := func(coord string) base.ICoord {
-			n := rect.NewLongAlgebraicNotation()
-			Expect(n.DecodeCoord(coord)).To(Succeed())
-			return n.Coord
-		}
-
-		// from returns a piece staying on a cell with coord given in algebraic notation
-		from := func(coord string) base.IPiece { return b.Piece(to(coord)) }
-
-		// makeMove helper func
-		makeMove := func(srcCoord, dstCoord string) { Expect(b.MakeMove(to(dstCoord), from(srcCoord))).To(BeTrue()) }
-
 		// makeMoves helper func
-		makeMoves := func(coords [][2]string) {
-			for i := range coords {
+		makeMoves := func(moves []string) {
+			n := rect.NewLongAlgebraicNotation()
+			for i := range moves {
+				makeMoveFunc, err := n.DecodeMove(b, moves[i])
+				Expect(err).NotTo(HaveOccurred())
 				By(fmt.Sprintf("making move %d...", b.MoveNumber()))
-				makeMove(coords[i][0], coords[i][1])
+				Expect(makeMoveFunc()).To(BeTrue())
 			}
 		}
 
@@ -157,12 +147,12 @@ var _ = Describe("outcome test", func() {
 				112.Ne7+ Kh8 113.Ng5 Ra6+ 114.Kf7 Rf6+ 1/2-1/2
 			*/
 
-			makeMoves([][2]string{
-				{`d2`, `d4`}, {`g8`, `f6`},
-				{`c2`, `c4`}, {`g7`, `g6`},
-				{`b1`, `c3`}, {`f8`, `g7`},
-				{`e2`, `e4`}, {`d7`, `d6`},
-				{`g1`, `f3`}, /*black*/
+			makeMoves([]string{
+				`d2-d4`, `g8-f6`,
+				`c2-c4`, `g7-g6`,
+				`b1-c3`, `f8-g7`,
+				`e2-e4`, `d7-d6`,
+				`g1-f3`, /*black*/
 			})
 
 			// todo implement converting algebraic O-O, O-O-O to castle, keep in mind that board.Castling()
@@ -172,121 +162,121 @@ var _ = Describe("outcome test", func() {
 			fmt.Println("castling I:", b.Castlings(Black)[0].I)
 			Expect(b.MakeCastling(b.Castlings(Black)[0])).To(BeTrue()) // O-O
 
-			makeMoves([][2]string{
-				{`f1`, `e2`}, {`e7`, `e5`}, // 6
+			makeMoves([]string{
+				`f1-e2`, `e7-e5`, // 6
 			})
 
 			fmt.Println("castling I:", b.Castlings(White)[0].I)
 			Expect(b.MakeCastling(b.Castlings(White)[0])).To(BeTrue()) // O-O
 
-			makeMoves([][2]string{
-				/*white,*/ {`b8`, `c6`}, // 7
-				{`d4`, `d5`}, {`c6`, `e7`},
-				{`f3`, `d2`}, {`a7`, `a5`},
-				{`a1`, `b1`}, {`f6`, `d7`},
-				{`a2`, `a3`}, {`f7`, `f5`},
-				{`b2`, `b4`}, {`g8`, `h8`},
-				{`f2`, `f3`}, {`e7`, `g8`},
-				{`d1`, `c2`}, {`g8`, `f6`},
-				{`c3`, `b5`}, {`a5`, `b4`}, // 15
-				{`a3`, `b4`}, {`f6`, `h5`},
-				{`g2`, `g3`}, {`d7`, `f6`}, // 17
-				{`c4`, `c5`}, {`c8`, `d7`},
-				{`b1`, `b3`}, {`h5`, `g3`}, // 19
-				{`h2`, `g3`}, {`f6`, `h5`},
-				{`f3`, `f4`}, {`e5`, `f4`},
-				{`c5`, `c6`}, {`b7`, `c6`},
-				{`d5`, `c6`}, {`h5`, `g3`},
-				{`b3`, `g3`}, {`f4`, `g3`},
-				{`c6`, `d7`}, {`g3`, `g2`},
-				{`f1`, `f3`}, {`d8`, `d7`},
-				{`c1`, `b2`}, {`f5`, `e4`},
-				{`f3`, `f8`}, {`a8`, `f8`},
-				{`b2`, `g7`}, {`d7`, `g7`},
-				{`c2`, `e4`}, {`g7`, `f6`},
-				{`d2`, `f3`}, {`f6`, `f4`}, // 31
-				{`e4`, `e7`}, {`f8`, `f7`},
-				{`e7`, `e6`}, {`f7`, `f6`},
-				{`e6`, `e8`}, {`f6`, `f8`},
-				{`e8`, `e7`}, {`f8`, `f7`},
-				{`e7`, `e6`}, {`f7`, `f6`},
-				{`e6`, `b3`}, {`g6`, `g5`},
-				{`b5`, `c7`}, {`g5`, `g4`},
-				{`c7`, `d5`}, {`f4`, `c1`}, // 39
-				{`b3`, `d1`}, {`c1`, `d1`},
-				{`e2`, `d1`}, {`f6`, `f5`}, // 41
-				{`d5`, `e3`}, {`f5`, `f4`},
-				{`f3`, `e1`}, {`f4`, `b4`},
-				{`d1`, `g4`}, {`h7`, `h5`},
-				{`g4`, `f3`}, {`d6`, `d5`},
-				{`e3`, `g2`}, {`h5`, `h4`},
-				{`e1`, `d3`}, {`b4`, `a4`},
-				{`g2`, `f4`}, {`h8`, `g7`},
-				{`g1`, `g2`}, {`g7`, `f6`},
-				{`f3`, `d5`}, {`a4`, `a5`},
-				{`d5`, `c6`}, {`a5`, `a6`},
-				{`c6`, `b7`}, {`a6`, `a3`},
-				{`b7`, `e4`}, {`a3`, `a4`}, // 53
-				{`e4`, `d5`}, {`a4`, `a5`},
-				{`d5`, `c6`}, {`a5`, `a6`},
-				{`c6`, `f3`}, {`f6`, `g5`},
-				{`f3`, `b7`}, {`a6`, `a1`},
-				{`b7`, `c8`}, {`a1`, `a4`},
-				{`g2`, `f3`}, {`a4`, `c4`},
-				{`c8`, `d7`}, {`g5`, `f6`},
-				{`f3`, `g4`}, {`c4`, `d4`},
-				{`d7`, `c6`}, {`d4`, `d8`},
-				{`g4`, `h4`}, {`d8`, `g8`}, // 63
-				{`c6`, `e4`}, {`g8`, `g1`},
-				{`f4`, `h5`}, {`f6`, `e6`},
-				{`h5`, `g3`}, {`e6`, `f6`},
-				{`h4`, `g4`}, {`g1`, `a1`},
-				{`e4`, `d5`}, {`a1`, `a5`},
-				{`d5`, `f3`}, {`a5`, `a1`},
-				{`g4`, `f4`}, {`f6`, `e6`},
-				{`d3`, `c5`}, {`e6`, `d6`},
-				{`g3`, `e4`}, {`d6`, `e7`},
-				{`f4`, `e5`}, {`a1`, `f1`}, // 73
-				{`f3`, `g4`}, {`f1`, `g1`},
-				{`g4`, `e6`}, {`g1`, `e1`},
-				{`e6`, `c8`}, {`e1`, `c1`},
-				{`e5`, `d4`}, {`c1`, `d1`},
-				{`c5`, `d3`}, {`e7`, `f7`},
-				{`d4`, `e3`}, {`d1`, `a1`},
-				{`e3`, `f4`}, {`f7`, `e7`},
-				{`d3`, `b4`}, {`a1`, `c1`},
-				{`b4`, `d5`}, {`e7`, `f7`},
-				{`c8`, `d7`}, {`c1`, `f1`},
-				{`f4`, `e5`}, {`f1`, `a1`},
-				{`e4`, `g5`}, {`f7`, `g6`},
-				{`g5`, `f3`}, {`g6`, `g7`},
-				{`d7`, `g4`}, {`g7`, `g6`},
-				{`d5`, `f4`}, {`g6`, `g7`},
-				{`f3`, `d4`}, {`a1`, `e1`},
-				{`e5`, `f5`}, {`e1`, `c1`}, // 90
-				{`g4`, `e2`}, {`c1`, `e1`},
-				{`e2`, `h5`}, {`e1`, `a1`},
-				{`f4`, `e6`}, {`g7`, `h6`},
-				{`h5`, `e8`}, {`a1`, `a8`},
-				{`e8`, `c6`}, {`a8`, `a1`},
-				{`f5`, `f6`}, {`h6`, `h7`},
-				{`e6`, `g5`}, {`h7`, `h8`},
-				{`d4`, `e6`}, {`a1`, `a6`},
-				{`c6`, `e8`}, {`a6`, `a8`},
-				{`e8`, `h5`}, {`a8`, `a1`},
-				{`h5`, `g6`}, {`a1`, `f1`}, // 101
-				{`f6`, `e7`}, {`f1`, `a1`},
-				{`g5`, `f7`}, {`h8`, `g8`},
-				{`f7`, `h6`}, {`g8`, `h8`},
-				{`h6`, `f5`}, {`a1`, `a7`},
-				{`e7`, `f6`}, {`a7`, `a1`},
-				{`f5`, `e3`}, {`a1`, `e1`},
-				{`e3`, `d5`}, {`e1`, `g1`},
-				{`g6`, `f5`}, {`g1`, `f1`},
-				{`d5`, `f4`}, {`f1`, `a1`},
-				{`f4`, `g6`}, {`h8`, `g8`},
-				{`g6`, `e7`}, {`g8`, `h8`},
-				{`e6`, `g5`}, /* draw by 50-moves rule */
+			makeMoves([]string{
+				/*white,*/ `b8-c6`, // 7
+				`d4-d5`, `c6-e7`,
+				`f3-d2`, `a7-a5`,
+				`a1-b1`, `f6-d7`,
+				`a2-a3`, `f7-f5`,
+				`b2-b4`, `g8-h8`,
+				`f2-f3`, `e7-g8`,
+				`d1-c2`, `g8-f6`,
+				`c3-b5`, `a5xb4`, // 15
+				`a3xb4`, `f6-h5`,
+				`g2-g3`, `d7-f6`, // 17
+				`c4-c5`, `c8-d7`,
+				`b1-b3`, `h5xg3`, // 19
+				`h2xg3`, `f6-h5`,
+				`f3-f4`, `e5xf4`,
+				`c5-c6`, `b7xc6`,
+				`d5xc6`, `h5xg3`,
+				`b3xg3`, `f4xg3`,
+				`c6xd7`, `g3-g2`,
+				`f1-f3`, `d8-d7`,
+				`c1-b2`, `f5xe4`,
+				`f3xf8+`, `a8xf8`,
+				`b2xg7+`, `d7xg7`,
+				`c2xe4`, `g7-f6`,
+				`d2-f3`, `f6-f4`, // 31
+				`e4-e7`, `f8-f7`,
+				`e7-e6`, `f7-f6`,
+				`e6-e8+`, `f6-f8`,
+				`e8-e7`, `f8-f7`,
+				`e7-e6`, `f7-f6`,
+				`e6-b3`, `g6-g5`,
+				`b5xc7`, `g5-g4`,
+				`c7-d5`, `f4-c1+`, // 39
+				`b3-d1`, `c1xd1+`,
+				`e2xd1`, `f6-f5`, // 41
+				`d5-e3`, `f5-f4`,
+				`f3-e1`, `f4xb4`,
+				`d1xg4`, `h7-h5`,
+				`g4-f3`, `d6-d5`,
+				`e3xg2`, `h5-h4`,
+				`e1-d3`, `b4-a4`,
+				`g2-f4`, `h8-g7`,
+				`g1-g2`, `g7-f6`,
+				`f3xd5`, `a4-a5`,
+				`d5-c6`, `a5-a6`,
+				`c6-b7`, `a6-a3`,
+				`b7-e4`, `a3-a4`, // 53
+				`e4-d5`, `a4-a5`,
+				`d5-c6`, `a5-a6`,
+				`c6-f3`, `f6-g5`,
+				`f3-b7`, `a6-a1`,
+				`b7-c8`, `a1-a4`,
+				`g2-f3`, `a4-c4`,
+				`c8-d7`, `g5-f6`,
+				`f3-g4`, `c4-d4`,
+				`d7-c6`, `d4-d8`,
+				`g4xh4`, `d8-g8`, // 63
+				`c6-e4`, `g8-g1`,
+				`f4-h5+`, `f6-e6`,
+				`h5-g3`, `e6-f6`,
+				`h4-g4`, `g1-a1`,
+				`e4-d5`, `a1-a5`,
+				`d5-f3`, `a5-a1`,
+				`g4-f4`, `f6-e6`,
+				`d3-c5+`, `e6-d6`,
+				`g3-e4+`, `d6-e7`,
+				`f4-e5`, `a1-f1`, // 73
+				`f3-g4`, `f1-g1`,
+				`g4-e6`, `g1-e1`,
+				`e6-c8`, `e1-c1`,
+				`e5-d4`, `c1-d1+`,
+				`c5-d3`, `e7-f7`,
+				`d4-e3`, `d1-a1`,
+				`e3-f4`, `f7-e7`,
+				`d3-b4`, `a1-c1`,
+				`b4-d5+`, `e7-f7`, // 81
+				`c8-d7`, `c1-f1`,
+				`f4-e5`, `f1-a1+`,
+				`e4-g5`, `f7-g6`,
+				`g5-f3+`, `g6-g7`,
+				`d7-g4`, `g7-g6`,
+				`d5-f4+`, `g6-g7`,
+				`f3-d4`, `a1-e1+`,
+				`e5-f5`, `e1-c1`, // 90
+				`g4-e2`, `c1-e1`,
+				`e2-h5`, `e1-a1`,
+				`f4-e6+`, `g7-h6`,
+				`h5-e8`, `a1-a8`,
+				`e8-c6`, `a8-a1`,
+				`f5-f6`, `h6-h7`,
+				`e6-g5+`, `h7-h8`,
+				`d4-e6`, `a1-a6`,
+				`c6-e8`, `a6-a8`,
+				`e8-h5`, `a8-a1`,
+				`h5-g6`, `a1-f1+`, // 101
+				`f6-e7`, `f1-a1`,
+				`g5-f7+`, `h8-g8`,
+				`f7-h6+`, `g8-h8`,
+				`h6-f5`, `a1-a7+`,
+				`e7-f6`, `a7-a1`,
+				`f5-e3`, `a1-e1`,
+				`e3-d5`, `e1-g1`,
+				`g6-f5`, `g1-f1`,
+				`d5-f4`, `f1-a1`, // 110
+				`f4-g6+`, `h8-g8`,
+				`g6-e7+`, `g8-h8`,
+				`e6-g5`, /* draw by 50-moves rule */
 			})
 			Expect(b.Outcome().Equals(base.NewDrawByXMovesRule())).To(BeTrue())
 		})
@@ -316,19 +306,19 @@ var _ = Describe("outcome test", func() {
 				31. Qh5 Qf6 32. Qe2 Re5 33.Qd3 Rd5 34.Qe2 1/2-1/2
 			*/
 
-			makeMoves([][2]string{
-				{`e2`, `e4`}, {`e7`, `e6`},
-				{`d2`, `d4`}, {`d7`, `d5`},
-				{`b1`, `c3`}, {`g8`, `f6`},
-				{`c1`, `g5`}, {`d5`, `e4`},
-				{`c3`, `e4`}, {`f8`, `e7`},
-				{`g5`, `f6`}, {`g7`, `f6`},
-				{`g2`, `g3`}, {`f6`, `f5`},
-				{`e4`, `c3`}, {`e7`, `f6`}, // 8
-				{`g1`, `e2`}, {`b8`, `c6`},
-				{`d4`, `d5`}, {`e6`, `d5`},
-				{`c3`, `d5`}, {`f6`, `b2`},
-				{`f1`, `g2`}, /*black*/
+			makeMoves([]string{
+				`e2-e4`, `e7-e6`,
+				`d2-d4`, `d7-d5`,
+				`b1-c3`, `g8-f6`,
+				`c1-g5`, `d5xe4`,
+				`c3xe4`, `f8-e7`,
+				`g5xf6`, `g7xf6`,
+				`g2-g3`, `f6-f5`,
+				`e4-c3`, `e7-f6`, // 8
+				`g1-e2`, `b8-c6`,
+				`d4-d5`, `e6xd5`,
+				`c3xd5`, `f6xb2`,
+				`f1-g2`, /*black*/
 			})
 
 			// todo implement converting algebraic O-O, O-O-O to castle, keep in mind that board.Castling()
@@ -341,29 +331,29 @@ var _ = Describe("outcome test", func() {
 			fmt.Println("castling I:", b.Castlings(White)[0].I)
 			Expect(b.MakeCastling(b.Castlings(White)[0])).To(BeTrue()) // O-O
 
-			makeMoves([][2]string{
-				/*white,*/ {`b2`, `h8`},
-				{`e2`, `f4`}, {`c6`, `e5`},
-				{`d1`, `h5`}, {`e5`, `g6`},
-				{`a1`, `d1`}, {`c7`, `c6`},
-				{`d5`, `e3`}, {`d8`, `f6`},
-				{`g1`, `h1`}, {`h8`, `g7`},
-				{`g2`, `h3`}, {`g6`, `e7`},
-				{`d1`, `d3`}, {`c8`, `e6`},
-				{`f1`, `d1`}, {`g7`, `h6`},
-				{`d3`, `d4`}, {`h6`, `f4`},
-				{`d4`, `f4`}, {`a8`, `d8`},
-				{`d1`, `d8`}, {`f8`, `d8`},
-				{`h3`, `f5`}, {`e7`, `f5`},
-				{`e3`, `f5`}, {`d8`, `d5`},
-				{`g3`, `g4`}, {`e6`, `f5`},
-				{`g4`, `f5`}, {`h7`, `h6`},
-				{`h2`, `h3`}, {`g8`, `h7`},
-				{`h5`, `e2`}, {`f6`, `e5`},
-				{`e2`, `h5`}, {`e5`, `f6`},
-				{`h5`, `e2`}, {`d5`, `e5`},
-				{`e2`, `d3`}, {`e5`, `d5`},
-				{`d3`, `e2`}, /* draw by 3-fold repetition */
+			makeMoves([]string{
+				/*white,*/ `b2-h8`,
+				`e2-f4`, `c6-e5`,
+				`d1-h5`, `e5-g6`,
+				`a1-d1`, `c7-c6`,
+				`d5-e3`, `d8-f6`,
+				`g1-h1`, `h8-g7`,
+				`g2-h3`, `g6-e7`,
+				`d1-d3`, `c8-e6`,
+				`f1-d1`, `g7-h6`,
+				`d3-d4`, `h6xf4`,
+				`d4xf4`, `a8-d8`, // 23
+				`d1xd8`, `f8xd8`,
+				`h3xf5`, `e7xf5`,
+				`e3xf5`, `d8-d5`,
+				`g3-g4`, `e6xf5`,
+				`g4xf5`, `h7-h6`,
+				`h2-h3`, `g8-h7`,
+				`h5-e2`, `f6-e5`,
+				`e2-h5`, `e5-f6`,
+				`h5-e2`, `d5-e5`,
+				`e2-d3`, `e5-d5`,
+				`d3-e2`, /* draw by 3-fold repetition */
 			})
 			Expect(b.Outcome().Equals(base.NewDrawByXFoldRepetition())).To(BeTrue())
 		})
