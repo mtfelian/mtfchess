@@ -12,8 +12,13 @@ const (
 )
 
 const (
-	NoMovesToDraw       = 0  // disable N moves draw rule
-	StandardMovesToDraw = 50 // 50 moves draw rule
+	NoMovesToDraw         = 0  // disable N moves draw rule
+	Standard50MovesToDraw = 50 // 50 moves draw rule
+)
+
+const (
+	NoXFoldRepetitionDraw       = 0 // disable X-fold repetition draw rule
+	Standard3FoldRepetitionDraw = 3 // 3-fold repetition draw rule
 )
 
 // StandardChessBoardSettings returns a set of settings for standard chess
@@ -25,7 +30,8 @@ func StandardChessBoardSettings() *base.Settings {
 		CastlingsFunc:          StandardCastlingFunc,
 		EnPassantFunc:          StandardEnPassantFunc,
 		MoveOrder:              true,
-		MovesToDraw:            StandardMovesToDraw,
+		MovesToDraw:            Standard50MovesToDraw,
+		PositionsToDraw:        Standard3FoldRepetitionDraw,
 	}
 }
 
@@ -39,6 +45,7 @@ func testBoardSettings() *base.Settings {
 		EnPassantFunc:          NoEnPassantFunc,
 		MoveOrder:              false,
 		MovesToDraw:            NoMovesToDraw,
+		PositionsToDraw:        NoXFoldRepetitionDraw,
 	}
 }
 

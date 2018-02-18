@@ -458,6 +458,8 @@ func (b *Board) computeOutcome() {
 		b.setOutcome(base.NewStalemate())
 	case settings.MovesToDraw > 0 && b.HalfMoveCount()/2 == settings.MovesToDraw:
 		b.setOutcome(base.NewDrawByXMovesRule())
+	case settings.PositionsToDraw > 0 && b.PositionOccurred() >= settings.PositionsToDraw:
+		b.setOutcome(base.NewDrawByXFoldRepetition())
 	}
 }
 

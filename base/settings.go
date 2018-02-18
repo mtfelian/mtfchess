@@ -27,4 +27,7 @@ type Settings struct {
 
 	// MovesToDraw specifies amount of moves without capture or pawn advance to declare a draw
 	MovesToDraw int
+
+	// PositionsToDraw specifies amount of positions repetition to declare a draw
+	PositionsToDraw int
 }

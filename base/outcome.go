@@ -70,8 +70,8 @@ func NewTimeOver(side Colour) Outcome { return Outcome{Winner: side.Invert(), Re
 // NewDrawByAgreement returns an outcome for draw by agreement
 func NewDrawByAgreement() Outcome { return Outcome{Winner: Transparent, Reason: drawByAgreement} }
 
-// NewDrawBy3FoldRepetition returns an outcome for draw by 3-fold repetition
-func NewDrawBy3FoldRepetition() Outcome {
+// NewDrawByXFoldRepetition returns an outcome for draw by X-fold repetition
+func NewDrawByXFoldRepetition() Outcome {
 	return Outcome{Winner: Transparent, Reason: drawByXFoldRepetition}
 }
 
