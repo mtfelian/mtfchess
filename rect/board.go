@@ -221,15 +221,16 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 		return false
 	}
 
+	fromCoords := piece.Coord().Copy()
+
 	if piece.Promotion() != nil {
-		oldCoords := piece.Coord().Copy()
 		newPiece := piece.Promote()
 		if !b.Settings().PromotionConditionFunc(b, piece, to, newPiece) {
 			return false
 		}
 		piece = newPiece
-		b.Empty(oldCoords)
-		piece.SetCoords(b, oldCoords)
+		b.Empty(fromCoords)
+		piece.SetCoords(b, fromCoords)
 	}
 
 	if capturedPiece != nil {
@@ -239,7 +240,7 @@ func (b *Board) MakeMove(to base.ICoord, piece base.IPiece) bool {
 
 	if piece.Name() == base.PawnName {
 		epCaptureAt := b.CanCaptureEnPassantAt()
-		if epCaptureAt != nil && to.(Coord).X == epCaptureAt.(Coord).X {
+		if epCaptureAt != nil && to.(Coord).X == epCaptureAt.(Coord).X && fromCoords.(Coord).X != to.(Coord).X {
 			b.Empty(epCaptureAt)
 		} else {
 			b.SetCanCaptureEnPassantAt(nil)
