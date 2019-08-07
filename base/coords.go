@@ -26,6 +26,9 @@ func (s *Coords) Next() interface{} {
 // HasNext returns true if an underlying slice has next element
 func (s *Coords) HasNext() bool { return s.i < len(s.slice) }
 
+// SetI sets current iteration index
+func (s *Coords) SetI(i int) { s.i = i }
+
 // I returns a current iteration index
 func (s *Coords) I() int        { return s.i - 1 }
 func (s *Coords) Len() int      { return len(s.slice) }
